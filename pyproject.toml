@@ -65,7 +65,7 @@ testpaths = [
 [tool.ruff]
 fix = true
 unsafe-fixes = true
-target-version = "py38"
+target-version = "py310"
 line-length = 120
 
 [tool.ruff.lint]

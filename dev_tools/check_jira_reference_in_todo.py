@@ -5,11 +5,12 @@ from __future__ import annotations
 
 import re
 import sys
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING
 
 from dev_tools.git_hook_utils import parse_arguments
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from pathlib import Path
 
 

@@ -16,7 +16,10 @@ import subprocess
 import sys
 import textwrap
 from pathlib import Path
-from typing import Any, Sequence
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 MAX_TARGETS_WITHOUT_CONFIRMATION = 20
 
@@ -183,7 +186,7 @@ def find_executable_labels(patterns: Sequence[str], force: bool) -> set[str]:  #
 
 
 def remove_prefix_if_present(text: str, prefix: str) -> str:
-    return text[len(prefix) :] if text.startswith(prefix) else text
+    return text.removeprefix(prefix)
 
 
 def get_path_from_label(bazel_label: str) -> str:
