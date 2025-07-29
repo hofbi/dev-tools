@@ -9,30 +9,7 @@
     {
       "enabled": false,
       "matchPackageNames": [
-        "adrienverge/yamllint",
-        "asottile/blacken-docs",
-        "asottile/pyupgrade",
-        "executablebooks/mdformat",
-        "pappasam/toml-sort",
-        "PyCQA/docformatter",
-        "python-poetry/poetry",
-        "tcort/markdown-link-check",
-        "pre-commit/mirrors-mypy",
-        "pre-commit/sync-pre-commit-deps",
-        "pre-commit/pre-commit",
-        "python-jsonschema/check-jsonschema"
-      ]
-    },
-    {
-      "allowedVersions": "<=3.5.0",
-      "matchPackageNames": [
-        "pre-commit"
-      ]
-    },
-    {
-      "allowedVersions": "<2.0.0",
-      "matchPackageNames": [
-        "poetry"
+        "tcort/markdown-link-check"
       ]
     },
     {
