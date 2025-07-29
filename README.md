@@ -1,10 +1,12 @@
 # Dev Tools
 
-[![Check](https://github.com/luminartech/dev-tools/actions/workflows/check.yaml/badge.svg)](https://github.com/luminartech/dev-tools/actions/workflows/check.yaml)
+[![Check](https://github.com/hofbi/dev-tools/actions/workflows/check.yaml/badge.svg)](https://github.com/hofbi/dev-tools/actions/workflows/check.yaml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/luminartech/dev-tools/master.svg)](https://results.pre-commit.ci/latest/github/luminartech/dev-tools/master)
 
 This is a collection of Luminar's development tools.
 These tools are used to help developers in their day-to-day tasks.
+
+> **Info:** Since I was the main author of these tools while working at Luminar, I am maintaining this fork to keep them up to date. I try to contribute back if possible but since I am no longer working at Luminar, it is not guaranteed that my contributions are accepted.
 
 <!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=2 -->
 

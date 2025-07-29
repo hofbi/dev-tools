@@ -1,7 +1,7 @@
 # Contributing
 
 Contributions are welcome.
-Feel free to open an issue in [our issue tracker](https://github.com/luminartech/dev-tools/issues) and/or create a pull request.
+Feel free to open an issue in [our issue tracker](https://github.com/hofbi/dev-tools/issues) and/or create a pull request.
 
 ## Local Development
 
