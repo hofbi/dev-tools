@@ -24,37 +24,6 @@ if TYPE_CHECKING:
 MAX_TARGETS_WITHOUT_CONFIRMATION = 20
 
 
-def add_run_and_debug_arguments(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
-    parser.add_argument(
-        "--generate-debug-config",
-        action="store_true",
-        help="Generate the `launch.json` and `tasks.json` files containing debug and build targets. This is the default.",
-    )
-    parser.add_argument(
-        "--no-generate-debug-config",
-        dest="generate_debug_config",
-        action="store_false",
-        help="Do not generate the debug and build targets.",
-    )
-    # TODO(#80): use https://docs.python.org/3/library/argparse.html#argparse.BooleanOptionalAction with Python >= 3.9 # noqa: FIX002
-    parser.set_defaults(generate_debug_config=True)
-
-    parser.add_argument(
-        "--generate-compile-commands",
-        action="store_true",
-        help="Generate the `compile_commands.json` file. This is the default.",
-    )
-    parser.add_argument(
-        "--no-generate-compile-commands",
-        dest="generate_compile_commands",
-        action="store_false",
-        help="Do not generate the `compile_commands.json` file.",
-    )
-    # TODO(#80): use https://docs.python.org/3/library/argparse.html#argparse.BooleanOptionalAction with Python >= 3.9 # noqa: FIX002
-    parser.set_defaults(generate_compile_commands=True)
-    return parser
-
-
 def parse_arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -74,7 +43,6 @@ def parse_arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Run recommended bazel build/run actions.",
     )
-
     parser.add_argument(
         "--additional-debug-arg",
         type=str,
@@ -83,7 +51,6 @@ def parse_arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
         action="extend",
         help="Additional arguments to pass to the bazel build command when building targets for the `launch.json` and `tasks.json`.",
     )
-
     parser.add_argument(
         "-f",
         "--force",
@@ -98,8 +65,18 @@ def parse_arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
         action="extend",
         help="Additional arguments to pass to the `compile_commands.json` refresh template.",
     )
-
-    parser = add_run_and_debug_arguments(parser)
+    parser.add_argument(
+        "--generate-debug-config",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Generate the `launch.json` and `tasks.json` files containing debug and build targets. This is the default.",
+    )
+    parser.add_argument(
+        "--generate-compile-commands",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Generate the `compile_commands.json` file. This is the default.",
+    )
 
     return parser.parse_args(argv)
 
@@ -185,12 +162,8 @@ def find_executable_labels(patterns: Sequence[str], force: bool) -> set[str]:  #
     return set()  # we have no confirmation to continue
 
 
-def remove_prefix_if_present(text: str, prefix: str) -> str:
-    return text.removeprefix(prefix)
-
-
 def get_path_from_label(bazel_label: str) -> str:
-    return remove_prefix_if_present(bazel_label, "//").replace(":", "/")
+    return bazel_label.removeprefix("//").replace(":", "/")
 
 
 def get_build_task_label(bazel_label: str) -> str:
