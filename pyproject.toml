@@ -34,8 +34,8 @@ authors = ["BRE <bre@luminartech.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
-pre-commit = ">=3.5.0"
+python = "^3.10"
+pre-commit = ">=4.2.0"
 pyjson5 = ">=1.6.8"
 
 [tool.poetry.group.dev.dependencies]
