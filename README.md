@@ -6,7 +6,8 @@
 This is a collection of Luminar's development tools.
 These tools are used to help developers in their day-to-day tasks.
 
-> **Info:** Since I was the main author of these tools while working at Luminar, I am maintaining this fork to keep them up to date. I try to contribute back if possible but since I am no longer working at Luminar, it is not guaranteed that my contributions are accepted.
+> [!INFO]
+> Since I was the main author of these tools while working at Luminar, I am maintaining this fork to keep them up to date. I try to contribute back if possible but since I am no longer working at Luminar, it is not guaranteed that my contributions are accepted.
 
 <!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=2 -->
 
