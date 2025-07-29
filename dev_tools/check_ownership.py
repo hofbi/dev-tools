@@ -6,13 +6,14 @@ from __future__ import annotations
 import sys
 from enum import IntFlag, auto
 from pathlib import Path
-from typing import TYPE_CHECKING, Generator, Iterable, Iterator
+from typing import TYPE_CHECKING
 
 from dev_tools.git_hook_utils import create_default_parser
 from dev_tools.ownership_utils import GithubOwnerShip, OwnerShipEntry, check_git, get_ownership_entries
 
 if TYPE_CHECKING:
     from argparse import Namespace
+    from collections.abc import Iterable, Iterator
 
 
 class ReturnCode(IntFlag):
@@ -149,7 +150,7 @@ def perform_all_codeowners_checks(repo_dir: Path) -> ReturnCode:
     return return_code
 
 
-def is_empty(iterable: Generator[Path]) -> bool:
+def is_empty(iterable: Iterator[Path]) -> bool:
     return next(iterable, None) is None
 
 

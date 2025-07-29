@@ -4,12 +4,13 @@
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING
 
 from dev_tools.git_hook_utils import create_default_parser
 
 if TYPE_CHECKING:
     import argparse
+    from collections.abc import Sequence
 
 
 def parse_arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:

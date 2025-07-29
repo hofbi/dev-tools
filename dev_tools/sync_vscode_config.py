@@ -11,9 +11,12 @@ import logging
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Sequence
+from typing import TYPE_CHECKING, Any
 
 import pyjson5  # for parsing comments, we need JSON5
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 DEFAULT_INDENT = 4
 
