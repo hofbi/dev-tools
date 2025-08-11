@@ -30,6 +30,11 @@ def create_excluded_files_report(hooks_list: list[Hook]) -> dict:
     }
 
 
+def write_pre_commit_metrics(output_data: dict, output_file: Path) -> None:
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    output_file.write_text(json.dumps(output_data, indent=2))
+
+
 def main() -> int:
     args = parse_arguments()
     repo_root = Path.cwd()
@@ -40,8 +45,7 @@ def main() -> int:
     json_output = json.dumps(output_data, indent=2)
     print(json_output)
     if args.output_file:
-        args.output_file.parent.mkdir(parents=True, exist_ok=True)
-        args.output_file.write_text(json_output)
+        write_pre_commit_metrics(output_data, args.output_file)
 
     return 0
 
