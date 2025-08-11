@@ -140,6 +140,8 @@ This hook helps you to maintain a clean and up to date exclude list.
 ### `print-pre-commit-metrics`
 
 Count the number of excludes in `.pre-commit-config.yaml` and print them in json format.
+Use `--output-file` to also write the metrics to a file in json format.
+Paths are relative to the root of the repository.
 
 On large projects this can help to collect metrics over time for how many files are excluded from pre-commit.
 
