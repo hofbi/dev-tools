@@ -295,14 +295,14 @@ virtualenv = ">=20.10.0"
 
 [[package]]
 name = "pyfakefs"
-version = "5.9.3"
+version = "5.10.1"
 description = "Implements a fake file system that mocks the Python file system modules."
 optional = false
 python-versions = ">=3.7"
 groups = ["dev"]
 files = [
-    {file = "pyfakefs-5.9.3-py3-none-any.whl", hash = "sha256:14a0514e94ff156543208c0b4832facc68bdf19de993799b67d58dd5ca05ef30"},
-    {file = "pyfakefs-5.9.3.tar.gz", hash = "sha256:b458b11abc8862d4d8500816170a9b25e10d07437332b9dffd651069f3d4c40c"},
+    {file = "pyfakefs-5.10.1-py3-none-any.whl", hash = "sha256:2e752d2e05e77add0759bb17efb1418060c176e8c06399c8258ca49377ab5b20"},
+    {file = "pyfakefs-5.10.1.tar.gz", hash = "sha256:4d76c481ba47d5e09d7a32519e837bcbd36f0e2bd7bc09ea75e633167665a4e5"},
 ]
 
 [[package]]
@@ -707,4 +707,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "78f8baa8b242c36f4096e98f132f575f20d8fa04c11537c1f74b6cfbc5dd6cd1"
+content-hash = "8d706be4e4b20ec682cd7ab1d8397f149e834768fffd0832081069cdb82f922c"
