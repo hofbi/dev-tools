@@ -21,6 +21,9 @@ These tools are used to help developers in their day-to-day tasks.
   - [`check-no-dashes`](#check-no-dashes)
   - [`check-sys-path-append`](#check-sys-path-append)
   - [`check-sys-path-insert`](#check-sys-path-insert)
+  - [`check-rules-python-py-library`](#check-rules-python-py-library)
+  - [`check-rules-python-py-test`](#check-rules-python-py-test)
+  - [`check-rules-python-py-binary`](#check-rules-python-py-binary)
   - [`go-fmt`](#go-fmt)
   - [`go-imports`](#go-imports)
   - [`go-revive`](#go-revive)
@@ -106,6 +109,18 @@ Check that no `sys.path.append` is used in Python code
 ### `check-sys-path-insert`
 
 Check that no `sys.path.insert` is used in Python code
+
+### `check-rules-python-py-library`
+
+When using different python rules, they should be used consistently
+
+### `check-rules-python-py-test`
+
+When using different python rules, they should be used consistently
+
+### `check-rules-python-py-binary`
+
+When using different python rules, they should be used consistently
 
 ### `go-fmt`
 

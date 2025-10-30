@@ -54,6 +54,24 @@
   entry: "sys.path.insert"
   language: pygrep
   types: ["python"]
+- id: check-rules-python-py-library
+  name: Check rules_python's py_library is not used
+  description: When using different python rules, they should be used consistently
+  entry: '^\s*load\("@rules_python//python:defs\.bzl",[^)]*"py_library"[^)]*\)'
+  language: pygrep
+  types: ["bazel"]
+- id: check-rules-python-py-test
+  name: Check rules_python's py_test is not used
+  description: When using different python rules, they should be used consistently
+  entry: '^\s*load\("@rules_python//python:defs\.bzl",[^)]*"py_test"[^)]*\)'
+  language: pygrep
+  types: ["bazel"]
+- id: check-rules-python-py-binary
+  name: Check rules_python's py_binary is not used
+  description: When using different python rules, they should be used consistently
+  entry: '^\s*load\("@rules_python//python:defs\.bzl",[^)]*"py_binary"[^)]*\)'
+  language: pygrep
+  types: ["bazel"]
 - id: go-fmt
   name: Go Format
   description: Format go files
