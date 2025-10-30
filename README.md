@@ -20,6 +20,7 @@ These tools are used to help developers in their day-to-day tasks.
   - [`check-cpp-and-cu-unit-test-naming-pattern`](#check-cpp-and-cu-unit-test-naming-pattern)
   - [`check-no-dashes`](#check-no-dashes)
   - [`check-sys-path-append`](#check-sys-path-append)
+  - [`check-sys-path-insert`](#check-sys-path-insert)
   - [`go-fmt`](#go-fmt)
   - [`go-imports`](#go-imports)
   - [`go-revive`](#go-revive)
@@ -101,6 +102,10 @@ Check that markdown filenames do not use dashes
 ### `check-sys-path-append`
 
 Check that no `sys.path.append` is used in Python code
+
+### `check-sys-path-insert`
+
+Check that no `sys.path.insert` is used in Python code
 
 ### `go-fmt`
 

@@ -48,6 +48,12 @@
   entry: "sys.path.append"
   language: pygrep
   types: ["python"]
+- id: check-sys-path-insert
+  name: Check sys path append usage
+  description: Check that no `sys.path.insert` is used in Python code
+  entry: "sys.path.insert"
+  language: pygrep
+  types: ["python"]
 - id: go-fmt
   name: Go Format
   description: Format go files
