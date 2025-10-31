@@ -141,8 +141,9 @@ Check that all TODO comments follow the same pattern and link a Jira ticket: `TO
 Check that a rule is loaded from a specific rule set.
 
 Use `--rule-path` to set the rule set and `--rule-name` to set the rule name.
-Example args in the pre-commit config: `args: [--rule-path="@rules_python//python:defs.bzl", --rule-name="py_test"]`
+Example args in the pre-commit config: `args: [--rule-path=@rules_python//python:defs.bzl, --rule-name=py_test]`
 Both arguments are required.
+Make sure you't put any ticks around the rule path and rule name.
 This hook can be used multiple times to check different rules.
 
 ### `check-non-existing-and-duplicate-excludes`
