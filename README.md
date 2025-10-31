@@ -21,9 +21,6 @@ These tools are used to help developers in their day-to-day tasks.
   - [`check-no-dashes`](#check-no-dashes)
   - [`check-sys-path-append`](#check-sys-path-append)
   - [`check-sys-path-insert`](#check-sys-path-insert)
-  - [`check-rules-python-py-library`](#check-rules-python-py-library)
-  - [`check-rules-python-py-test`](#check-rules-python-py-test)
-  - [`check-rules-python-py-binary`](#check-rules-python-py-binary)
   - [`go-fmt`](#go-fmt)
   - [`go-imports`](#go-imports)
   - [`go-revive`](#go-revive)
@@ -31,6 +28,7 @@ These tools are used to help developers in their day-to-day tasks.
   - [`check-number-of-lines-count`](#check-number-of-lines-count)
   - [`check-shellscript-set-options`](#check-shellscript-set-options)
   - [`check-jira-reference-in-todo`](#check-jira-reference-in-todo)
+  - [`check-load-statement`](#check-load-statement)
   - [`check-non-existing-and-duplicate-excludes`](#check-non-existing-and-duplicate-excludes)
   - [`print-pre-commit-metrics`](#print-pre-commit-metrics)
   - [`sync-vscode-config`](#sync-vscode-config)
@@ -110,18 +108,6 @@ Check that no `sys.path.append` is used in Python code
 
 Check that no `sys.path.insert` is used in Python code
 
-### `check-rules-python-py-library`
-
-When using different python rules, they should be used consistently
-
-### `check-rules-python-py-test`
-
-When using different python rules, they should be used consistently
-
-### `check-rules-python-py-binary`
-
-When using different python rules, they should be used consistently
-
 ### `go-fmt`
 
 Format go files
@@ -149,6 +135,15 @@ Check if options are set with `set -euxo pipefail`. Use `# nolint(set_options)` 
 ### `check-jira-reference-in-todo`
 
 Check that all TODO comments follow the same pattern and link a Jira ticket: `TODO(ABC-1234):`.
+
+### `check-load-statement`
+
+Check that a rule is loaded from a specific rule set.
+
+Use `--rule-path` to set the rule set and `--rule-name` to set the rule name.
+Example args in the pre-commit config: `args: [--rule-path="@rules_python//python:defs.bzl", --rule-name="py_test"]`
+Both arguments are required.
+This hook can be used multiple times to check different rules.
 
 ### `check-non-existing-and-duplicate-excludes`
 

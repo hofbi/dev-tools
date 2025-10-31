@@ -54,24 +54,6 @@
   entry: "sys.path.insert"
   language: pygrep
   types: ["python"]
-- id: check-rules-python-py-library
-  name: Check rules_python's py_library is not used
-  description: When using different python rules, they should be used consistently
-  entry: '^\s*load\("@rules_python//python:defs\.bzl",[^)]*"py_library"[^)]*\)'
-  language: pygrep
-  types: ["bazel"]
-- id: check-rules-python-py-test
-  name: Check rules_python's py_test is not used
-  description: When using different python rules, they should be used consistently
-  entry: '^\s*load\("@rules_python//python:defs\.bzl",[^)]*"py_test"[^)]*\)'
-  language: pygrep
-  types: ["bazel"]
-- id: check-rules-python-py-binary
-  name: Check rules_python's py_binary is not used
-  description: When using different python rules, they should be used consistently
-  entry: '^\s*load\("@rules_python//python:defs\.bzl",[^)]*"py_binary"[^)]*\)'
-  language: pygrep
-  types: ["bazel"]
 - id: go-fmt
   name: Go Format
   description: Format go files
@@ -125,6 +107,18 @@
   language: python
   exclude_types:
     - svg
+- id: check-load-statement
+  name: Check that a rule is loaded from a specific rule set
+  description: |-
+    Check that a rule is loaded from a specific rule set.
+
+    Use `--rule-path` to set the rule set and `--rule-name` to set the rule name.
+    Example args in the pre-commit config: `args: [--rule-path="@rules_python//python:defs.bzl", --rule-name="py_test"]`
+    Both arguments are required.
+    This hook can be used multiple times to check different rules.
+  entry: check-load-statement
+  language: python
+  types: [bazel]
 - id: check-non-existing-and-duplicate-excludes
   name: Check non-existing and duplicate excludes in pre-commit-config
   description: |-
