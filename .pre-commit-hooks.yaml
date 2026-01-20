@@ -165,6 +165,31 @@
     )
   pass_filenames: false
   additional_dependencies: [pyjson5>=1.6.8]
+- id: sync-tool-versions
+  name: Sync tool versions
+  description: |-
+    Sync tool versions across files based on `.versions.yaml`.
+    Each version entry defines a `name`, a `version`, and a list of `entries` containing
+    a file `path` and a regex `pattern` with a single capture group for the version.
+
+    Example `.versions.yaml`:
+
+    ```yaml
+    name: tool-versions
+    sync_versions:
+      - name: rust
+        version: 1.91.0
+        entries:
+          - path: MODULE.bazel
+            pattern: RUST_VERSION\\s*=\\s*"([^"]+)"
+          - path: .pre-commit-config.yaml
+            pattern: rust:\\s*([0-9.]+)
+    ```
+  entry: sync-tool-versions
+  language: python
+  pass_filenames: false
+  always_run: true
+  additional_dependencies: [pre-commit>=4.2.0]
 - id: check-ownership
   name: Check `.github/CODEOWNERS` consistency (can take a while)
   description: |

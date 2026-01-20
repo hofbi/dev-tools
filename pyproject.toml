@@ -13,7 +13,8 @@ authors = [
 requires-python = ">=3.10"
 dependencies = [
   "pre-commit>=4.2.0",
-  "pyjson5>=1.6.8"
+  "pyjson5>=1.6.8",
+  "ruamel-yaml==0.19.1"
 ]
 
 [project.optional-dependencies]
@@ -35,6 +36,7 @@ configure-vscode-for-bazel = "dev_tools.configure_vscode_for_bazel:main"
 generate-hook-docs = "dev_tools.generate_hook_docs:main"
 print-pre-commit-metrics = "dev_tools.print_pre_commit_metrics:main"
 sync-vscode-config = "dev_tools.sync_vscode_config:main"
+sync-tool-versions = "dev_tools.sync_tool_versions:main"
 whoowns = "dev_tools.find_owner:main"
 
 [tool.docformatter]
