@@ -4,8 +4,6 @@ ci:
   autoupdate_commit_msg: 'chore(deps): pre-commit.ci autoupdate'
   autoupdate_schedule: quarterly # We want to do updates via renovate since we can exclude hooks from being updated
   autofix_commit_msg: 'style: pre-commit.ci fixes'
-  skip:
-    - poetry-lock
 
 repos:
   - repo: meta
@@ -22,7 +20,7 @@ repos:
         pass_filenames: false
         files: (README.md|.pre-commit-hooks.yaml|dev_tools/generate_hook_docs.py)
         additional_dependencies:
-          - pre-commit>=3.5.0
+          - pre-commit>=4.2.0
       - id: sync-vscode-config
         name: Sync VSCode Config
         description: Sync settings and extensions from devcontainer.json to json files in .vscode folder
@@ -99,11 +97,10 @@ repos:
     hooks:
       - id: ruff-format
       - id: ruff-check
-  - repo: https://github.com/python-poetry/poetry
-    rev: 2.3.0
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.9.26
     hooks:
-      - id: poetry-check
-      - id: poetry-lock
+      - id: uv-lock
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.10.0
     hooks:
@@ -189,8 +186,7 @@ repos:
       - id: blacken-docs
         args: [--line-length=120]
   - repo: https://github.com/tcort/markdown-link-check
-    # Stick to 3.11.2 until https://github.com/tcort/markdown-link-check/issues/325 is fixed
-    rev: v3.11.2
+    rev: v3.14.2
     hooks:
       - id: markdown-link-check
         args: ["--quiet", "--config", ".md-link-config.json"]

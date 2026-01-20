@@ -84,7 +84,7 @@
   language: python
   pass_filenames: false
   files: (README.md|.pre-commit-hooks.yaml)
-  additional_dependencies: [pre-commit>=3.5.0]
+  additional_dependencies: [pre-commit>=4.2.0]
 - id: check-number-of-lines-count
   name: Check Number of Lines
   description: Check that number of lines in scripts do not exceed max-lines. Use `--max-lines=<number>` to set the maximum number of lines. Default is 30 for shell scripts.

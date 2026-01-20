@@ -1,8 +1,14 @@
 // For format details, see https://aka.ms/devcontainer.json
 {
-    "build": {
-        // Path is relative to the devcontainer.json file.
-        "dockerfile": "Dockerfile"
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+    "features": {
+        "ghcr.io/devcontainer-community/devcontainer-features/astral.sh-uv:1": {},
+        "ghcr.io/devcontainers/features/python:1": {
+            "version": "3.12",
+            "toolsToInstall": [
+                "pre-commit"
+            ]
+        }
     },
     "customizations": {
         "vscode": {
