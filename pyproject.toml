@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dev-tools"
-version = "1.0.0" # Will be read by the release pipeline
+version = "1.1.0" # Will be read by the release pipeline
 description = ""
 readme = "README.md"
 authors = [
