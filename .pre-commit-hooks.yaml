@@ -173,16 +173,17 @@
     a file `path` and a regex `pattern` with a single capture group for the version.
 
     Example `.versions.yaml`:
+
     ```yaml
     name: tool-versions
     sync_versions:
       - name: rust
-        version: "1.91.0"
+        version: 1.91.0
         entries:
           - path: MODULE.bazel
-            pattern: 'RUST_VERSION\\s*=\\s*"([^"]+)"'
+            pattern: RUST_VERSION\\s*=\\s*"([^"]+)"
           - path: .pre-commit-config.yaml
-            pattern: 'rust:\\s*([0-9.]+)'
+            pattern: rust:\\s*([0-9.]+)
     ```
   entry: sync-tool-versions
   language: python
