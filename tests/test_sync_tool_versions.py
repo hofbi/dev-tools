@@ -170,6 +170,43 @@ def test_sync_tool_versions_for_missing_top_level_name_should_report_error(
     assert "top-level 'name'" in output
 
 
+def test_sync_tool_versions_for_missing_config_should_report_error(
+    capsys: pytest.CaptureFixture[str],
+    fs: FakeFilesystem,
+) -> None:
+    repo_root = Path("Repo")
+    fs.create_dir(repo_root)
+    config_path = repo_root / ".versions.yaml"
+
+    result = main(["--config", str(config_path)])
+    output = capsys.readouterr().out
+
+    assert result == 1
+    assert "config file not found" in output
+
+
+def test_sync_tool_versions_for_empty_sync_versions_should_noop(
+    capsys: pytest.CaptureFixture[str],
+    fs: FakeFilesystem,
+) -> None:
+    repo_root = Path("Repo")
+    fs.create_dir(repo_root)
+    config_path = repo_root / ".versions.yaml"
+    _write_versions_config(
+        config_path,
+        {
+            "name": "tool-versions",
+            "sync_versions": [],
+        },
+    )
+
+    result = main(["--config", str(config_path)])
+    output = capsys.readouterr().out
+
+    assert result == 0
+    assert output == ""
+
+
 def test_prepare_sync_for_missing_file_should_return_error(fs: FakeFilesystem) -> None:
     repo_root = Path("Repo")
     fs.create_dir(repo_root)
