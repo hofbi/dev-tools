@@ -32,6 +32,7 @@ These tools are used to help developers in their day-to-day tasks.
   - [`check-non-existing-and-duplicate-excludes`](#check-non-existing-and-duplicate-excludes)
   - [`print-pre-commit-metrics`](#print-pre-commit-metrics)
   - [`sync-vscode-config`](#sync-vscode-config)
+  - [`sync-tool-versions`](#sync-tool-versions)
   - [`check-ownership`](#check-ownership)
 - [Contributing](#contributing)
 
@@ -169,6 +170,26 @@ Entries defined in `settings.json` and `extensions.json` which don't exist in `d
 
 If `settings.json` and `extensions.json` are ignored in Git, consider running the hook in `post-checkout` and `post-merge` stages by overwriting the `stages` config.
 In this case, define your `default_install_hook_types` in the pre-commit config and set `always_run: true` for this hook.
+
+### `sync-tool-versions`
+
+Sync tool versions across files based on `.versions.yaml`.
+Each version entry defines a `name`, a `version`, and a list of `entries` containing
+a file `path` and a regex `pattern` with a single capture group for the version.
+
+Example `.versions.yaml`:
+
+```yaml
+name: tool-versions
+sync_versions:
+  - name: rust
+    version: 1.91.0
+    entries:
+      - path: MODULE.bazel
+        pattern: RUST_VERSION\s*=\s*"([^"]+)"
+      - path: .pre-commit-config.yaml
+        pattern: rust:\s*([0-9.]+)
+```
 
 ### `check-ownership`
 

@@ -131,6 +131,7 @@ source = { editable = "." }
 dependencies = [
     { name = "pre-commit" },
     { name = "pyjson5" },
+    { name = "ruamel-yaml" },
 ]
 
 [package.optional-dependencies]
@@ -148,6 +149,7 @@ requires-dist = [
     { name = "pyjson5", specifier = ">=1.6.8" },
     { name = "pytest", marker = "extra == 'dev'", specifier = "==9.0.2" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = "==7.0.0" },
+    { name = "ruamel-yaml", specifier = "==0.19.1" },
     { name = "ruamel-yaml", marker = "extra == 'dev'", specifier = "==0.19.1" },
 ]
 provides-extras = ["dev"]
