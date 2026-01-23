@@ -16,6 +16,14 @@ if TYPE_CHECKING:
 
 
 DEFAULT_CONFIG_FILE = ".versions.yaml"
+VERSION_PLACEHOLDER = "THE_VERSION"
+SEMVER_CAPTURE_GROUP = (
+    r"(?<![0-9A-Za-z.-])"
+    r"(v?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)"
+    r"(?:-(?:(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*))?"
+    r"(?:\+(?:[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?)"
+    r"(?![0-9A-Za-z.-])"
+)
 
 
 @dataclass(frozen=True)
@@ -144,8 +152,18 @@ def prepare_sync(spec: VersionSyncSpec, entry: SyncEntry) -> tuple[re.Pattern[st
         errors.append(f"Error: sync_versions entry '{spec.name}' references missing file: {entry.path}")
         return None, None, errors
 
+    pattern = entry.pattern
+    if VERSION_PLACEHOLDER in pattern:
+        if pattern.count(VERSION_PLACEHOLDER) != 1:
+            errors.append(
+                f"Error: sync_versions entry '{spec.name}' pattern must include {VERSION_PLACEHOLDER} exactly once "
+                f"in {entry.path}: {entry.pattern}"
+            )
+            return None, None, errors
+        pattern = pattern.replace(VERSION_PLACEHOLDER, SEMVER_CAPTURE_GROUP)
+
     try:
-        regex = re.compile(entry.pattern, re.MULTILINE)
+        regex = re.compile(pattern, re.MULTILINE)
     except re.error as exc:
         errors.append(f"Error: sync_versions entry '{spec.name}' has invalid pattern for {entry.path}: {exc}")
         return None, None, errors

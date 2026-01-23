@@ -51,6 +51,107 @@ def test_sync_tool_versions_for_multiple_matches_should_update_all(fs: FakeFiles
     assert pre_commit_config.read_text() == "rust: 1.91.0\nrust: 1.91.0\n"
 
 
+def test_sync_tool_versions_supports_the_version_placeholder(fs: FakeFilesystem) -> None:
+    repo_root = Path("Repo")
+    fs.create_dir(repo_root)
+    module_file = repo_root / "MODULE.bazel"
+    module_file.write_text('RUST_VERSION = "1.87.0"\n')
+
+    config_path = repo_root / ".versions.yaml"
+    _write_versions_config(
+        config_path,
+        {
+            "name": "tool-versions",
+            "sync_versions": [
+                {
+                    "name": "rust",
+                    "version": "1.91.0",
+                    "entries": [{"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"THE_VERSION"'}],
+                },
+            ],
+        },
+    )
+
+    result = main(["--config", str(config_path)])
+
+    assert result == 1
+    assert module_file.read_text() == 'RUST_VERSION = "1.91.0"\n'
+
+
+def test_sync_tool_versions_placeholder_matches_semver_variants(fs: FakeFilesystem) -> None:
+    repo_root = Path("Repo")
+    fs.create_dir(repo_root)
+    versions_file = repo_root / "versions.txt"
+    versions_file.write_text("v1.2.3\n1.2.3-rc.1\n1.2.3+build.5\n")
+
+    config_path = repo_root / ".versions.yaml"
+    _write_versions_config(
+        config_path,
+        {
+            "name": "tool-versions",
+            "sync_versions": [
+                {
+                    "name": "rust",
+                    "version": "2.0.0",
+                    "entries": [{"path": "versions.txt", "pattern": "THE_VERSION"}],
+                },
+            ],
+        },
+    )
+
+    result = main(["--config", str(config_path)])
+
+    assert result == 1
+    assert versions_file.read_text() == "2.0.0\n2.0.0\n2.0.0\n"
+
+
+def test_sync_tool_versions_placeholder_rejects_non_semver(fs: FakeFilesystem) -> None:
+    repo_root = Path("Repo")
+    fs.create_dir(repo_root)
+    versions_file = repo_root / "versions.txt"
+    versions_file.write_text("1.2\n1.2.3.4\n")
+
+    config_path = repo_root / ".versions.yaml"
+    _write_versions_config(
+        config_path,
+        {
+            "name": "tool-versions",
+            "sync_versions": [
+                {
+                    "name": "rust",
+                    "version": "2.0.0",
+                    "entries": [{"path": "versions.txt", "pattern": "THE_VERSION"}],
+                },
+            ],
+        },
+    )
+
+    result = main(["--config", str(config_path)])
+
+    assert result == 1
+    assert versions_file.read_text() == "1.2\n1.2.3.4\n"
+
+
+def test_sync_tool_versions_placeholder_must_be_unique(fs: FakeFilesystem) -> None:
+    repo_root = Path("Repo")
+    fs.create_dir(repo_root)
+    versions_file = repo_root / "versions.txt"
+    versions_file.write_text("1.2.3\n")
+
+    spec = VersionSyncSpec(
+        name="rust",
+        version="2.0.0",
+        entries=[
+            SyncEntry(path=versions_file, pattern="THE_VERSION and THE_VERSION"),
+        ],
+    )
+    regex, content, errors = prepare_sync(spec, spec.entries[0])
+
+    assert regex is None
+    assert content is None
+    assert errors
+
+
 def test_sync_tool_versions_for_missing_file_should_report_error(
     capsys: pytest.CaptureFixture[str],
     fs: FakeFilesystem,
