@@ -105,6 +105,39 @@ def test_sync_tool_versions_placeholder_matches_semver_variants(fs: FakeFilesyst
     assert versions_file.read_text() == "2.0.0\n2.0.0\n2.0.0\n"
 
 
+def test_sync_tool_versions_placeholder_allows_version_override(fs: FakeFilesystem) -> None:
+    repo_root = Path("Repo")
+    fs.create_dir(repo_root)
+    versions_file = repo_root / "versions.txt"
+    versions_file.write_text("py3.14\n")
+
+    config_path = repo_root / ".versions.yaml"
+    _write_versions_config(
+        config_path,
+        {
+            "name": "tool-versions",
+            "sync_versions": [
+                {
+                    "name": "python",
+                    "version": "3.14",
+                    "entries": [
+                        {
+                            "path": "versions.txt",
+                            "pattern": "py([0-9.]+)",
+                            "version_override": "314",
+                        }
+                    ],
+                },
+            ],
+        },
+    )
+
+    result = main(["--config", str(config_path)])
+
+    assert result == 1
+    assert versions_file.read_text() == "py314\n"
+
+
 def test_sync_tool_versions_placeholder_rejects_non_semver(fs: FakeFilesystem) -> None:
     repo_root = Path("Repo")
     fs.create_dir(repo_root)
