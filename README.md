@@ -178,6 +178,8 @@ Each version entry defines a `name`, a `version`, and a list of `entries` contai
 a file `path` and a regex `pattern` with a single capture group for the version.
 You can also use `THE_VERSION` in the pattern as a placeholder for that capture group
 (defaults to SemVer with an optional leading `v`).
+Use `version_override` on an entry to replace with a different value than the sync `version`.
+If you need prefixes like `py314`, use an explicit capture group instead of `THE_VERSION`.
 
 Example `.versions.yaml`:
 
@@ -191,6 +193,9 @@ sync_versions:
         pattern: RUST_VERSION\s*=\s*"THE_VERSION"
       - path: .pre-commit-config.yaml
         pattern: rust:\s*([0-9.]+)
+      - path: pyproject.toml
+        pattern: target-version\s*=\s*\"py([0-9]+)\"
+        version_override: '314'
 ```
 
 ### `check-ownership`

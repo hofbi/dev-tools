@@ -30,6 +30,7 @@ SEMVER_CAPTURE_GROUP = (
 class SyncEntry:
     path: Path
     pattern: str
+    version_override: str | None = None
 
 
 @dataclass(frozen=True)
@@ -79,7 +80,13 @@ def _parse_sync_entry(entry: dict, base_dir: Path, config_path: Path) -> SyncEnt
         entry.get("pattern"),
         f"Each entries item must have a non-empty 'pattern' in {config_path}",
     )
-    return SyncEntry(base_dir / Path(path_value), pattern)
+    override = entry.get("version_override")
+    if override is not None:
+        override = _require_non_empty_str(
+            override,
+            f"Each entries item 'version_override' must be a non-empty string in {config_path}",
+        )
+    return SyncEntry(base_dir / Path(path_value), pattern, override)
 
 
 def _parse_version_spec(entry: dict, base_dir: Path, config_path: Path) -> VersionSyncSpec:
@@ -194,7 +201,8 @@ def sync_versions(specs: list[VersionSyncSpec]) -> tuple[bool, list[str]]:
         regex, content, entry_errors = prepare_sync(spec, entry)
         errors.extend(entry_errors)
         if regex is not None and content is not None:
-            new_content, _ = regex.subn(_make_replacer(spec.version), content)
+            replacement_version = entry.version_override or spec.version
+            new_content, _ = regex.subn(_make_replacer(replacement_version), content)
             if new_content != content:
                 entry.path.write_text(new_content)
                 changed = True
