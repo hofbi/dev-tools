@@ -123,7 +123,7 @@ def test_sync_tool_versions_placeholder_allows_version_override(fs: FakeFilesyst
                     "entries": [
                         {
                             "path": "versions.txt",
-                            "pattern": "py([0-9]+)",
+                            "pattern": "py([0-9.]+)",
                             "version_override": "314",
                         }
                     ],
