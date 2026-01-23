@@ -193,6 +193,11 @@ sync_versions:
         pattern: RUST_VERSION\s*=\s*"THE_VERSION"
       - path: .pre-commit-config.yaml
         pattern: rust:\s*([0-9.]+)
+  - name: python
+    version: 3.14
+    entries:
+      - path: .python-version
+        pattern: ([0-9]+\.[0-9]+)
       - path: pyproject.toml
         pattern: target-version\s*=\s*\"py([0-9]+)\"
         version_override: '314'
