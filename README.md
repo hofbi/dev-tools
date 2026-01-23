@@ -176,6 +176,8 @@ In this case, define your `default_install_hook_types` in the pre-commit config 
 Sync tool versions across files based on `.versions.yaml`.
 Each version entry defines a `name`, a `version`, and a list of `entries` containing
 a file `path` and a regex `pattern` with a single capture group for the version.
+You can also use `THE_VERSION` in the pattern as a placeholder for that capture group
+(defaults to SemVer with an optional leading `v`).
 
 Example `.versions.yaml`:
 
@@ -186,7 +188,7 @@ sync_versions:
     version: 1.91.0
     entries:
       - path: MODULE.bazel
-        pattern: RUST_VERSION\s*=\s*"([^"]+)"
+        pattern: RUST_VERSION\s*=\s*"THE_VERSION"
       - path: .pre-commit-config.yaml
         pattern: rust:\s*([0-9.]+)
 ```
