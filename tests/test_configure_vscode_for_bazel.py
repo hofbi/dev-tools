@@ -107,4 +107,5 @@ def test__parse_arguments__for_two_patterns__returns_parsed_values() -> None:
 
 
 def test__parse_arguments__for_no_patterns__raises_error() -> None:
-    assert pytest.raises(SystemExit, parse_arguments, [])
+    with pytest.raises(SystemExit):
+        parse_arguments([])
