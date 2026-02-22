@@ -93,12 +93,12 @@ repos:
     hooks:
       - id: sync-pre-commit-deps
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.1
+    rev: v0.15.2
     hooks:
       - id: ruff-format
       - id: ruff-check
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.10.2
+    rev: 0.10.4
     hooks:
       - id: uv-lock
   - repo: https://github.com/pre-commit/pygrep-hooks
@@ -112,7 +112,7 @@ repos:
       - id: python-use-type-annotations
       - id: text-unicode-replacement-char
   - repo: https://github.com/PyCQA/autoflake
-    rev: v2.3.1
+    rev: v2.3.3
     hooks:
       - id: autoflake
   - repo: https://github.com/MarcoGorelli/auto-walrus
@@ -164,7 +164,7 @@ repos:
       - id: actionlint
         additional_dependencies: [pyflakes>=3.1.0, shellcheck-py>=0.9.0.5]
   - repo: https://github.com/crate-ci/typos
-    rev: v1.43.4
+    rev: v1.43.5
     hooks:
       - id: typos
         exclude_types:
