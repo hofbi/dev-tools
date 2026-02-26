@@ -38,6 +38,24 @@ if TYPE_CHECKING:
             "1. this is an enumeration\n2. this is another item",
             id="does_not_split_enumeration",
         ),
+        pytest.param(
+            "This is a sentence! Is this another? Yes.",
+            1,
+            "This is a sentence!\nIs this another?\nYes.",
+            id="fixes_sentences_with_different_punctuation",
+        ),
+         pytest.param(
+            "This is a sentence.  This is another.",
+            1,
+            "This is a sentence.\nThis is another.",
+            id="fixes_sentences_with_multiple_spaces",
+        ),
+        pytest.param(
+            "Do not split special abbreviations like e.g. or i.e. or Dr. in the middle of a sentence.",
+            0,
+            "Do not split special abbreviations like e.g. or i.e. or Dr. in the middle of a sentence.",
+            id="does_not_split_sentences_with_predefined_abbreviations",
+        ),
     ],
 )
 def test_main(
