@@ -33,7 +33,7 @@ def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
                 new_lines.append(line)
 
         if file_modified:
-            file.write_text("\n".join(new_lines) + "\n" if new_lines else "", encoding="utf-8")
+            file.write_text("\n".join(new_lines), encoding="utf-8")
             modified = True
 
     return modified

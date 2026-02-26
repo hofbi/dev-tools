@@ -17,7 +17,7 @@ if TYPE_CHECKING:
         pytest.param(
             "This. Must match.",
             1,
-            "This.\nMust match.\n",  # TODO remove this trailing newline
+            "This.\nMust match.",
             id="fixes_two_sentences",
         ),
         pytest.param(
@@ -29,7 +29,7 @@ if TYPE_CHECKING:
         pytest.param(
             "This is a sentence. This is another sentence. And another.",
             1,
-            "This is a sentence.\nThis is another sentence.\nAnd another.\n",
+            "This is a sentence.\nThis is another sentence.\nAnd another.",
             id="fixes_three_sentences",
         ),
         pytest.param(
@@ -63,5 +63,5 @@ def test_multiple_files_one_failing(fs: FakeFilesystem) -> None:
     fs.create_file(file_b, contents="One sentence.")
 
     assert main([str(file_a), str(file_b)]) == 1
-    assert file_a.read_text() == "This.\nMust match.\n"
+    assert file_a.read_text() == "This.\nMust match."
     assert file_b.read_text() == "One sentence."
