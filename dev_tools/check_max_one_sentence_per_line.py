@@ -22,9 +22,10 @@ def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
     pattern = re.compile(r"(?<=[A-Za-z][.?!]) +(?=[A-Z])")
 
     for file in files:
-        new_content, number_of_replacements = pattern.subn("\n", file.read_text())
+        old_content = file.read_text()
+        new_content = pattern.sub("\n", old_content)
 
-        if number_of_replacements:
+        if new_content != old_content:
             file.write_text(new_content)
             changed = True
 
