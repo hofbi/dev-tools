@@ -73,11 +73,8 @@ def test_main(
     file = Path("Repo/file.md")
     fs.create_file(file, contents=input)
 
-    result = main([str(file)])
-
-    assert result == expected_return
-    content = file.read_text()
-    assert content == expected_output
+    assert main([str(file)]) == expected_return
+    assert file.read_text() == expected_output
 
 
 def test_multiple_files_one_failing(fs: FakeFilesystem) -> None:
