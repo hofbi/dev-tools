@@ -40,13 +40,13 @@ def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
 
 
 def _line_has_multiple_sentences(line: str) -> bool:
-    return bool(re.search(r"[A-Za-z][.?!] ", line))
+    return bool(re.search(r"[A-Za-z][.?!] +[A-Z]", line))
 
 
 def _split_sentences(line: str) -> list[str]:
     leading_whitespace = line[: len(line) - len(line.lstrip())]
 
-    parts = re.split(r"(?<=[A-Za-z][.?!]) ", line.strip())
+    parts = re.split(r"(?<=[A-Za-z][.?!]) +(?=[A-Z])", line.strip())
 
     return [leading_whitespace + part if part else part for part in parts]
 
