@@ -11,30 +11,32 @@ These tools are used to help developers in their day-to-day tasks.
 
 <!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=2 -->
 
-- [Tools](#tools)
-  - [Configure VS Code for Bazel](#configure-vs-code-for-bazel)
-  - [Whoowns](#whoowns)
-- [Hooks](#hooks)
-  - [`check-build-file-without-extensions`](#check-build-file-without-extensions)
-  - [`check-snake-case`](#check-snake-case)
-  - [`check-cpp-and-cu-unit-test-naming-pattern`](#check-cpp-and-cu-unit-test-naming-pattern)
-  - [`check-no-dashes`](#check-no-dashes)
-  - [`check-sys-path-append`](#check-sys-path-append)
-  - [`check-sys-path-insert`](#check-sys-path-insert)
-  - [`go-fmt`](#go-fmt)
-  - [`go-imports`](#go-imports)
-  - [`go-revive`](#go-revive)
-  - [`generate-hook-docs`](#generate-hook-docs)
-  - [`check-number-of-lines-count`](#check-number-of-lines-count)
-  - [`check-shellscript-set-options`](#check-shellscript-set-options)
-  - [`check-jira-reference-in-todo`](#check-jira-reference-in-todo)
-  - [`check-load-statement`](#check-load-statement)
-  - [`check-non-existing-and-duplicate-excludes`](#check-non-existing-and-duplicate-excludes)
-  - [`print-pre-commit-metrics`](#print-pre-commit-metrics)
-  - [`sync-vscode-config`](#sync-vscode-config)
-  - [`sync-tool-versions`](#sync-tool-versions)
-  - [`check-ownership`](#check-ownership)
-- [Contributing](#contributing)
+- [Dev Tools](#dev-tools)
+  - [Tools](#tools)
+    - [Configure VS Code for Bazel](#configure-vs-code-for-bazel)
+    - [Whoowns](#whoowns)
+  - [Hooks](#hooks)
+    - [`check-build-file-without-extensions`](#check-build-file-without-extensions)
+    - [`check-snake-case`](#check-snake-case)
+    - [`check-cpp-and-cu-unit-test-naming-pattern`](#check-cpp-and-cu-unit-test-naming-pattern)
+    - [`check-no-dashes`](#check-no-dashes)
+    - [`check-sys-path-append`](#check-sys-path-append)
+    - [`check-sys-path-insert`](#check-sys-path-insert)
+    - [`go-fmt`](#go-fmt)
+    - [`go-imports`](#go-imports)
+    - [`go-revive`](#go-revive)
+    - [`generate-hook-docs`](#generate-hook-docs)
+    - [`check-number-of-lines-count`](#check-number-of-lines-count)
+    - [`check-shellscript-set-options`](#check-shellscript-set-options)
+    - [`check-jira-reference-in-todo`](#check-jira-reference-in-todo)
+    - [`check-load-statement`](#check-load-statement)
+    - [`check-non-existing-and-duplicate-excludes`](#check-non-existing-and-duplicate-excludes)
+    - [`print-pre-commit-metrics`](#print-pre-commit-metrics)
+    - [`sync-vscode-config`](#sync-vscode-config)
+    - [`sync-tool-versions`](#sync-tool-versions)
+    - [`check-max-one-sentence-per-line`](#check-max-one-sentence-per-line)
+    - [`check-ownership`](#check-ownership)
+  - [Contributing](#contributing)
 
 <!-- mdformat-toc end -->
 
@@ -202,6 +204,12 @@ sync_versions:
         pattern: target-version\s*=\s*\"py([0-9]+)\"
         version_override: '314'
 ```
+
+### `check-max-one-sentence-per-line`
+
+Check that each line in markdown files contains at most one sentence.
+This makes diffs easier to read and avoids merge conflicts.
+Sentences are split on `.`, `!`, or `?` followed by a space and a capital letter.
 
 ### `check-ownership`
 
