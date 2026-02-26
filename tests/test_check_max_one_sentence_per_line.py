@@ -44,7 +44,7 @@ if TYPE_CHECKING:
             "This is a sentence!\nIs this another?\nYes.",
             id="fixes_sentences_with_different_punctuation",
         ),
-         pytest.param(
+        pytest.param(
             "This is a sentence.  This is another.",
             1,
             "This is a sentence.\nThis is another.",
