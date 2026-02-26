@@ -13,42 +13,22 @@ if TYPE_CHECKING:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = create_default_parser().parse_args(argv)
-    modified = fix_files_with_multiple_sentences_per_line(args.filenames)
-    return 1 if modified else 0
+    changed = fix_files_with_multiple_sentences_per_line(args.filenames)
+    return 1 if changed else 0
 
 
 def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
-    modified = False
+    changed = False
+    pattern = re.compile(r"(?<=[A-Za-z][.?!]) +(?=[A-Z])")
+
     for file in files:
-        lines = file.read_text(errors="ignore").splitlines()
-        new_lines = []
-        file_modified = False
+        new_content, number_of_replacements = pattern.subn("\n", file.read_text())
 
-        for line in lines:
-            if _line_has_multiple_sentences(line):
-                split_lines = _split_sentences(line)
-                new_lines.extend(split_lines)
-                file_modified = True
-            else:
-                new_lines.append(line)
+        if number_of_replacements:
+            file.write_text(new_content)
+            changed = True
 
-        if file_modified:
-            file.write_text("\n".join(new_lines), encoding="utf-8")
-            modified = True
-
-    return modified
-
-
-def _line_has_multiple_sentences(line: str) -> bool:
-    return bool(re.search(r"[A-Za-z][.?!] +[A-Z]", line))
-
-
-def _split_sentences(line: str) -> list[str]:
-    leading_whitespace = line[: len(line) - len(line.lstrip())]
-
-    parts = re.split(r"(?<=[A-Za-z][.?!]) +(?=[A-Z])", line.strip())
-
-    return [leading_whitespace + part if part else part for part in parts]
+    return changed
 
 
 if __name__ == "__main__":
