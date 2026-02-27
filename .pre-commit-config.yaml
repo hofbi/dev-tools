@@ -11,6 +11,7 @@ repos:
       - id: check-hooks-apply
       - id: check-useless-excludes
   - repo: .
+    rev: HEAD
     hooks:
       - id: check-max-one-sentence-per-line
       - id: generate-hook-docs
