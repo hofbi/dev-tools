@@ -7,7 +7,8 @@ This is a collection of Luminar's development tools.
 These tools are used to help developers in their day-to-day tasks.
 
 > [!NOTE]
-> Since I was the main author of these tools while working at Luminar, I am maintaining this fork to keep them up to date. I try to contribute back if possible but since I am no longer working at Luminar, it is not guaranteed that my contributions are accepted.
+> Since I was the main author of these tools while working at Luminar, I am maintaining this fork to keep them up to date.
+I try to contribute back if possible but since I am no longer working at Luminar, it is not guaranteed that my contributions are accepted.
 
 <!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=2 -->
 
@@ -128,7 +129,9 @@ Generate markdown documentation from the hook descriptions in `.pre-commit-hooks
 
 ### `check-number-of-lines-count`
 
-Check that number of lines in scripts do not exceed max-lines. Use `--max-lines=<number>` to set the maximum number of lines. Default is 30 for shell scripts.
+Check that number of lines in scripts do not exceed max-lines.
+Use `--max-lines=<number>` to set the maximum number of lines.
+Default is 30 for shell scripts.
 
 ### `check-shellscript-set-options`
 
@@ -214,8 +217,10 @@ Sentences are split on `.`, `!`, or `?` followed by a space and a capital letter
 
 Check if all folders in the `CODEOWNERS` file exist, there are no duplicates, and it has acceptable codeowners.
 
-What is an acceptable codeowner? We want to make sure that every folder has a codeowner other than the team that should exclusively own the CODEOWNERS file.
-For this, we define a `CODEOWNERS_OWNER` using the `--codeowners-owner` argument. Your `CODEOWNERS` file should look as follows:
+What is an acceptable codeowner?
+We want to make sure that every folder has a codeowner other than the team that should exclusively own the CODEOWNERS file.
+For this, we define a `CODEOWNERS_OWNER` using the `--codeowners-owner` argument.
+Your `CODEOWNERS` file should look as follows:
 
 ```shell
 * CODEOWNERS_OWNER
