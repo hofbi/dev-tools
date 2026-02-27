@@ -41,11 +41,7 @@ repos:
         entry: dev_tools/check_max_one_sentence_per_line.py
         language: python
         types_or:
-          - asciidoc
           - markdown
-          - plain-text
-          - rst
-          - tex
   - repo: https://github.com/pre-commit/pre-commit
     rev: v4.5.1
     hooks:
