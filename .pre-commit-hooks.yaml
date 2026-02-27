@@ -87,7 +87,7 @@
   additional_dependencies: [pre-commit>=4.2.0]
 - id: check-number-of-lines-count
   name: Check Number of Lines
-  description: Check that number of lines in scripts do not exceed max-lines. Use `--max-lines=<number>` to set the maximum number of lines. Default is 50 for shell scripts.
+  description: Check that number of lines in scripts do not exceed max-lines.\nUse `--max-lines=<number>` to set the maximum number of lines.\nDefault is 50 for shell scripts.
   entry: check-number-of-lines-count
   language: python
   types_or:
@@ -221,8 +221,10 @@
   description: |
     Check if all folders in the `CODEOWNERS` file exist, there are no duplicates, and it has acceptable codeowners.
 
-    What is an acceptable codeowner? We want to make sure that every folder has a codeowner other than the team that should exclusively own the CODEOWNERS file.
-    For this, we define a `CODEOWNERS_OWNER` using the `--codeowners-owner` argument. Your `CODEOWNERS` file should look as follows:
+    What is an acceptable codeowner?
+    We want to make sure that every folder has a codeowner other than the team that should exclusively own the CODEOWNERS file.
+    For this, we define a `CODEOWNERS_OWNER` using the `--codeowners-owner` argument.
+    Your `CODEOWNERS` file should look as follows:
 
     ```shell
     * CODEOWNERS_OWNER
