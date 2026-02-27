@@ -127,7 +127,7 @@ Generate markdown documentation from the hook descriptions in `.pre-commit-hooks
 
 ### `check-number-of-lines-count`
 
-Check that number of lines in scripts do not exceed max-lines. Use `--max-lines=<number>` to set the maximum number of lines. Default is 30 for shell scripts.
+Check that number of lines in scripts do not exceed max-lines. Use `--max-lines=<number>` to set the maximum number of lines. Default is 50 for shell scripts.
 
 ### `check-shellscript-set-options`
 

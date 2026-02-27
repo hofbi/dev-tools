@@ -87,12 +87,12 @@
   additional_dependencies: [pre-commit>=4.2.0]
 - id: check-number-of-lines-count
   name: Check Number of Lines
-  description: Check that number of lines in scripts do not exceed max-lines. Use `--max-lines=<number>` to set the maximum number of lines. Default is 30 for shell scripts.
+  description: Check that number of lines in scripts do not exceed max-lines. Use `--max-lines=<number>` to set the maximum number of lines. Default is 50 for shell scripts.
   entry: check-number-of-lines-count
   language: python
   types_or:
     - shell
-  args: [--max-lines=30]
+  args: [--max-lines=50]
 - id: check-shellscript-set-options
   name: Check 'set' options
   description: Check if options are set with `set -euxo pipefail`. Use `# nolint(set_options)` to ignore this check.
