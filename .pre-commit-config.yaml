@@ -38,7 +38,7 @@ repos:
           - pyjson5>=1.6.8
       - id: check-max-one-sentence-per-line
         name: Check max one sentence per line
-        entry: dev_tools/check_max_one_sentence_per_line.py
+        entry: check-max-one-sentence-per-line
         language: python
         types_or:
           - markdown
