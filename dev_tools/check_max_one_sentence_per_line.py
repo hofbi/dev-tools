@@ -19,7 +19,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
     pattern = re.compile(r"(?<=[A-Za-z][.?!]) +(?=[A-Z])")
-    return any(fix_file_with_multiple_sentences_per_line(file, pattern) for file in files)
+    return any([fix_file_with_multiple_sentences_per_line(file, pattern) for file in files])  #noqa: C419 - avoid short-circuiting to ensure all files are processed
 
 
 def fix_file_with_multiple_sentences_per_line(file: Path, pattern: re.Pattern[str]) -> bool:
