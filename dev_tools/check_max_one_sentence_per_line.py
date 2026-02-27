@@ -4,7 +4,7 @@ import re
 import sys
 from typing import TYPE_CHECKING
 
-from dev_tools.git_hook_utils import create_default_parser
+from dev_tools.git_hook_utils import parse_arguments
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    args = create_default_parser().parse_args(argv)
+    args = parse_arguments(argv)
     changed = fix_files_with_multiple_sentences_per_line(args.filenames)
     return 1 if changed else 0
 
