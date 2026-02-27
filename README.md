@@ -7,36 +7,36 @@ This is a collection of Luminar's development tools.
 These tools are used to help developers in their day-to-day tasks.
 
 > [!NOTE]
-> Since I was the main author of these tools while working at Luminar, I am maintaining this fork to keep them up to date.
-> I try to contribute back if possible but since I am no longer working at Luminar, it is not guaranteed that my contributions are accepted.
+> Since I was the main author of these tools while working at Luminar, I am maintaining this fork to keep them up to date. I try to contribute back if possible but since I am no longer working at Luminar, it is not guaranteed that my contributions are accepted.
 
 <!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=2 -->
 
-- [Tools](#tools)
-  - [Configure VS Code for Bazel](#configure-vs-code-for-bazel)
-  - [Whoowns](#whoowns)
-- [Hooks](#hooks)
-  - [`check-build-file-without-extensions`](#check-build-file-without-extensions)
-  - [`check-snake-case`](#check-snake-case)
-  - [`check-cpp-and-cu-unit-test-naming-pattern`](#check-cpp-and-cu-unit-test-naming-pattern)
-  - [`check-no-dashes`](#check-no-dashes)
-  - [`check-sys-path-append`](#check-sys-path-append)
-  - [`check-sys-path-insert`](#check-sys-path-insert)
-  - [`go-fmt`](#go-fmt)
-  - [`go-imports`](#go-imports)
-  - [`go-revive`](#go-revive)
-  - [`generate-hook-docs`](#generate-hook-docs)
-  - [`check-number-of-lines-count`](#check-number-of-lines-count)
-  - [`check-shellscript-set-options`](#check-shellscript-set-options)
-  - [`check-jira-reference-in-todo`](#check-jira-reference-in-todo)
-  - [`check-load-statement`](#check-load-statement)
-  - [`check-non-existing-and-duplicate-excludes`](#check-non-existing-and-duplicate-excludes)
-  - [`print-pre-commit-metrics`](#print-pre-commit-metrics)
-  - [`sync-vscode-config`](#sync-vscode-config)
-  - [`sync-tool-versions`](#sync-tool-versions)
-  - [`check-max-one-sentence-per-line`](#check-max-one-sentence-per-line)
-  - [`check-ownership`](#check-ownership)
-- [Contributing](#contributing)
+- [Dev Tools](#dev-tools)
+  - [Tools](#tools)
+    - [Configure VS Code for Bazel](#configure-vs-code-for-bazel)
+    - [Whoowns](#whoowns)
+  - [Hooks](#hooks)
+    - [`check-build-file-without-extensions`](#check-build-file-without-extensions)
+    - [`check-snake-case`](#check-snake-case)
+    - [`check-cpp-and-cu-unit-test-naming-pattern`](#check-cpp-and-cu-unit-test-naming-pattern)
+    - [`check-no-dashes`](#check-no-dashes)
+    - [`check-sys-path-append`](#check-sys-path-append)
+    - [`check-sys-path-insert`](#check-sys-path-insert)
+    - [`go-fmt`](#go-fmt)
+    - [`go-imports`](#go-imports)
+    - [`go-revive`](#go-revive)
+    - [`generate-hook-docs`](#generate-hook-docs)
+    - [`check-number-of-lines-count`](#check-number-of-lines-count)
+    - [`check-shellscript-set-options`](#check-shellscript-set-options)
+    - [`check-jira-reference-in-todo`](#check-jira-reference-in-todo)
+    - [`check-load-statement`](#check-load-statement)
+    - [`check-non-existing-and-duplicate-excludes`](#check-non-existing-and-duplicate-excludes)
+    - [`print-pre-commit-metrics`](#print-pre-commit-metrics)
+    - [`sync-vscode-config`](#sync-vscode-config)
+    - [`sync-tool-versions`](#sync-tool-versions)
+    - [`check-max-one-sentence-per-line`](#check-max-one-sentence-per-line)
+    - [`check-ownership`](#check-ownership)
+  - [Contributing](#contributing)
 
 <!-- mdformat-toc end -->
 
@@ -129,9 +129,7 @@ Generate markdown documentation from the hook descriptions in `.pre-commit-hooks
 
 ### `check-number-of-lines-count`
 
-Check that number of lines in scripts do not exceed max-lines.
-Use `--max-lines=<number>` to set the maximum number of lines.
-Default is 50 for shell scripts.
+Check that number of lines in scripts do not exceed max-lines. Use `--max-lines=<number>` to set the maximum number of lines. Default is 50 for shell scripts.
 
 ### `check-shellscript-set-options`
 
@@ -217,10 +215,8 @@ Sentences are split on `.`, `!`, or `?` followed by a space and a capital letter
 
 Check if all folders in the `CODEOWNERS` file exist, there are no duplicates, and it has acceptable codeowners.
 
-What is an acceptable codeowner?
-We want to make sure that every folder has a codeowner other than the team that should exclusively own the CODEOWNERS file.
-For this, we define a `CODEOWNERS_OWNER` using the `--codeowners-owner` argument.
-Your `CODEOWNERS` file should look as follows:
+What is an acceptable codeowner? We want to make sure that every folder has a codeowner other than the team that should exclusively own the CODEOWNERS file.
+For this, we define a `CODEOWNERS_OWNER` using the `--codeowners-owner` argument. Your `CODEOWNERS` file should look as follows:
 
 ```shell
 * CODEOWNERS_OWNER

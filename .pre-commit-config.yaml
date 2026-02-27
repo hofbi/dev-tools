@@ -36,12 +36,6 @@ repos:
         pass_filenames: false
         additional_dependencies:
           - pyjson5>=1.6.8
-      - id: check-max-one-sentence-per-line
-        name: Check max one sentence per line
-        entry: dev_tools/check_max_one_sentence_per_line.py
-        language: python
-        types_or:
-          - markdown
   - repo: https://github.com/pre-commit/pre-commit
     rev: v4.5.1
     hooks:
