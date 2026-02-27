@@ -1,20 +1,26 @@
+#!/usr/bin/env python3
 from __future__ import annotations
 
 import re
 import sys
+from argparse import ArgumentParser
+from pathlib import Path
 from typing import TYPE_CHECKING
-
-from dev_tools.git_hook_utils import create_default_parser
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
-    from pathlib import Path
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = create_default_parser().parse_args(argv)
     changed = fix_files_with_multiple_sentences_per_line(args.filenames)
     return 1 if changed else 0
+
+
+def create_default_parser() -> ArgumentParser:
+    parser = ArgumentParser()
+    parser.add_argument("filenames", nargs="*", type=Path)
+    return parser
 
 
 def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
