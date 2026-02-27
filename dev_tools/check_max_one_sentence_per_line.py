@@ -19,18 +19,18 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
     pattern = re.compile(r"(?<=[A-Za-z][.?!]) +(?=[A-Z])")
-    return any([fix_file_with_multiple_sentences_per_line(file, pattern) for file in files])
+    return any(fix_file_with_multiple_sentences_per_line(file, pattern) for file in files)
 
 
 def fix_file_with_multiple_sentences_per_line(file: Path, pattern: re.Pattern[str]) -> bool:
     old_content = file.read_text()
-    new_content = pattern.sub("\n", old_content)
 
-    if new_content != old_content:
+    if (new_content := pattern.sub("\n", old_content)) != old_content:
         file.write_text(new_content)
         return True
 
     return False
+
 
 if __name__ == "__main__":
     sys.exit(main())
