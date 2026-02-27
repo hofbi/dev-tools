@@ -202,6 +202,20 @@
   pass_filenames: false
   always_run: true
   additional_dependencies: [pre-commit>=4.2.0]
+- id: check-max-one-sentence-per-line
+  name: Check max one sentence per line
+  description: |-
+    Check that each line in markdown files contains at most one sentence.
+    This makes diffs easier to read and avoids merge conflicts.
+    Sentences are split on `.`, `!`, or `?` followed by a space and a capital letter.
+  entry: check-max-one-sentence-per-line
+  language: python
+  types_or:
+    - asciidoc
+    - markdown
+    - plain-text
+    - rst
+    - tex
 - id: check-ownership
   name: Check `.github/CODEOWNERS` consistency (can take a while)
   description: |

@@ -33,6 +33,7 @@ These tools are used to help developers in their day-to-day tasks.
   - [`print-pre-commit-metrics`](#print-pre-commit-metrics)
   - [`sync-vscode-config`](#sync-vscode-config)
   - [`sync-tool-versions`](#sync-tool-versions)
+  - [`check-max-one-sentence-per-line`](#check-max-one-sentence-per-line)
   - [`check-ownership`](#check-ownership)
 - [Contributing](#contributing)
 
@@ -202,6 +203,12 @@ sync_versions:
         pattern: target-version\s*=\s*\"py([0-9]+)\"
         version_override: '314'
 ```
+
+### `check-max-one-sentence-per-line`
+
+Check that each line in markdown files contains at most one sentence.
+This makes diffs easier to read and avoids merge conflicts.
+Sentences are split on `.`, `!`, or `?` followed by a space and a capital letter.
 
 ### `check-ownership`
 

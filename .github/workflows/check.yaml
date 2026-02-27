@@ -40,6 +40,6 @@ jobs:
         with:
           python-version: "3.14"
       - name: Run pre-commit try repo
-        run: SKIP=check-jira-reference-in-todo,check-ownership,go-revive,go-fmt,go-imports uvx pre-commit try-repo . --all-files --verbose
+        run: SKIP=check-max-one-sentence-per-line,check-jira-reference-in-todo,check-ownership,go-revive,go-fmt,go-imports uvx pre-commit try-repo . --all-files --verbose
       - name: Run prek try repo
-        run: SKIP=check-jira-reference-in-todo,check-ownership,go-revive,go-fmt,go-imports uvx pre-commit try-repo . --all-files --verbose
+        run: SKIP=check-max-one-sentence-per-line,check-jira-reference-in-todo,check-ownership,go-revive,go-fmt,go-imports uvx pre-commit try-repo . --all-files --verbose
