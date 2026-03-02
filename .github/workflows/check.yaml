@@ -38,7 +38,7 @@ jobs:
       matrix:
         tool:
           - pre-commit
-          # - prek
+          - prek
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Install uv and set the Python version
@@ -46,4 +46,4 @@ jobs:
         with:
           python-version: "3.14"
       - name: Run ${{ matrix.tool }} try repo
-        run: SKIP=check-max-one-sentence-per-line,check-jira-reference-in-todo,check-ownership,go-revive,go-fmt,go-imports uvx ${{ matrix.tool }} try-repo . --all-files --verbose
+        run: SKIP=check-max-one-sentence-per-line,check-jira-reference-in-todo,check-ownership,go-revive,go-fmt,go-imports uvx ${{ matrix.tool }} try-repo "$PWD" --all-files --verbose
