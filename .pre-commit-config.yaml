@@ -14,7 +14,7 @@ repos:
     hooks:
       - id: generate-hook-docs
         name: generate hook docs
-        description: Generate markdown documentation for pre-commit hooks in README.md
+        description: See .pre-commit-hooks.yaml
         entry: dev_tools/generate_hook_docs.py
         language: python
         pass_filenames: false
@@ -23,7 +23,7 @@ repos:
           - pre-commit>=4.2.0
       - id: sync-vscode-config
         name: Sync VSCode Config
-        description: Sync settings and extensions from devcontainer.json to json files in .vscode folder
+        description: See .pre-commit-hooks.yaml
         entry: dev_tools/sync_vscode_config.py
         language: python
         args: [--verbose]
