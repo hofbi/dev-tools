@@ -127,6 +127,7 @@
   language: python
   exclude_types:
     - svg
+  exclude: ".pre-commit-config.yaml"
 - id: check-load-statement
   name: Check that a rule is loaded from a specific rule set
   description: |-
