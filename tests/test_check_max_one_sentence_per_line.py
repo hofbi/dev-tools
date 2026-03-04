@@ -62,6 +62,24 @@ if TYPE_CHECKING:
             1,
             id="does_split_sentences_with_abbreviations_followed_by_a_space_and_capital_letter",
         ),
+        pytest.param(
+            "A) ... B) ... C) ...",
+            "A) ... B) ... C) ...",
+            0,
+            id="does_not_split_sentences_with_enumeration_like_formatting",
+        ),
+        pytest.param(
+            "```\nThis is an unspecified code block. It should not be split.\n```\n",
+            "```\nThis is an unspecified code block. It should not be split.\n```\n",
+            0,
+            id="does_not_split_code_blocks",
+        ),
+        pytest.param(
+            "```python3\nprint('Hello')  #This is python3 a code block. It should not be split.\n```\n",
+            "```python3\nprint('Hello')  #This is python3 a code block. It should not be split.\n```\n",
+            0,
+            id="does_not_split_python3_code_blocks",
+        )
     ],
 )
 def test_main(
