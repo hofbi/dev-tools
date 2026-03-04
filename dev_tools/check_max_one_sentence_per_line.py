@@ -34,9 +34,8 @@ def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
 def fix_file_with_multiple_sentences_per_line(file: Path, pattern: re.Pattern[str], replacement_function: callable[[re.Match[str]], str]) -> bool:
     old_content = file.read_text()
 
-    new_content = pattern.sub(replacement_function, old_content)
 
-    if new_content != old_content:
+    if (new_content := pattern.sub(replacement_function, old_content)) != old_content:
         file.write_text(new_content)
         return True
 
