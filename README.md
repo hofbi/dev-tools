@@ -213,7 +213,7 @@ Check that each line in markdown files contains at most one sentence.
 This makes diffs easier to read and avoids merge conflicts.
 Sentences are split on `.`, `!`, or `?` followed by a space and a capital letter.
 
-This hook doesn't respect surrounding indentation, so be sure to combine it with <https://github.com/hukkin/mdformat> or a similar markdown formatter that fixes indentation.
+This hook doesn't respect surrounding indentation, so be sure to combine it with <https://github.com/hukkin/mdformat> or a similar formatter that fixes indentation.
 
 ### `check-ownership`
 
