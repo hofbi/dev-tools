@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from dev_tools.git_hook_utils import parse_arguments
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Callable, Sequence
     from pathlib import Path
 
 
@@ -34,7 +34,7 @@ def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
 
 
 def fix_file_with_multiple_sentences_per_line(
-    file: Path, pattern: re.Pattern[str], replacement_function: callable[[re.Match[str]], str]
+    file: Path, pattern: re.Pattern[str], replacement_function: Callable[[re.Match[str]], str]
 ) -> bool:
     old_content = file.read_text()
 
