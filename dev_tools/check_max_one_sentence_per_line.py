@@ -27,13 +27,16 @@ def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
         # Otherwise, it's a sentence boundary - replace with newline
         return "\n"
 
-    files_changed_state = [fix_file_with_multiple_sentences_per_line(file, pattern, replacement_function) for file in files]
+    files_changed_state = [
+        fix_file_with_multiple_sentences_per_line(file, pattern, replacement_function) for file in files
+    ]
     return any(files_changed_state)
 
 
-def fix_file_with_multiple_sentences_per_line(file: Path, pattern: re.Pattern[str], replacement_function: callable[[re.Match[str]], str]) -> bool:
+def fix_file_with_multiple_sentences_per_line(
+    file: Path, pattern: re.Pattern[str], replacement_function: callable[[re.Match[str]], str]
+) -> bool:
     old_content = file.read_text()
-
 
     if (new_content := pattern.sub(replacement_function, old_content)) != old_content:
         file.write_text(new_content)

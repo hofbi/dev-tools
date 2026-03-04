@@ -79,7 +79,7 @@ if TYPE_CHECKING:
             "```python3\nprint('Hello')  #This is python3 a code block. It should not be split.\n```\n",
             0,
             id="does_not_split_python3_code_blocks",
-        )
+        ),
     ],
 )
 def test_main(
