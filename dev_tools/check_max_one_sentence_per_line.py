@@ -1,14 +1,17 @@
 from __future__ import annotations
 
-import re
 import sys
 from typing import TYPE_CHECKING
+
+import regex
 
 from dev_tools.git_hook_utils import parse_arguments
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
     from pathlib import Path
+
+COMMON_ABBREVIATIONS = {"Dr", "Mr", "Mrs", "Ms", "feat", "vs", "etc", "Prof", "Sr", "Jr"}
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -18,9 +21,13 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 
 def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
-    pattern = re.compile(r"(```.*?```)|(?<=[A-Za-z][.?!]) +(?=[A-Z])", re.DOTALL)
+    code_block_pattern = r"```.*?```"
+    abbreviations_pattern = "|".join(COMMON_ABBREVIATIONS)
+    pattern = regex.compile(
+        rf"({code_block_pattern})|(?<!(?:{abbreviations_pattern})\.)(?<=[A-Za-z][.?!]) +(?=[A-Z])", regex.DOTALL
+    )
 
-    def replacement_function(match: re.Match[str]) -> str:
+    def replacement_function(match: regex.Match[str]) -> str:
         # If code block matched (group 1), return it unchanged
         if match.group(1):
             return match.group(1)
@@ -34,7 +41,7 @@ def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
 
 
 def fix_file_with_multiple_sentences_per_line(
-    file: Path, pattern: re.Pattern[str], replacement_function: Callable[[re.Match[str]], str]
+    file: Path, pattern: regex.Pattern[str], replacement_function: Callable[[regex.Match[str]], str]
 ) -> bool:
     old_content = file.read_text()
 
