@@ -30,7 +30,7 @@ def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
     def replacement_function(match: regex.Match[str]) -> str:
         # If code block matched (group 1), return it unchanged
         if match.group(1):
-            return match.group(1)
+            return str(match.group(1))
         # Otherwise, it's a sentence boundary - replace with newline
         return "\n"
 
