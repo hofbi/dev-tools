@@ -57,8 +57,8 @@ if TYPE_CHECKING:
             id="does_not_split_sentences_with_predefined_abbreviations",
         ),
         pytest.param(
-            "Do not split abbreviations followed by a space and a capital letter such as Dr. Hyde or feat. Mr. Smith.",
-            "Do not split abbreviations followed by a space and a capital letter such as Dr. Hyde or feat. Mr. Smith.",
+            "Do not split abbreviations followed by a space and a capital letter e.g. Dr. Hyde or feat. Mr. Smith.",
+            "Do not split abbreviations followed by a space and a capital letter e.g. Dr. Hyde or feat. Mr. Smith.",
             0,
             id="does_not_split_sentences_with_common_abbreviations_followed_by_a_space_and_capital_letter",
         ),

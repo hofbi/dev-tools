@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
     from pathlib import Path
 
-COMMON_ABBREVIATIONS = {"Dr", "Mr", "Mrs", "Ms", "feat", "vs", "etc", "Prof", "Sr", "Jr"}
+COMMON_ABBREVIATIONS = {"Dr", "Mr", "Mrs", "Ms", "feat", "vs", "etc", "Prof", "Sr", "Jr", "i.e", "e.g"}
 
 
 def main(argv: Sequence[str] | None = None) -> int:
