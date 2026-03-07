@@ -14,16 +14,16 @@ if TYPE_CHECKING:
 COMMON_ABBREVIATIONS = {
     # keep-sorted start
     "Dr",
-    "e.g",
-    "etc",
-    "feat",
-    "i.e",
     "Jr",
     "Mr",
     "Mrs",
     "Ms",
     "Prof",
     "Sr",
+    "e.g",
+    "etc",
+    "feat",
+    "i.e",
     "vs",
     # keep-sorted end
 }
