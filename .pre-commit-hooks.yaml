@@ -237,6 +237,8 @@
 
     This hook doesn't respect surrounding indentation, so be sure to combine it with <https://github.com/hukkin/mdformat> or a similar formatter that fixes indentation.
   entry: check-max-one-sentence-per-line
+  additional_dependencies:
+    - regex>=2026.2.28
   language: python
   types_or:
     - asciidoc
