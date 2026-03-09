@@ -85,7 +85,7 @@ if TYPE_CHECKING:
             "| Two sentencens. In a table cell. |",
             0,
             id="does_not_split_sentences_in_table_cells",
-        )
+        ),
     ],
 )
 def test_main(
