@@ -40,7 +40,7 @@ def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
     table_cell_pattern = r"\|[^\n]*\|"
     abbreviations_pattern = "|".join(COMMON_ABBREVIATIONS)
     pattern = regex.compile(
-        rf"({code_block_pattern})|({table_cell_pattern})|(?<!(?:{abbreviations_pattern})\.)(?<=[A-Za-z][.?!]) +(?=[A-Z])",
+        rf"({code_block_pattern})|({table_cell_pattern})|(?<!(?:{abbreviations_pattern})\.)(?<=[A-Za-z\)][.?!]) +(?=[A-Z])",
         regex.DOTALL,
     )
 
