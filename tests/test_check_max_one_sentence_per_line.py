@@ -81,6 +81,12 @@ if TYPE_CHECKING:
             id="does_not_split_python3_code_blocks",
         ),
         pytest.param(
+            "Sentence ends with a [link](www.github.com). Another sentence.",
+            "Sentence ends with a [link](www.github.com).\nAnother sentence.",
+            1,
+            id="splits_sentences_after_closing_bracket",
+        ),
+        pytest.param(
             "| Two sentencens. In a table cell. |",
             "| Two sentencens. In a table cell. |",
             0,
