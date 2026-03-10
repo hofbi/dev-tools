@@ -92,6 +92,12 @@ if TYPE_CHECKING:
             1,
             id="splits_sentences_between_tables",
         ),
+        pytest.param(
+            "```python\nprint('Hello. World.')\n```\nSome text. More text.\n```cpp\nstd::cout << 'Hello. There.';\n```\n",
+            "```python\nprint('Hello. World.')\n```\nSome text.\nMore text.\n```cpp\nstd::cout << 'Hello. There.';\n```\n",
+            1,
+            id="splits_sentences_between_code_blocks",
+        )
     ],
 )
 def test_main(
