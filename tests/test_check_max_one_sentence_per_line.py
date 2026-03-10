@@ -80,6 +80,12 @@ if TYPE_CHECKING:
             0,
             id="does_not_split_python3_code_blocks",
         ),
+        pytest.param(
+            "| Two sentencens. In a table cell. |",
+            "| Two sentencens. In a table cell. |",
+            0,
+            id="does_not_split_sentences_in_table_cells",
+        ),
     ],
 )
 def test_main(
