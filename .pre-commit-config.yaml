@@ -144,7 +144,7 @@ repos:
         args:
           - --py310-plus
   - repo: https://github.com/PyCQA/docformatter
-    rev: v1.7.7
+    rev: d9ace1fdef5d2c164ee7284fa07a63f8ead48682
     hooks:
       - id: docformatter
         args:
