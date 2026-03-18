@@ -28,6 +28,12 @@ COMMON_ABBREVIATIONS = {
     # keep-sorted end
 }
 
+COMMON_ABBREVIATION_REGEXES = {
+    # keep-sorted start
+    r"Dr\.-[A-Za-z][A-Za-z-]{0,20}",
+    # keep-sorted end
+}
+
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_arguments(argv)
@@ -38,7 +44,12 @@ def main(argv: Sequence[str] | None = None) -> int:
 def fix_files_with_multiple_sentences_per_line(files: list[Path]) -> bool:
     code_block_pattern = r"```.*?```"
     table_cell_pattern = r"\|[^\n]*\|"
-    abbreviations_pattern = "|".join(COMMON_ABBREVIATIONS)
+    abbreviations_pattern = "|".join(
+        [
+            *(regex.escape(abbreviation) for abbreviation in COMMON_ABBREVIATIONS),
+            *COMMON_ABBREVIATION_REGEXES,
+        ]
+    )
     pattern = regex.compile(
         rf"({code_block_pattern})|({table_cell_pattern})|(?<!(?:{abbreviations_pattern})\.)(?<=[A-Za-z\)][.?!]) +(?=[A-Z])",
         regex.DOTALL,

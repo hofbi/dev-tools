@@ -63,6 +63,12 @@ if TYPE_CHECKING:
             id="does_not_split_sentences_with_common_abbreviations_followed_by_a_space_and_capital_letter",
         ),
         pytest.param(
+            "Do not split Dr.-Ing. Smith or Dr.-phil. Doe or similar abbreviations with multiple parts.",
+            "Do not split Dr.-Ing. Smith or Dr.-phil. Doe or similar abbreviations with multiple parts.",
+            0,
+            id="does_not_split_doctoral_titles",
+        ),
+        pytest.param(
             "A) ... B) ... C) ...",
             "A) ... B) ... C) ...",
             0,
