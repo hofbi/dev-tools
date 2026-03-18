@@ -137,12 +137,10 @@ def test_check_for_files_without_team_ownership__only_codeowners_owned_by_codeow
 
     fs.create_file(
         codeowners,
-        contents=\
-                 """
+        contents="""
 /.github @myorg/bar
 /.github/CODEOWNERS @myorg/codeowners-owner
-"""
-   ,
+""",
     )
     fs.create_file(foo_file)
 
@@ -169,13 +167,12 @@ def test_check_for_files_without_team_ownership__file_owned_by_codeowners_owner_
 ) -> None:
     foo_file = repo_dir / ".github" / "foo"
     monkeypatch.setattr("dev_tools.check_ownership.get_git_tracked_files", lambda _: [codeowners, foo_file])
+
     fs.create_file(
         codeowners,
-        contents=\
-                 """
+        contents="""
 * @myorg/codeowners-owner
-"""
-   ,
+""",
     )
     fs.create_file(foo_file)
 
@@ -192,11 +189,9 @@ def test_check_for_files_without_team_ownership__codeowners_changes_but_not_the_
     monkeypatch.setattr("dev_tools.check_ownership.get_git_tracked_files", lambda _: [codeowners, foo_file])
     fs.create_file(
         codeowners,
-        contents=\
-                 """
+        contents="""
 * @myorg/codeowners-owner
-"""
-   ,
+""",
     )
     fs.create_file(foo_file)
     assert (
@@ -234,11 +229,9 @@ def test__perform_all_codeowners_checks__for_single_problem__should_fail_with_er
 ) -> None:
     fs.create_file(
         codeowners,
-        contents=\
-                 """
+        contents="""
 "/test_*.c @myorg/test-team"
-        """
-           ,
+        """,
     )
     fs.create_file(repo_dir / "src/test_a.c")
 
@@ -253,13 +246,11 @@ def test__perform_all_codeowners_checks__for_multiple_problems__should_fail_with
 ) -> None:
     fs.create_file(
         codeowners,
-        contents=\
-                 """
+        contents="""
 /.gitlab-ci.yml @myorg/bar
 /.gitlab-ci.yml @myorg/anotherteam
 /.gitlab-ci.yml/was_actually_a_folder @myorg/anotherteam
-        """
-           ,
+        """,
     )
 
     return_code = perform_all_codeowners_checks(repo_dir)

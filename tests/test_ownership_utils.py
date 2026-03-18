@@ -121,10 +121,8 @@ def testis_file_covered_by_pattern__full_path_matches(fs: FakeFilesystem) -> Non
 def test_github_ownership_is_file_owned_by(fs: FakeFilesystem) -> None:
     repo_dir = _create_repo_path_with_codeowners_file(
         fs,
-        codeowners_content=\
-                           """/foo.txt devs
-/docs/ devs management"""
-                         ,
+        codeowners_content="""/foo.txt devs
+/docs/ devs management""",
     )
     unit = GithubOwnerShip(repo_dir)
     assert unit.is_owned_by(repo_dir / "foo.txt", "devs")
@@ -136,10 +134,8 @@ def test_github_ownership_is_file_owned_by(fs: FakeFilesystem) -> None:
 def test_github_ownership_get_owners(fs: FakeFilesystem) -> None:
     repo_dir = _create_repo_path_with_codeowners_file(
         fs,
-        codeowners_content=\
-                           """/src/ devs
-/docs/ devs management"""
-                         ,
+        codeowners_content="""/src/ devs
+/docs/ devs management""",
     )
     unit = GithubOwnerShip(repo_dir)
     assert unit.get_owners(repo_dir / "src") == ("devs",)
@@ -155,10 +151,8 @@ def test_github_ownership_get_owners__second_overwrites_first__should_be_differe
 ) -> None:
     repo_dir = _create_repo_path_with_codeowners_file(
         fs,
-        codeowners_content=\
-                           """/foo/bar bar-owner
-/foo/bar/package package-owner"""
-                                 ,
+        codeowners_content="""/foo/bar bar-owner
+/foo/bar/package package-owner""",
     )
     unit = GithubOwnerShip(repo_dir)
     assert unit.get_owners(repo_dir / "foo" / "bar") == ("bar-owner",)
@@ -170,11 +164,9 @@ def test_get_ownership_entries_should_be_parsed_correctly(fs: FakeFilesystem) ->
     codeowners = Path("CODEOWNERS")
     fs.create_file(
         codeowners,
-        contents=\
-                 """/src/ devs
+        contents="""/src/ devs
 /docs/ devs management
-# comment ignore"""
-                   ,
+# comment ignore""",
     )
 
     result = list(get_ownership_entries(codeowners))
