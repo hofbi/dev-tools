@@ -41,12 +41,6 @@ sync-vscode-config = "dev_tools.sync_vscode_config:main"
 sync-tool-versions = "dev_tools.sync_tool_versions:main"
 whoowns = "dev_tools.find_owner:main"
 
-[tool.docformatter]
-in-place = true
-recursive = true
-wrap-summaries = 88
-wrap-descriptions = 81
-
 [tool.mypy]
 check_untyped_defs = true
 disallow_incomplete_defs = true
