@@ -18,7 +18,8 @@ from dev_tools.sync_vscode_config import (
 
 @pytest.fixture
 def simple_devcontainer_json() -> str:
-    return """
+    return\
+           """
 {
   "name": "a devcontainer",
   "customizations": {
@@ -63,7 +64,8 @@ def test__load_devcontainer_config__loads_settings(fs: FakeFilesystem, simple_de
 
 def test__load_devcontainer_config__loads_json_with_comments(fs: FakeFilesystem) -> None:  # noqa: ARG001
     devcontainer_json_path = Path("devcontainer.json")
-    devcontainer_json_path.write_text("""
+    devcontainer_json_path.write_text(\
+                                      """
 {
   // This is a comment
   "customizations": {
@@ -73,7 +75,8 @@ def test__load_devcontainer_config__loads_json_with_comments(fs: FakeFilesystem)
     }
   }
 }
-""")
+"""
+   )
     read_config = load_devcontainer_config(devcontainer_json_path)
     assert "extensions" in read_config
 
