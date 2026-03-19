@@ -77,19 +77,24 @@ ignore = [
   "A00",
   "ANN001",
   "COM812",
-  "D",
+  "D102",  # In our opinion overkill
+  "D103",
+  "D203",  # Conflicts with ruff-format, incpompatible with D211
+  "D212", # Incompatible with D213
   "E501", # Line length is the task of the formatter
   "FA100",
   "ISC001", # Conflicts with formatter
   "LOG015",
-  "S101",
   "S603",
   "T201"
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = [
-  "PLR2004" # Magic values in tests are ok since they are often the expected values
+  "ANN201", # don't require -> None for every test. Accept non-enforcement for test helper functions
+  "D100", # don't require docstrings
+  "PLR2004", # Magic values in tests are ok since they are often the expected values
+  "S101" # allow assertions in tests
 ]
 
 [tool.vulture]

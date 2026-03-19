@@ -1,5 +1,6 @@
 # Copyright (c) Luminar Technologies, Inc. All rights reserved.
 # Licensed under the MIT License.
+"""Synchronize VS Code settings from a devcontainer configuration."""
 
 from __future__ import annotations
 
@@ -21,6 +22,8 @@ DEFAULT_INDENT = 4
 
 @dataclass
 class DictOverwriteRecord:
+    """Record an overwrite of a dictionary value, storing both old and new values."""
+
     key: str
     old_value: Any
     new_value: Any

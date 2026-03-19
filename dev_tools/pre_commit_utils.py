@@ -1,3 +1,5 @@
+"""Utilities for loading and inspecting pre-commit hook manifests."""
+
 from __future__ import annotations
 
 from pathlib import Path

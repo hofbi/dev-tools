@@ -1,5 +1,6 @@
 # Copyright (c) Luminar Technologies, Inc. All rights reserved.
 # Licensed under the MIT License.
+"""Utilities for parsing and querying CODEOWNERS ownership rules."""
 
 from __future__ import annotations
 
@@ -14,14 +15,20 @@ if TYPE_CHECKING:
 
 
 class OwnerShipEntry:
+    """Represent a single entry in a CODEOWNERS file."""
+
     def __init__(self, pattern: str, owners: tuple[str, ...], line_number: int) -> None:
+        """Initialize with pattern, owners, and the source line number."""
         self.pattern: str = pattern
         self.owners: tuple[str, ...] = owners
         self.line_number: int = line_number
 
 
 class GithubOwnerShip:
+    """Query GitHub CODEOWNERS rules for a repository."""
+
     def __init__(self, repo_dir: Path) -> None:
+        """Initialize by parsing the CODEOWNERS file in the given repository."""
         self._ownerships = parse_ownership(repo_dir / ".github" / "CODEOWNERS")
         self._repo_dir = repo_dir
         self._cached_regex = CachedRegex()
@@ -52,8 +59,11 @@ class GithubOwnerShip:
         return path[prefix_length] == "/"
 
     def is_file_covered_by_pattern(self, filepath_in_repo: Path, pattern: str) -> bool:
-        """Implements the complete featureset demonstrated at https://docs.github.com/en/repositories/managing-your-
-        repositorys-settings-and-features/customizing-your-repository/about-code-owners#example-of-a-codeowners-file."""
+        """
+        Implement the GitHub CODEOWNERS pattern matching featureset.
+
+        See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#example-of-a-codeowners-file
+        """
         filepath_string = str(filepath_in_repo)
         if "*" in pattern:
             return self._match_pattern_with_asterisks(filepath_string, filepath_in_repo.name, pattern)
@@ -74,12 +84,14 @@ class GithubOwnerShip:
 
 
 class CachedRegex:
-    """A wrapper around re.match to compile and cache regex patterns.
+    """
+    A wrapper around re.match to compile and cache regex patterns.
 
     It has unlimited size.
     """
 
     def __init__(self) -> None:
+        """Initialize with an empty regex cache."""
         self._cache: dict[str, re.Pattern[str]] = {}
 
     def match(self, needle: str, haystack: str, flags: int = 0) -> re.Match | None:
@@ -89,7 +101,8 @@ class CachedRegex:
 
 
 def parse_ownership(codeowners_file: Path) -> tuple[OwnerShipEntry, ...]:
-    """Return ownership in reverse order.
+    """
+    Return ownership in reverse order.
 
     Order is important. Last matching pattern in CODEOWNERS takes the most
     precedence.

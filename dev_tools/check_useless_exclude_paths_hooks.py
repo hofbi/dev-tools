@@ -1,5 +1,6 @@
 # Copyright (c) Luminar Technologies, Inc. All rights reserved.
 # Licensed under the MIT License.
+"""Check that pre-commit hook exclude paths are not useless."""
 
 from __future__ import annotations
 
@@ -14,7 +15,10 @@ from pre_commit.constants import CONFIG_FILE
 
 
 class Hook:
+    """Represent a pre-commit hook with its excluded paths."""
+
     def __init__(self, id: str, exclude_paths: list[Path]) -> None:
+        """Initialize with hook id and list of excluded paths."""
         self.__id = id
         self.__exclude_paths = exclude_paths
 

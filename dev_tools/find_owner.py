@@ -1,6 +1,7 @@
 # Copyright (c) Luminar Technologies, Inc. All rights reserved.
 # Licensed under the MIT License.
-"""Print the GitHub owner of an item (folder or file).
+"""
+Print the GitHub owner of an item (folder or file).
 
 Can also find owners of children, if a level is given.
 """
