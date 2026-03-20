@@ -1,6 +1,5 @@
 # Copyright (c) Luminar Technologies, Inc. All rights reserved.
 # Licensed under the MIT License.
-"""Check CODEOWNERS file for validity and consistency."""
 
 from __future__ import annotations
 

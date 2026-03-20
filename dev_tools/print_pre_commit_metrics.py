@@ -1,5 +1,3 @@
-"""Print metrics about pre-commit hooks and their excluded paths."""
-
 from __future__ import annotations
 
 import json

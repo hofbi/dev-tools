@@ -1,5 +1,3 @@
-"""Synchronize tool versions across configuration files."""
-
 from __future__ import annotations
 
 import re

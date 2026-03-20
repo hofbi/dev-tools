@@ -1,6 +1,5 @@
 # Copyright (c) Luminar Technologies, Inc. All rights reserved.
 # Licensed under the MIT License.
-"""Synchronize VS Code settings from a devcontainer configuration."""
 
 from __future__ import annotations
 

@@ -1,6 +1,5 @@
 # Copyright (c) Luminar Technologies, Inc. All rights reserved.
 # Licensed under the MIT License.
-"""Check that pre-commit hook exclude paths are not useless."""
 
 from __future__ import annotations
 

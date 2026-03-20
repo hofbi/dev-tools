@@ -1,5 +1,3 @@
-"""Check that Bazel load statements follow the expected format."""
-
 from __future__ import annotations
 
 import re

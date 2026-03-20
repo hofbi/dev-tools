@@ -1,6 +1,5 @@
 # Copyright (c) Luminar Technologies, Inc. All rights reserved.
 # Licensed under the MIT License.
-"""Check that a file does not exceed a maximum number of lines."""
 
 from __future__ import annotations
 

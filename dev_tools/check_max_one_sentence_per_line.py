@@ -1,5 +1,3 @@
-"""Check that each line contains at most one sentence."""
-
 from __future__ import annotations
 
 import sys

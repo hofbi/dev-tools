@@ -1,6 +1,5 @@
 # Copyright (c) Luminar Technologies, Inc. All rights reserved.
 # Licensed under the MIT License.
-"""Generate documentation for pre-commit hooks."""
 
 from __future__ import annotations
 

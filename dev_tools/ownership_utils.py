@@ -1,6 +1,5 @@
 # Copyright (c) Luminar Technologies, Inc. All rights reserved.
 # Licensed under the MIT License.
-"""Utilities for parsing and querying CODEOWNERS ownership rules."""
 
 from __future__ import annotations
 
