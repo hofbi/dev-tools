@@ -105,7 +105,7 @@ def check_if_codeowners_has_ineffective_rules(all_entries: list[OwnerShipEntry])
     ) -> ReturnCode:
         """Search the tree for redundant ownership rules.
 
-        Rules that are fully contained in another rule are ineffective.
+        Rules that are fully contained in another rule are ineffective (redundant).
         Performs a depth-first search.
         """
         if first_ancestor is not None and tree_node.owners == first_ancestor.owners:
