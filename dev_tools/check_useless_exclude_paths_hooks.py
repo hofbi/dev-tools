@@ -17,7 +17,6 @@ class Hook:
     """Represent a pre-commit hook with its excluded paths."""
 
     def __init__(self, id: str, exclude_paths: list[Path]) -> None:
-        """Initialize with hook id and list of excluded paths."""
         self.__id = id
         self.__exclude_paths = exclude_paths
 

@@ -80,6 +80,7 @@ ignore = [
   "D100", # In our opinion overkill
   "D102", # In our opinion overkill
   "D103",
+  "D107", # In our opinion overkill
   "D203", # Conflicts with ruff-format, incpompatible with D211
   "D212", # Incompatible with D213
   "E501", # Line length is the task of the formatter

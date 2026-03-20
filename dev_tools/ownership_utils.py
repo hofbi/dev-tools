@@ -17,7 +17,6 @@ class OwnerShipEntry:
     """Represent a single entry in a CODEOWNERS file."""
 
     def __init__(self, pattern: str, owners: tuple[str, ...], line_number: int) -> None:
-        """Initialize with pattern, owners, and the source line number."""
         self.pattern: str = pattern
         self.owners: tuple[str, ...] = owners
         self.line_number: int = line_number
@@ -27,7 +26,6 @@ class GithubOwnerShip:
     """Query GitHub CODEOWNERS rules for a repository."""
 
     def __init__(self, repo_dir: Path) -> None:
-        """Initialize by parsing the CODEOWNERS file in the given repository."""
         self._ownerships = parse_ownership(repo_dir / ".github" / "CODEOWNERS")
         self._repo_dir = repo_dir
         self._cached_regex = CachedRegex()
@@ -90,7 +88,6 @@ class CachedRegex:
     """
 
     def __init__(self) -> None:
-        """Initialize with an empty regex cache."""
         self._cache: dict[str, re.Pattern[str]] = {}
 
     def match(self, needle: str, haystack: str, flags: int = 0) -> re.Match | None:

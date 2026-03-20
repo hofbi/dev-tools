@@ -56,7 +56,6 @@ class OwnerShipTreeNode:
     """Represents a node in filesystem tree."""
 
     def __init__(self) -> None:
-        """Initialize an empty tree node."""
         self.children: dict[str, OwnerShipTreeNode] = {}
         self.owners: set[str] = set()
         self.line_number: int | None = None
