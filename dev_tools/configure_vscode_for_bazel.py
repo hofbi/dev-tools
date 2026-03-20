@@ -232,7 +232,7 @@ def get_new_tasks_config(executable_labels: set[str], additional_debug_args: lis
 
 
 def save_new_json_config(new_config: dict[str, Any], config_location: Path, force: bool) -> bool:  # noqa: FBT001
-    """Serializes the new_configuration to config_location.
+    """Serialize the new_configuration to config_location.
 
     If the file already exists, asks for confirmation, unless force is set.
     """

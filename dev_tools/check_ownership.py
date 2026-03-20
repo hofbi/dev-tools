@@ -17,6 +17,8 @@ if TYPE_CHECKING:
 
 
 class ReturnCode(IntFlag):
+    """Return codes for ownership check results."""
+
     SUCCESS = 0
     ERROR_FOLDER_DOESNT_EXIST = auto()
     ERROR_DUPLICATE_LINES = auto()
@@ -101,9 +103,9 @@ def check_if_codeowners_has_ineffective_rules(all_entries: list[OwnerShipEntry])
     def _find_ineffective_rules(
         tree_node: OwnerShipTreeNode, first_ancestor: OwnerShipTreeNode | None, current_path: Path
     ) -> ReturnCode:
-        """Search the ownership tree for rules which are fully contained in another
-        rule. They are ineffective (redundant).
+        """Search the tree for redundant ownership rules.
 
+        Rules that are fully contained in another rule are ineffective (redundant).
         Performs a depth-first search.
         """
         if first_ancestor is not None and tree_node.owners == first_ancestor.owners:
@@ -162,7 +164,7 @@ def get_git_tracked_files(folder: Path) -> list[Path]:
 def check_for_files_without_team_ownership(
     repo_dir: Path, changed_files: list[Path], codeowners_owner: str | None
 ) -> ReturnCode:
-    """The codeowners_owner should own ONLY the CODEOWNERS file."""
+    """Check that codeowners_owner owns ONLY the CODEOWNERS file."""
     if codeowners_owner is None:
         print("No codeowners-owner provided. Skipping check.")
         return ReturnCode.SUCCESS

@@ -28,6 +28,8 @@ SEMVER_CAPTURE_GROUP = (
 
 @dataclass(frozen=True)
 class SyncEntry:
+    """Represent a single file location to update with a synced version."""
+
     path: Path
     pattern: str
     version_override: str | None = None
@@ -35,6 +37,8 @@ class SyncEntry:
 
 @dataclass(frozen=True)
 class VersionSyncSpec:
+    """Specify a tool name and version to synchronize across multiple locations."""
+
     name: str
     version: str
     entries: list[SyncEntry]

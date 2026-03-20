@@ -14,6 +14,8 @@ if TYPE_CHECKING:
 
 
 class OwnerShipEntry:
+    """Represent a single entry in a CODEOWNERS file."""
+
     def __init__(self, pattern: str, owners: tuple[str, ...], line_number: int) -> None:
         self.pattern: str = pattern
         self.owners: tuple[str, ...] = owners
@@ -21,6 +23,8 @@ class OwnerShipEntry:
 
 
 class GithubOwnerShip:
+    """Query GitHub CODEOWNERS rules for a repository."""
+
     def __init__(self, repo_dir: Path) -> None:
         self._ownerships = parse_ownership(repo_dir / ".github" / "CODEOWNERS")
         self._repo_dir = repo_dir
@@ -52,8 +56,10 @@ class GithubOwnerShip:
         return path[prefix_length] == "/"
 
     def is_file_covered_by_pattern(self, filepath_in_repo: Path, pattern: str) -> bool:
-        """Implements the complete featureset demonstrated at https://docs.github.com/en/repositories/managing-your-
-        repositorys-settings-and-features/customizing-your-repository/about-code-owners#example-of-a-codeowners-file."""
+        """Implement the GitHub CODEOWNERS pattern matching featureset.
+
+        See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#example-of-a-codeowners-file
+        """
         filepath_string = str(filepath_in_repo)
         if "*" in pattern:
             return self._match_pattern_with_asterisks(filepath_string, filepath_in_repo.name, pattern)

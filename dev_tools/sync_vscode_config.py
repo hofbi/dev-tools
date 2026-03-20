@@ -21,6 +21,8 @@ DEFAULT_INDENT = 4
 
 @dataclass
 class DictOverwriteRecord:
+    """Record an overwrite of a dictionary value, storing both old and new values."""
+
     key: str
     old_value: Any
     new_value: Any
