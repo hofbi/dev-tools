@@ -1,7 +1,6 @@
 # Copyright (c) Luminar Technologies, Inc. All rights reserved.
 # Licensed under the MIT License.
-"""
-Generate VSCode configuration for selected Bazel C++ targets.
+"""Generate VSCode configuration for selected Bazel C++ targets.
 
 - generate launch.json debug configurations
 - generate `compilation_commands.json`
@@ -88,8 +87,7 @@ def build_bazel_command(command: str, *args: str, verbose: bool = False) -> list
 
 
 def run_bazel_command(command: str, *args: str, verbose: bool = False) -> None:
-    """
-    Run a Bazel command and check for exit code.
+    """Run a Bazel command and check for exit code.
 
     Output is forwarded to the console.
     """
@@ -234,8 +232,7 @@ def get_new_tasks_config(executable_labels: set[str], additional_debug_args: lis
 
 
 def save_new_json_config(new_config: dict[str, Any], config_location: Path, force: bool) -> bool:  # noqa: FBT001
-    """
-    Serialize the new_configuration to config_location.
+    """Serialize the new_configuration to config_location.
 
     If the file already exists, asks for confirmation, unless force is set.
     """

@@ -82,7 +82,7 @@ ignore = [
   "D103",
   "D107", # In our opinion overkill
   "D203", # Conflicts with ruff-format, incpompatible with D211
-  "D212", # Incompatible with D213
+  "D213", # Incompatible with D212
   "E501", # Line length is the task of the formatter
   "FA100",
   "ISC001", # Conflicts with formatter

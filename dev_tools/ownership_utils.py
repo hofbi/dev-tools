@@ -56,8 +56,7 @@ class GithubOwnerShip:
         return path[prefix_length] == "/"
 
     def is_file_covered_by_pattern(self, filepath_in_repo: Path, pattern: str) -> bool:
-        """
-        Implement the GitHub CODEOWNERS pattern matching featureset.
+        """Implement the GitHub CODEOWNERS pattern matching featureset.
 
         See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#example-of-a-codeowners-file
         """
@@ -81,8 +80,7 @@ class GithubOwnerShip:
 
 
 class CachedRegex:
-    """
-    A wrapper around re.match to compile and cache regex patterns.
+    """A wrapper around re.match to compile and cache regex patterns.
 
     It has unlimited size.
     """
@@ -97,8 +95,7 @@ class CachedRegex:
 
 
 def parse_ownership(codeowners_file: Path) -> tuple[OwnerShipEntry, ...]:
-    """
-    Return ownership in reverse order.
+    """Return ownership in reverse order.
 
     Order is important. Last matching pattern in CODEOWNERS takes the most
     precedence.

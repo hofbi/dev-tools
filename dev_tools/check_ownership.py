@@ -70,8 +70,7 @@ class OwnerShipTreeNode:
 
 def check_if_codeowners_has_ineffective_rules(all_entries: list[OwnerShipEntry]) -> ReturnCode:
     def _populate_tree(entry: OwnerShipEntry, path_parts: Iterator[str], tree_node: OwnerShipTreeNode) -> ReturnCode:
-        """
-        Add an OwnerShipEntry to the tree representation of all ownership entries.
+        """Add an OwnerShipEntry to the tree representation of all ownership entries.
 
         Find exact duplicates, ie. rules which have exactly the same patterns, on
         the fly. Performs a depth-first search.
@@ -104,8 +103,7 @@ def check_if_codeowners_has_ineffective_rules(all_entries: list[OwnerShipEntry])
     def _find_ineffective_rules(
         tree_node: OwnerShipTreeNode, first_ancestor: OwnerShipTreeNode | None, current_path: Path
     ) -> ReturnCode:
-        """
-        Search the tree for redundant ownership rules.
+        """Search the tree for redundant ownership rules.
 
         Rules that are fully contained in another rule are ineffective.
         Performs a depth-first search.
