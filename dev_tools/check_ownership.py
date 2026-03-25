@@ -8,8 +8,9 @@ from enum import IntFlag, auto
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from dev_tools.git_hook_utils import create_default_parser
 from whoowns.ownership_utils import GithubOwnerShip, OwnerShipEntry, check_git, get_ownership_entries
+
+from dev_tools.git_hook_utils import create_default_parser
 
 if TYPE_CHECKING:
     from argparse import Namespace

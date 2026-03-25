@@ -98,15 +98,15 @@ ignore = [
   "S101" # allow assertions in tests
 ]
 
+[tool.uv.sources]
+whoowns = {workspace = true}
+
+[tool.uv.workspace]
+members = ["packages/whoowns"]
+
 [tool.vulture]
 min_confidence = 100
 ignore_decorators = ["@pytest.fixture"]
 exclude = [
   "*test_*.py" # vulture doesn't understand pytest fixtures
 ]
-
-[tool.uv.workspace]
-members = ["packages/whoowns"]
-
-[tool.uv.sources]
-whoowns = { workspace = true }

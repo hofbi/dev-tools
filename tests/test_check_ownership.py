@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+from whoowns.ownership_utils import OwnerShipEntry
 
 from dev_tools.check_ownership import (
     ReturnCode,
@@ -15,7 +16,6 @@ from dev_tools.check_ownership import (
     check_if_codeowners_has_ineffective_rules,
     perform_all_codeowners_checks,
 )
-from whoowns.ownership_utils import OwnerShipEntry
 
 if TYPE_CHECKING:
     from pyfakefs.fake_filesystem import FakeFilesystem

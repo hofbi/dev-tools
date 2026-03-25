@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
-
 from whoowns.ownership_utils import GithubOwnerShip, get_ownership_entries
 
 if TYPE_CHECKING:

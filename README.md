@@ -69,7 +69,7 @@ See [the usage documentation](https://github.com/hedronvision/bazel-compile-comm
 
 ### Whoowns
 
-See the [README.md](whoowns/README.md) in the `whoowns` package for documentation on the `whoowns` tool.
+See the [README.md](packages/whoowns/README.md) in the `whoowns` package for documentation on the `whoowns` tool.
 
 ## Hooks
 
