@@ -15,7 +15,8 @@ dependencies = [
   "pre-commit>=4.2.0",
   "pyjson5>=1.6.8",
   "regex>=2026.2.28",
-  "ruamel-yaml==0.19.1"
+  "ruamel-yaml==0.19.1",
+  "whoowns"
 ]
 
 [project.optional-dependencies]
@@ -39,7 +40,6 @@ generate-hook-docs = "dev_tools.generate_hook_docs:main"
 print-pre-commit-metrics = "dev_tools.print_pre_commit_metrics:main"
 sync-vscode-config = "dev_tools.sync_vscode_config:main"
 sync-tool-versions = "dev_tools.sync_tool_versions:main"
-whoowns = "dev_tools.find_owner:main"
 
 [tool.mypy]
 check_untyped_defs = true
@@ -104,3 +104,9 @@ ignore_decorators = ["@pytest.fixture"]
 exclude = [
   "*test_*.py" # vulture doesn't understand pytest fixtures
 ]
+
+[tool.uv.workspace]
+members = ["packages/whoowns"]
+
+[tool.uv.sources]
+whoowns = { workspace = true }

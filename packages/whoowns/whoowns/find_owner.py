@@ -11,7 +11,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from dev_tools.ownership_utils import GithubOwnerShip, check_git
+from whoowns.ownership_utils import GithubOwnerShip, check_git
 
 
 def main() -> int:

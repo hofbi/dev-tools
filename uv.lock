@@ -2,6 +2,12 @@ version = 1
 revision = 3
 requires-python = ">=3.10"
 
+[manifest]
+members = [
+    "dev-tools",
+    "whoowns",
+]
+
 [[package]]
 name = "cfgv"
 version = "3.5.0"
@@ -147,6 +153,7 @@ dependencies = [
     { name = "pyjson5" },
     { name = "regex" },
     { name = "ruamel-yaml" },
+    { name = "whoowns" },
 ]
 
 [package.optional-dependencies]
@@ -167,6 +174,7 @@ requires-dist = [
     { name = "regex", specifier = ">=2026.2.28" },
     { name = "ruamel-yaml", specifier = "==0.19.1" },
     { name = "ruamel-yaml", marker = "extra == 'dev'", specifier = "==0.19.1" },
+    { name = "whoowns", editable = "packages/whoowns" },
 ]
 provides-extras = ["dev"]
 
@@ -719,3 +727,8 @@ sdist = { url = "https://files.pythonhosted.org/packages/d2/03/a94d404ca09a89a73
 wheels = [
     { url = "https://files.pythonhosted.org/packages/42/d7/394801755d4c8684b655d35c665aea7836ec68320304f62ab3c94395b442/virtualenv-20.38.0-py3-none-any.whl", hash = "sha256:d6e78e5889de3a4742df2d3d44e779366325a90cf356f15621fddace82431794", size = 5837778, upload-time = "2026-02-19T07:47:59.778Z" },
 ]
+
+[[package]]
+name = "whoowns"
+version = "0.1.0"
+source = { editable = "packages/whoowns" }

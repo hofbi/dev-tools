@@ -1,0 +1,17 @@
+[build-system]
+requires = ["hatchling>=1.25.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "whoowns"
+version = "0.1.0"
+description = "Print the GitHub owner of a file or folder based on CODEOWNERS"
+readme = "README.md"
+authors = [
+  {name = "Markus Hofbauer"}
+]
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+whoowns = "whoowns.find_owner:main"

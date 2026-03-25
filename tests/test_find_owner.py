@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 from pyfakefs.fake_filesystem import FakeFilesystem
 
-from dev_tools.find_owner import get_owners, get_subitems
+from whoowns.find_owner import get_owners, get_subitems
 
 
 def test_find_owner_for_non_existent_item_raises() -> None:

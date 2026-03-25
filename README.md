@@ -69,18 +69,7 @@ See [the usage documentation](https://github.com/hedronvision/bazel-compile-comm
 
 ### Whoowns
 
-`whoowns` is a tool to print the GitHub codeowner of a folder or file by parsing the `.github/CODEOWNERS` file.
-With this tool, you can easily find out who is responsible for a specific part of the codebase from the terminal.
-To find the owners of a file or folder, run
-
-```shell
-whoowns path/to/your/file/or/folder
-
-# example output
-# path/to/your/file/or/folder -> @owner1
-```
-
-Specify the `--level N` to see the owners of child items in the N-th directory level below your provided folder.
+See the [README.md](whoowns/README.md) in the `whoowns` package for documentation on the `whoowns` tool.
 
 ## Hooks
 
