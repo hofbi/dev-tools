@@ -63,7 +63,7 @@ warn_unused_configs = true
 warn_unused_ignores = true
 
 [tool.pytest.ini_options]
-addopts = "--cov-report term-missing --cov=dev_tools -vv"
+addopts = "--cov-report term-missing --cov=dev_tools --cov=packages/whoowns/whoowns -vv"
 testpaths = [
   "tests"
 ]
