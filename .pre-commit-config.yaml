@@ -12,7 +12,7 @@ repos:
       - id: check-hooks-apply
       - id: check-useless-excludes
   - repo: https://github.com/hofbi/dev-tools
-    rev: 1.3.0
+    rev: 1.4.0
     hooks:
       - id: check-sys-path-append
       - id: check-sys-path-insert
@@ -87,12 +87,12 @@ repos:
     hooks:
       - id: sync-pre-commit-deps
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.4
+    rev: v0.15.8
     hooks:
       - id: ruff-format
       - id: ruff-check
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.10.7
+    rev: 0.11.2
     hooks:
       - id: uv-lock
   - repo: https://github.com/pre-commit/pygrep-hooks
@@ -119,7 +119,7 @@ repos:
       - id: forbid-binary
         always_run: true
   - repo: https://github.com/pappasam/toml-sort
-    rev: v0.24.3
+    rev: v0.24.4
     hooks:
       - id: toml-sort-fix
         exclude: "\\.lock$"
@@ -144,7 +144,7 @@ repos:
         args:
           - --py310-plus
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.37.0
+    rev: 0.37.1
     hooks:
       - id: check-github-workflows
       - id: check-renovate
@@ -187,7 +187,7 @@ repos:
           - "--config"
           - ".md-link-config.json"
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.47.0
+    rev: v0.48.0
     hooks:
       - id: markdownlint
         language_version: 22.14.0
@@ -195,7 +195,7 @@ repos:
           - "--dot"
           - "--fix"
   - repo: https://github.com/jendrikseipp/vulture
-    rev: v2.14
+    rev: v2.16
     hooks:
       - id: vulture
         pass_filenames: true
