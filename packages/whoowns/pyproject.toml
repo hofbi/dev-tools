@@ -11,7 +11,7 @@ version = "0.1.0"
 description = "Print the GitHub owner of a file or folder based on CODEOWNERS"
 readme = "README.md"
 authors = [
-  {name = "Markus Hofbauer"}
+  {name = "Markus Hofbauer"},{ name = "Chris Bachhuber" }
 ]
 requires-python = ">=3.10"
 dependencies = []
