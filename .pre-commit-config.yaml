@@ -187,7 +187,7 @@ repos:
           - "--config"
           - ".md-link-config.json"
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.48.0
+    rev: v0.47.0
     hooks:
       - id: markdownlint
         language_version: 22.14.0
