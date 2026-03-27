@@ -2,9 +2,6 @@
 requires = ["uv_build>=0.10.0,<0.12"]
 build-backend = "uv_build"
 
-[tool.uv.build-backend]
-module-root = ""  # required to avoid the "src" layout, which is the default for uv_build
-
 [project]
 name = "dev-tools"
 version = "1.4.0" # Will be read by the release pipeline
@@ -100,6 +97,9 @@ ignore = [
   "PLR2004", # Magic values in tests are ok since they are often the expected values
   "S101" # allow assertions in tests
 ]
+
+[tool.uv.build-backend]
+module-root = "" # required to avoid the "src" layout, which is the default for uv_build
 
 [tool.uv.sources]
 whoowns = {workspace = true}

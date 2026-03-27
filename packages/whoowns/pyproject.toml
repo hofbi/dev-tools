@@ -2,19 +2,20 @@
 requires = ["uv_build>=0.10.0,<0.12"]
 build-backend = "uv_build"
 
-[tool.uv.build-backend]
-module-root = ""  # required to avoid the "src" layout, which is the default for uv_build
-
 [project]
 name = "whoowns"
 version = "0.1.0"
 description = "Print the GitHub owner of a file or folder based on CODEOWNERS"
 readme = "README.md"
 authors = [
-  {name = "Markus Hofbauer"},{ name = "Chris Bachhuber" }
+  {name = "Markus Hofbauer"},
+  {name = "Chris Bachhuber"}
 ]
 requires-python = ">=3.10"
 dependencies = []
 
 [project.scripts]
 whoowns = "whoowns.find_owner:main"
+
+[tool.uv.build-backend]
+module-root = "" # required to avoid the "src" layout, which is the default for uv_build
