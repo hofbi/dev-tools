@@ -7,8 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
-
-from dev_tools.ownership_utils import GithubOwnerShip, get_ownership_entries
+from whoowns.ownership_utils import GithubOwnerShip, get_ownership_entries
 
 if TYPE_CHECKING:
     from pyfakefs.fake_filesystem import FakeFilesystem

@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hatchling>=1.25.0"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.10.0,<0.12"]
+build-backend = "uv_build"
 
 [project]
 name = "dev-tools"
@@ -15,7 +15,8 @@ dependencies = [
   "pre-commit>=4.2.0",
   "pyjson5>=1.6.8",
   "regex>=2026.2.28",
-  "ruamel-yaml==0.19.1"
+  "ruamel-yaml==0.19.1",
+  "whoowns"
 ]
 
 [project.optional-dependencies]
@@ -39,7 +40,6 @@ generate-hook-docs = "dev_tools.generate_hook_docs:main"
 print-pre-commit-metrics = "dev_tools.print_pre_commit_metrics:main"
 sync-vscode-config = "dev_tools.sync_vscode_config:main"
 sync-tool-versions = "dev_tools.sync_tool_versions:main"
-whoowns = "dev_tools.find_owner:main"
 
 [tool.mypy]
 check_untyped_defs = true
@@ -60,7 +60,7 @@ warn_unused_configs = true
 warn_unused_ignores = true
 
 [tool.pytest.ini_options]
-addopts = "--cov-report term-missing --cov=dev_tools -vv"
+addopts = "--cov-report term-missing --cov=dev_tools --cov=packages/whoowns/whoowns -vv"
 testpaths = [
   "tests"
 ]
@@ -97,6 +97,15 @@ ignore = [
   "PLR2004", # Magic values in tests are ok since they are often the expected values
   "S101" # allow assertions in tests
 ]
+
+[tool.uv.build-backend]
+module-root = "" # required to avoid the "src" layout, which is the default for uv_build
+
+[tool.uv.sources]
+whoowns = {workspace = true}
+
+[tool.uv.workspace]
+members = ["packages/whoowns"]
 
 [tool.vulture]
 min_confidence = 100
