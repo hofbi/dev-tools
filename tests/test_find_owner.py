@@ -10,15 +10,15 @@ def test_find_owner_for_non_existent_item_raises() -> None:
         get_owners(Path("non_existent_file"), 0)
 
 
-def test_find_owner_for_non_existent_codeowners_file() -> None:
-    fs = FakeFilesystem()
+def test_find_owner_for_non_existent_codeowners_file(fs: FakeFilesystem, monkeypatch: pytest.MonkeyPatch) -> None:
     repo_dir = Path("repo").resolve()
     fs.create_dir(repo_dir)
     file_in_repo = repo_dir / "file.txt"
     fs.create_file(file_in_repo)
 
-    owners = get_owners(file_in_repo, 0)
-    assert owners == {}
+    monkeypatch.setattr("whoowns.find_owner.check_git", lambda *_, **__: str(repo_dir))
+
+    assert get_owners(file_in_repo, 0) == {}
 
 
 def test_get_subitems(fs: FakeFilesystem) -> None:
