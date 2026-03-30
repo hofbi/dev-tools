@@ -1,5 +1,9 @@
 # whoowns
 
+[![PyPI](https://img.shields.io/pypi/v/whoowns)](https://pypi.org/project/whoowns/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/whoowns)](https://pypi.org/project/whoowns/)
+[![PyPI - License](https://img.shields.io/pypi/l/whoowns)](https://pypi.org/project/whoowns/)
+
 `whoowns` is a tool to print the GitHub codeowner of a folder or file by parsing the `.github/CODEOWNERS` file.
 With this tool, you can easily find out who is responsible for a specific part of the codebase from the terminal.
 To find the owners of a file or folder, run
