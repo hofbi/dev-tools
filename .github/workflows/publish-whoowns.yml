@@ -1,13 +1,12 @@
 name: Publish whoowns to PyPI
 
 on:
-  release:
-    types:
-      - published
+  push:
+    tags:
+      - 'whoowns-*'
 
 jobs:
   build-and-publish:
-    if: startsWith(github.event.release.tag_name, 'whoowns-')
     runs-on: ubuntu-latest
     environment:
       name: pypi
