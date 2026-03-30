@@ -55,7 +55,7 @@ def get_owners(item: Path, level: int) -> dict[str, tuple[str, ...]]:
 
     if not (codeowners_file := repo_dir / ".github" / "CODEOWNERS").exists():
         print(
-            f"File {codeowners_file} not found. Go to https://docs.github.com/articles/about-code-owners to learn how to assign code ownership."
+            f"File {codeowners_file} not found.\nGo to https://docs.github.com/articles/about-code-owners to learn how to assign code ownership."
         )
         return {}
 
