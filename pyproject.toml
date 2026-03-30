@@ -22,7 +22,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "pytest==9.0.2",
-  "pytest-cov==7.0.0",
+  "pytest-cov==7.1.0",
   "pyfakefs==6.1.6",
   "ruamel-yaml==0.19.1"
 ]
