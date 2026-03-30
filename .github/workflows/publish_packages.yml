@@ -7,17 +7,26 @@ on:
       - 'configure-vscode-for-bazel-*'
 
 jobs:
-  build-and-publish:
-    if: startsWith(github.ref_name, matrix.package) # run only the matrix job that matches the tag
+  determine-package:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        package:
-          - whoowns
-          - configure-vscode-for-bazel
+    outputs:
+      package: ${{ steps.pkg.outputs.package }}
+    steps:
+      - id: pkg
+        run: |
+          for pkg in whoowns configure-vscode-for-bazel; do
+            if [[ "${{ github.ref_name }}" == ${pkg}-* ]]; then
+              echo "package=${pkg}" >> $GITHUB_OUTPUT
+            fi
+          done
+
+  build-and-publish:
+    needs: determine-package
+    if: needs.determine-package.outputs.package != ''
+    runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/${{ matrix.package }}
+      url: https://pypi.org/p/${{ needs.determine-package.outputs.package }}
     permissions:
       id-token: write # Required for trusted (OIDC) publishing
     steps:
@@ -28,8 +37,8 @@ jobs:
         uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
         with:
           python-version: "3.12"
-      - name: Build ${{ matrix.package }} package
-        run: uv build --package ${{ matrix.package }}
+      - name: Build ${{ needs.determine-package.outputs.package }} package
+        run: uv build --package ${{ needs.determine-package.outputs.package }}
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # release/v1
         with:
