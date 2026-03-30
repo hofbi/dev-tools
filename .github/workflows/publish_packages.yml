@@ -1,16 +1,23 @@
-name: Publish whoowns to PyPI
+name: Publish to PyPI
 
 on:
   push:
     tags:
       - 'whoowns-*'
+      - 'configure-vscode-for-bazel-*'
 
 jobs:
   build-and-publish:
+    if: startsWith(github.ref_name, matrix.package) # run only the matrix job that matches the tag
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package:
+          - whoowns
+          - configure-vscode-for-bazel
     environment:
       name: pypi
-      url: https://pypi.org/p/whoowns
+      url: https://pypi.org/p/${{ matrix.package }}
     permissions:
       id-token: write # Required for trusted (OIDC) publishing
     steps:
@@ -21,8 +28,8 @@ jobs:
         uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
         with:
           python-version: "3.12"
-      - name: Build whoowns package
-        run: uv build --package whoowns
+      - name: Build ${{ matrix.package }} package
+        run: uv build --package ${{ matrix.package }}
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # release/v1
         with:

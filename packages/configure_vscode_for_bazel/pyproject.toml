@@ -1,0 +1,40 @@
+[build-system]
+requires = ["uv_build>=0.10.0,<0.12"]
+build-backend = "uv_build"
+
+[project]
+name = "configure-vscode-for-bazel"
+version = "0.1.0"
+description = "Generate VSCode configuration for selected Bazel C++ targets"
+readme = "README.md"
+authors = [
+  {name = "Markus Hofbauer"},
+  {name = "Chris Bachhuber"}
+]
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = []
+keywords = ["bazel", "vscode", "c++", "cli", "debug"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Build Tools"
+]
+
+[project.scripts]
+configure-vscode-for-bazel = "configure_vscode_for_bazel.configure:main"
+
+[project.urls]
+Homepage = "https://github.com/hofbi/dev-tools"
+Repository = "https://github.com/hofbi/dev-tools"
+Issues = "https://github.com/hofbi/dev-tools/issues"
+
+[tool.uv.build-backend]
+module-root = "" # required to avoid the "src" layout, which is the default for uv_build
