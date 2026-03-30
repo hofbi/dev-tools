@@ -9,6 +9,7 @@ def test_find_owner_for_non_existent_item_raises() -> None:
     with pytest.raises(FileNotFoundError):
         get_owners(Path("non_existent_file"), 0)
 
+
 def test_find_owner_for_non_existent_codeowners_file() -> None:
     fs = FakeFilesystem()
     repo_dir = Path("repo").resolve()
@@ -18,6 +19,7 @@ def test_find_owner_for_non_existent_codeowners_file() -> None:
 
     owners = get_owners(file_in_repo, 0)
     assert owners == {}
+
 
 def test_get_subitems(fs: FakeFilesystem) -> None:
     # Level 0
