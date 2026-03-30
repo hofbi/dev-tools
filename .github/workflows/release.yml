@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Validate tag version against pyproject.toml
-        run: ./scripts/check-release.sh "${{ github.ref_name }}"
+        run: ./scripts/check_release.sh "${{ github.ref_name }}"
       - uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           draft: false
