@@ -14,9 +14,10 @@ jobs:
     steps:
       - id: pkg
         run: |
+          ref="${{ github.ref_name }}"
           for pkg in whoowns configure-vscode-for-bazel; do
-            if [[ "${{ github.ref_name }}" == ${pkg}-* ]]; then
-              echo "package=${pkg}" >> $GITHUB_OUTPUT
+            if [[ "$ref" == "${pkg}-"* ]]; then
+              echo "package=${pkg}" >> "$GITHUB_OUTPUT"
             fi
           done
 
