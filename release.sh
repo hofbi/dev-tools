@@ -12,7 +12,7 @@ fi
 
 cd "${SCRIPT_DIR}"
 
-source "${SCRIPT_DIR}/scripts/check-release.sh"
+source "${SCRIPT_DIR}/scripts/check_release.sh"
 parse_release_tag "${VERSION}"
 
 PACKAGE_NAME="${RELEASE_PACKAGE_NAME}"

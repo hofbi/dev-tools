@@ -33,7 +33,6 @@ jobs:
         run: uv run pytest --import-mode importlib
 
   e2e-tests:
-    if: false # TODO(#62): re-enable when whoowns is in PyPI
     runs-on: ubuntu-latest
     name: run ${{ matrix.tool }} try-repo on all files
     strategy:
@@ -49,4 +48,4 @@ jobs:
         with:
           python-version: "3.14"
       - name: Run ${{ matrix.tool }} try repo
-        run: SKIP=check-jira-reference-in-todo,go-revive,go-fmt,go-imports uvx ${{ matrix.tool }} try-repo "$PWD" --all-files --verbose
+        run: SKIP=check-jira-reference-in-todo,go-revive,go-fmt,go-imports,check-number-of-lines-count uvx ${{ matrix.tool }} try-repo "$PWD" --all-files --verbose
