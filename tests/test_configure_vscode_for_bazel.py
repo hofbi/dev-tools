@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from configure_vscode_for_bazel.configure import (
     find_executable_labels,
     get_label_from_bazel_query_line,
