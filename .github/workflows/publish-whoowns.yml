@@ -7,6 +7,7 @@ on:
 
 jobs:
   build-and-publish:
+    if: startsWith(github.event.release.tag_name, 'whoowns-')
     runs-on: ubuntu-latest
     environment:
       name: pypi

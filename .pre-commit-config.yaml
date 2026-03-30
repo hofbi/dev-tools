@@ -18,6 +18,10 @@ repos:
       - id: check-sys-path-insert
       - id: generate-hook-docs
       - id: check-number-of-lines-count
+        exclude: |
+          (?x)^(
+            release.sh
+          )
       - id: check-shellscript-set-options
       - id: check-non-existing-and-duplicate-excludes
       - id: sync-vscode-config
