@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "configure-vscode-for-bazel"
-version = "0.1.0"
+version = "0.2.0"
 description = "Generate VSCode configuration for selected Bazel C++ targets"
 readme = "README.md"
 authors = [
