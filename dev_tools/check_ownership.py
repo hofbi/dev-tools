@@ -8,13 +8,7 @@ from enum import IntFlag, auto
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from whoowns.ownership_utils import (
-    GithubOwnerShip,
-    OwnerShipEntry,
-    check_git,
-    get_codeowners_path,
-    get_ownership_entries,
-)
+from whoowns.ownership_utils import GithubOwnerShip, OwnerShipEntry, check_git, get_ownership_entries
 
 from dev_tools.git_hook_utils import create_default_parser
 
@@ -141,6 +135,10 @@ def check_if_codeowners_has_ineffective_rules(all_entries: list[OwnerShipEntry])
     return return_code
 
 
+def get_codeowners_path(repo_dir: Path) -> Path:
+    return repo_dir / ".github" / "CODEOWNERS"
+
+
 def perform_all_codeowners_checks(repo_dir: Path) -> ReturnCode:
     codeowners = get_codeowners_path(repo_dir)
     return_code = ReturnCode.SUCCESS
@@ -175,7 +173,7 @@ def check_for_files_without_team_ownership(
     codeowners = get_codeowners_path(repo_dir)
     changed_files = [file.resolve() for file in changed_files]
     files_to_check = get_git_tracked_files(repo_dir) if codeowners in changed_files else changed_files
-    ownership_service = GithubOwnerShip(repo_dir, codeowners)
+    ownership_service = GithubOwnerShip(repo_dir)
     files_owned_by_codeowners_file_owners = [
         file for file in files_to_check if file != codeowners and ownership_service.is_owned_by(file, codeowners_owner)
     ]
