@@ -16,7 +16,14 @@ from whoowns.ownership_utils import GithubOwnerShip, check_git
 
 def main() -> int:
     args = parse_arguments()
+
     owners = get_owners(args.item, args.level)
+    if not owners:
+        print(
+            "No ownership assigned.\nGo to https://docs.github.com/articles/about-code-owners to learn how to assign code ownership."
+        )
+        return 1
+
     print_owners(owners)
     return 0
 
@@ -54,9 +61,7 @@ def get_owners(item: Path, level: int) -> dict[str, tuple[str, ...]]:
     repo_dir = Path(check_git("rev-parse --show-toplevel", repo_dir=item.parent if item.is_file() else item).rstrip())
 
     if not (codeowners_file := repo_dir / ".github" / "CODEOWNERS").exists():
-        print(
-            f"File {codeowners_file} not found.\nGo to https://docs.github.com/articles/about-code-owners to learn how to assign code ownership."
-        )
+        print(f"File {codeowners_file} not found.")
         return {}
 
     items = get_subitems(item, level)
