@@ -1,0 +1,12 @@
+name: Publish whoowns to PyPI
+
+on:
+  push:
+    tags:
+      - 'whoowns-*'
+
+jobs:
+  build-and-publish:
+    uses: ./.github/workflows/publish_package.yml
+    with:
+      package_name: whoowns
