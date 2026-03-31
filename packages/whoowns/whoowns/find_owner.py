@@ -60,13 +60,27 @@ def get_owners(item: Path, level: int) -> dict[str, tuple[str, ...]]:
 
     repo_dir = Path(check_git("rev-parse --show-toplevel", repo_dir=item.parent if item.is_file() else item).rstrip())
 
-    if not (codeowners_file := get_codeowners_path(repo_dir)).exists():
-        print(f"Error: File {codeowners_file} not found.")
+    if (codeowners_file := find_codeowners_file(repo_dir)) is None:
         return {}
 
     items = get_subitems(item, level)
     ownership = GithubOwnerShip(repo_dir, codeowners_file)
     return {str(item.relative_to(repo_dir)): ownership.get_owners(item) for item in items}
+
+
+def find_codeowners_file(repo_dir: Path) -> Path | None:
+    codeowners_file = get_codeowners_path(repo_dir)
+    if codeowners_file.exists():
+        return codeowners_file
+    codeowners_file = repo_dir / "CODEOWNERS"
+    if codeowners_file.exists():
+        return codeowners_file
+    codeowners_file = repo_dir / "docs" / "CODEOWNERS"
+    if codeowners_file.exists():
+        return codeowners_file
+
+    print(f"Error: File {codeowners_file} not found.")
+    return None
 
 
 def print_owners(owners: dict[str, tuple[str, ...]]) -> None:
