@@ -7,6 +7,23 @@ on:
 
 jobs:
   build-and-publish:
-    uses: ./.github/workflows/publish_package.yml
-    with:
-      package_name: whoowns
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/whoowns
+    permissions:
+      id-token: write # Required for trusted (OIDC) publishing
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: Validate tag version against pyproject.toml
+        run: ./scripts/check_release.sh "${{ github.ref_name }}"
+      - name: Install uv
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
+        with:
+          python-version: "3.12"
+      - name: Build whoowns package
+        run: uv build --package whoowns
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # release/v1
+        with:
+          packages-dir: dist/
