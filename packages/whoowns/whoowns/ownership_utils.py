@@ -25,9 +25,7 @@ class OwnerShipEntry:
 class GithubOwnerShip:
     """Query GitHub CODEOWNERS rules for a repository."""
 
-    def __init__(self, repo_dir: Path, codeowners_file: Path | None = None) -> None:
-        if codeowners_file is None:
-            codeowners_file = repo_dir / ".github" / "CODEOWNERS"
+    def __init__(self, repo_dir: Path, codeowners_file: Path) -> None:
         self._ownerships = parse_ownership(codeowners_file)
         self._repo_dir = repo_dir
         self._cached_regex = CachedRegex()

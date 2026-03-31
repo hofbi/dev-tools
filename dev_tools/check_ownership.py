@@ -173,7 +173,7 @@ def check_for_files_without_team_ownership(
     codeowners = get_codeowners_path(repo_dir)
     changed_files = [file.resolve() for file in changed_files]
     files_to_check = get_git_tracked_files(repo_dir) if codeowners in changed_files else changed_files
-    ownership_service = GithubOwnerShip(repo_dir)
+    ownership_service = GithubOwnerShip(repo_dir, codeowners)
     files_owned_by_codeowners_file_owners = [
         file for file in files_to_check if file != codeowners and ownership_service.is_owned_by(file, codeowners_owner)
     ]
