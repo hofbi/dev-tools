@@ -33,6 +33,7 @@ jobs:
         run: uv run pytest --import-mode importlib
 
   e2e-tests:
+    if: false # TODO(#62): re-enable when whoowns is in PyPI
     runs-on: ubuntu-latest
     name: run ${{ matrix.tool }} try-repo on all files
     strategy:

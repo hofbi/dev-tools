@@ -8,8 +8,7 @@ from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
 import pytest
-
-from dev_tools.configure_vscode_for_bazel import (
+from configure_vscode_for_bazel.configure import (
     find_executable_labels,
     get_label_from_bazel_query_line,
     get_new_launch_config,
@@ -24,7 +23,7 @@ if TYPE_CHECKING:
 
 
 @patch(
-    "dev_tools.configure_vscode_for_bazel.query_bazel_for_labels",
+    "configure_vscode_for_bazel.configure.query_bazel_for_labels",
     MagicMock(return_value="cc_test rule //foo/bar:test1"),
 )
 def test__find_executable_labels__for_single_label__returns_it() -> None:
@@ -32,7 +31,7 @@ def test__find_executable_labels__for_single_label__returns_it() -> None:
 
 
 @patch(
-    "dev_tools.configure_vscode_for_bazel.query_bazel_for_labels",
+    "configure_vscode_for_bazel.configure.query_bazel_for_labels",
     MagicMock(return_value="cc_test rule //foo/bar:test1\ncc_binary rule //foo/bar:main\n"),
 )
 def test__find_executable_labels__for_bigger_query__returns_combined_labels() -> None:
@@ -43,7 +42,7 @@ def test__find_executable_labels__for_bigger_query__returns_combined_labels() ->
 
 
 @patch(
-    "dev_tools.configure_vscode_for_bazel.query_bazel_for_labels",
+    "configure_vscode_for_bazel.configure.query_bazel_for_labels",
     MagicMock(side_effect=["cc_test rule //foo/bar:test1", "cc_binary rule //foo/bar:main"]),
 )
 def test__find_executable_labels__for_two_queries__returns_combined_labels() -> None:

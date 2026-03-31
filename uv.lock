@@ -4,6 +4,7 @@ requires-python = ">=3.10"
 
 [manifest]
 members = [
+    "configure-vscode-for-bazel",
     "dev-tools",
     "whoowns",
 ]
@@ -25,6 +26,11 @@ sdist = { url = "https://files.pythonhosted.org/packages/d8/53/6f443c9a4a8358a93
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6", size = 25335, upload-time = "2022-10-25T02:36:20.889Z" },
 ]
+
+[[package]]
+name = "configure-vscode-for-bazel"
+version = "0.1.0"
+source = { editable = "packages/configure_vscode_for_bazel" }
 
 [[package]]
 name = "coverage"
@@ -149,6 +155,7 @@ name = "dev-tools"
 version = "1.5.0"
 source = { editable = "." }
 dependencies = [
+    { name = "configure-vscode-for-bazel" },
     { name = "pre-commit" },
     { name = "pyjson5" },
     { name = "regex" },
@@ -166,6 +173,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "configure-vscode-for-bazel", editable = "packages/configure_vscode_for_bazel" },
     { name = "pre-commit", specifier = ">=4.2.0" },
     { name = "pyfakefs", marker = "extra == 'dev'", specifier = "==6.1.6" },
     { name = "pyjson5", specifier = ">=1.6.8" },

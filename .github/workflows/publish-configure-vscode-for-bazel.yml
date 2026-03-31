@@ -1,0 +1,12 @@
+name: Publish configure-vscode-for-bazel to PyPI
+
+on:
+  push:
+    tags:
+      - 'configure-vscode-for-bazel-*'
+
+jobs:
+  build-and-publish:
+    uses: ./.github/workflows/publish_package.yml
+    with:
+      package_name: configure-vscode-for-bazel
