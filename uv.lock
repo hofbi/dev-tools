@@ -29,7 +29,7 @@ wheels = [
 
 [[package]]
 name = "configure-vscode-for-bazel"
-version = "0.2.0"
+version = "0.3.0"
 source = { editable = "packages/configure_vscode_for_bazel" }
 
 [[package]]
