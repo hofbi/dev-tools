@@ -8,7 +8,13 @@ from enum import IntFlag, auto
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from whoowns.ownership_utils import GithubOwnerShip, OwnerShipEntry, check_git, get_ownership_entries
+from whoowns.ownership_utils import (
+    GithubOwnerShip,
+    OwnerShipEntry,
+    check_git,
+    get_codeowners_path,
+    get_ownership_entries,
+)
 
 from dev_tools.git_hook_utils import create_default_parser
 
@@ -133,10 +139,6 @@ def check_if_codeowners_has_ineffective_rules(all_entries: list[OwnerShipEntry])
 
     return_code |= _find_ineffective_rules(root_node, None, Path())
     return return_code
-
-
-def get_codeowners_path(repo_dir: Path) -> Path:
-    return repo_dir / ".github" / "CODEOWNERS"
 
 
 def perform_all_codeowners_checks(repo_dir: Path) -> ReturnCode:

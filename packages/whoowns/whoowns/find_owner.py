@@ -11,7 +11,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from whoowns.ownership_utils import GithubOwnerShip, check_git
+from whoowns.ownership_utils import GithubOwnerShip, check_git, get_codeowners_path
 
 
 def main() -> int:
@@ -60,7 +60,7 @@ def get_owners(item: Path, level: int) -> dict[str, tuple[str, ...]]:
 
     repo_dir = Path(check_git("rev-parse --show-toplevel", repo_dir=item.parent if item.is_file() else item).rstrip())
 
-    if not (codeowners_file := repo_dir / ".github" / "CODEOWNERS").exists():
+    if not (codeowners_file := get_codeowners_path(repo_dir)).exists():
         print(f"File {codeowners_file} not found.")
         return {}
 

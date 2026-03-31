@@ -13,6 +13,10 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
+def get_codeowners_path(repo_dir: Path) -> Path:
+    return repo_dir / ".github" / "CODEOWNERS"
+
+
 class OwnerShipEntry:
     """Represent a single entry in a CODEOWNERS file."""
 

@@ -7,14 +7,10 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
-from whoowns.ownership_utils import GithubOwnerShip, get_ownership_entries
+from whoowns.ownership_utils import GithubOwnerShip, get_codeowners_path, get_ownership_entries
 
 if TYPE_CHECKING:
     from pyfakefs.fake_filesystem import FakeFilesystem
-
-
-def get_codeowners_path(repo_dir: Path) -> Path:
-    return repo_dir / ".github" / "CODEOWNERS"
 
 
 def _create_repo_path_with_codeowners_file(fs: FakeFilesystem, codeowners_content: str = "") -> Path:

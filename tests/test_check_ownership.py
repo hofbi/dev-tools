@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
-from whoowns.ownership_utils import OwnerShipEntry
+from whoowns.ownership_utils import OwnerShipEntry, get_codeowners_path
 
 from dev_tools.check_ownership import (
     ReturnCode,
@@ -28,7 +28,7 @@ def repo_dir() -> Path:
 
 @pytest.fixture
 def codeowners(repo_dir: Path) -> Path:
-    return repo_dir / ".github" / "CODEOWNERS"
+    return get_codeowners_path(repo_dir)
 
 
 @pytest.mark.parametrize(
