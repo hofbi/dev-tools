@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: ${{ matrix.py }}
       - name: Sync deps
-        run: uv sync --extra dev
+        run: uv sync --extra dev --locked
       - name: Run test suite
         run: uv run pytest --import-mode importlib
 
