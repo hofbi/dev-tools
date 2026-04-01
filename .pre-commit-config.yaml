@@ -12,7 +12,7 @@ repos:
       - id: check-hooks-apply
       - id: check-useless-excludes
   - repo: https://github.com/hofbi/dev-tools
-    rev: 1.5.0
+    rev: 1.6.0
     hooks:
       - id: check-sys-path-append
       - id: check-sys-path-insert
@@ -133,7 +133,7 @@ repos:
         args:
           - --strict
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.19.1
+    rev: v1.20.0
     hooks:
       - id: mypy
   - repo: https://github.com/asottile/pyupgrade
@@ -155,7 +155,7 @@ repos:
           - pyflakes>=3.1.0
           - shellcheck-py>=0.9.0.5
   - repo: https://github.com/crate-ci/typos
-    rev: v1.44.0
+    rev: v1.45.0
     hooks:
       - id: typos
         exclude_types:
