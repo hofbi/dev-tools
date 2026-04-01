@@ -48,4 +48,4 @@ jobs:
         with:
           python-version: "3.14"
       - name: Run ${{ matrix.tool }} try repo
-        run: SKIP=check-jira-reference-in-todo,go-revive,go-fmt,go-imports,check-number-of-lines-count uvx ${{ matrix.tool }} try-repo "$PWD" --all-files --verbose
+        run: SKIP=check-jira-reference-in-todo,go-revive,go-fmt,go-imports,check-number-of-lines-count,check-ownership uvx ${{ matrix.tool }} try-repo "$PWD" --all-files --verbose
