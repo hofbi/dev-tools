@@ -68,7 +68,6 @@ def get_owners(item: Path, level: int) -> dict[str, tuple[str, ...]]:
     return {str(item.relative_to(repo_dir)): ownership.get_owners(item) for item in items}
 
 
-
 def print_owners(owners: dict[str, tuple[str, ...]]) -> None:
     max_path_length = max((len(item) for item in owners), default=0)
     for item, owner in owners.items():
