@@ -11,7 +11,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from whoowns.ownership_utils import GithubOwnerShip, check_git
+from whoowns.ownership_utils import GithubOwnerShip, check_git, find_codeowners_file
 
 
 def main() -> int:
@@ -67,16 +67,6 @@ def get_owners(item: Path, level: int) -> dict[str, tuple[str, ...]]:
     ownership = GithubOwnerShip(repo_dir, codeowners_file)
     return {str(item.relative_to(repo_dir)): ownership.get_owners(item) for item in items}
 
-
-def find_codeowners_file(repo_dir: Path) -> Path | None:
-    relative_codeowner_paths = [".github/CODEOWNERS", "CODEOWNERS", "docs/CODEOWNERS"]
-    for relative_path in relative_codeowner_paths:
-        codeowners_file = repo_dir / relative_path
-        if codeowners_file.exists():
-            return codeowners_file
-
-    print(f"Error: No CODEOWNERS file found (candidates: {', '.join(relative_codeowner_paths)}).")
-    return None
 
 
 def print_owners(owners: dict[str, tuple[str, ...]]) -> None:

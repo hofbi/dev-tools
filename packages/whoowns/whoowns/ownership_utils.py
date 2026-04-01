@@ -17,6 +17,17 @@ def get_codeowners_path(repo_dir: Path) -> Path:
     return repo_dir / ".github" / "CODEOWNERS"
 
 
+def find_codeowners_file(repo_dir: Path) -> Path | None:
+    relative_codeowner_paths = [".github/CODEOWNERS", "CODEOWNERS", "docs/CODEOWNERS"]
+    for relative_path in relative_codeowner_paths:
+        codeowners_file = repo_dir / relative_path
+        if codeowners_file.exists():
+            return codeowners_file
+
+    print(f"Error: No CODEOWNERS file found (candidates: {', '.join(relative_codeowner_paths)}).")
+    return None
+
+
 class OwnerShipEntry:
     """Represent a single entry in a CODEOWNERS file."""
 
