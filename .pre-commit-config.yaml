@@ -189,7 +189,6 @@ repos:
     rev: v0.48.0
     hooks:
       - id: markdownlint
-        language_version: 22.14.0
         args:
           - "--dot"
           - "--fix"
