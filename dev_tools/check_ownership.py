@@ -8,7 +8,13 @@ from enum import IntFlag, auto
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from whoowns.ownership_utils import GithubOwnerShip, OwnerShipEntry, check_git, get_ownership_entries
+from whoowns.ownership_utils import (
+    GithubOwnerShip,
+    OwnerShipEntry,
+    check_git,
+    find_codeowners_file,
+    get_ownership_entries,
+)
 
 from dev_tools.git_hook_utils import create_default_parser
 
@@ -26,6 +32,7 @@ class ReturnCode(IntFlag):
     ERROR_MULTIPLE_FOLDER_OWNERS = auto()
     ERROR_RULE_IS_INEFFECTIVE = auto()
     ERROR_FILE_WITHOUT_TEAM_OWNERSHIP = auto()
+    ERROR_NO_CODEOWNERS_FILE = auto()
 
 
 def check_if_all_codeowners_folders_exist(repo_dir: Path, entries: Iterable[OwnerShipEntry]) -> ReturnCode:
@@ -135,12 +142,11 @@ def check_if_codeowners_has_ineffective_rules(all_entries: list[OwnerShipEntry])
     return return_code
 
 
-def get_codeowners_path(repo_dir: Path) -> Path:
-    return repo_dir / ".github" / "CODEOWNERS"
-
-
 def perform_all_codeowners_checks(repo_dir: Path) -> ReturnCode:
-    codeowners = get_codeowners_path(repo_dir)
+    codeowners = find_codeowners_file(repo_dir)
+    if codeowners is None:
+        print("No CODEOWNERS file found. Skipping ownership checks.")
+        return ReturnCode.ERROR_NO_CODEOWNERS_FILE
     return_code = ReturnCode.SUCCESS
     all_entries = list(get_ownership_entries(codeowners))
 
@@ -170,10 +176,14 @@ def check_for_files_without_team_ownership(
         print("No codeowners-owner provided. Skipping check.")
         return ReturnCode.SUCCESS
 
-    codeowners = get_codeowners_path(repo_dir)
+    codeowners = find_codeowners_file(repo_dir)
+    if codeowners is None:
+        print("No CODEOWNERS file found. Skipping check.")
+        return ReturnCode.ERROR_NO_CODEOWNERS_FILE
+
     changed_files = [file.resolve() for file in changed_files]
     files_to_check = get_git_tracked_files(repo_dir) if codeowners in changed_files else changed_files
-    ownership_service = GithubOwnerShip(repo_dir, repo_dir / ".github" / "CODEOWNERS")
+    ownership_service = GithubOwnerShip(repo_dir, codeowners)
     files_owned_by_codeowners_file_owners = [
         file for file in files_to_check if file != codeowners and ownership_service.is_owned_by(file, codeowners_owner)
     ]
