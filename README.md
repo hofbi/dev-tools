@@ -30,6 +30,7 @@ These tools are used to help developers in their day-to-day tasks.
   - [`check-shellscript-set-options`](#check-shellscript-set-options)
   - [`check-jira-reference-in-todo`](#check-jira-reference-in-todo)
   - [`check-load-statement`](#check-load-statement)
+  - [`check-rule-has-tag`](#check-rule-has-tag)
   - [`check-non-existing-and-duplicate-excludes`](#check-non-existing-and-duplicate-excludes)
   - [`print-pre-commit-metrics`](#print-pre-commit-metrics)
   - [`sync-vscode-config`](#sync-vscode-config)
@@ -118,6 +119,16 @@ Example args in the pre-commit config: `args: [--rule-path=@rules_python//python
 Both arguments are required.
 Make sure you't put any ticks around the rule path and rule name.
 This hook can be used multiple times to check different rules.
+
+### `check-rule-has-tag`
+
+Check that a Bazel rule contains a specific tag in its `tags` attribute.
+
+Use `--rule-name` to select the rule and `--tag` to define the required tag.
+Example args in the pre-commit config: `args: [--rule-name=py_venv, --tag=manual]`
+
+This is useful for checks such as: `py_venv(..., tags = ["manual"])` or `pkg_tar(..., tags = ["no-remote"])`.
+An alternative would be <https://github.com/bazel-contrib/tar.bzl?tab=readme-ov-file#remote-cache-and-rbe> making use of Bazel's `--modify_execution_info` flag.
 
 ### `check-non-existing-and-duplicate-excludes`
 

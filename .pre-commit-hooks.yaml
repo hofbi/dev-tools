@@ -142,6 +142,20 @@
   language: python
   types:
     - bazel
+- id: check-rule-has-tag
+  name: Check that a Bazel rule has a specific tag
+  description: |-
+    Check that a Bazel rule contains a specific tag in its `tags` attribute.
+
+    Use `--rule-name` to select the rule and `--tag` to define the required tag.
+    Example args in the pre-commit config: `args: [--rule-name=py_venv, --tag=manual]`
+
+    This is useful for checks such as: `py_venv(..., tags = ["manual"])` or `pkg_tar(..., tags = ["no-remote"])`.
+    An alternative would be <https://github.com/bazel-contrib/tar.bzl?tab=readme-ov-file#remote-cache-and-rbe> making use of Bazel's `--modify_execution_info` flag.
+  entry: check-rule-has-tag
+  language: python
+  types:
+    - bazel
 - id: check-non-existing-and-duplicate-excludes
   name: Check non-existing and duplicate excludes in pre-commit-config
   description: |-
