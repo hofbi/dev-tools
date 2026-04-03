@@ -133,10 +133,12 @@
   description: |-
     Check that a rule is loaded from a specific rule set.
 
-    Use `--rule-path` to set the rule set and `--rule-name` to set the rule name.
-    Example args in the pre-commit config: `args: [--rule-path=@rules_python//python:defs.bzl, --rule-name=py_test]`
+    Use `--rule-path` to set the rule load path and `--rule-name` to set the rule name.
     Both arguments are required.
-    Make sure you't put any ticks around the rule path and rule name.
+
+    Example args in the pre-commit config: `args: [--rule-path=@rules_python//python:defs.bzl, --rule-name=py_test]`.
+    Make sure you don't put any ticks around the rule path and rule name.
+
     This hook can be used multiple times to check different rules.
   entry: check-load-statement
   language: python
@@ -148,10 +150,17 @@
     Check that a Bazel rule contains a specific tag in its `tags` attribute.
 
     Use `--rule-name` to select the rule and `--tag` to define the required tag.
-    Example args in the pre-commit config: `args: [--rule-name=py_venv, --tag=manual]`
+    Both arguments are required.
 
+    Example args in the pre-commit config: `args: [--rule-name=py_venv, --tag=manual]`
     This is useful for checks such as: `py_venv(..., tags = ["manual"])` or `pkg_tar(..., tags = ["no-remote"])`.
-    An alternative would be <https://github.com/bazel-contrib/tar.bzl?tab=readme-ov-file#remote-cache-and-rbe> making use of Bazel's `--modify_execution_info` flag.
+
+    Alternatively, you can
+
+    - make use of Bazel's `--modify_execution_info` flag, see <https://github.com/bazel-contrib/tar.bzl?tab=readme-ov-file#remote-cache-and-rbe>
+    - wrap the rule with a macro that always applies these tags (combine this with the [`check-load-statement`](#check-load-statement) hook to make sure users always use the wrapper)
+
+    This hook can be used multiple times to check different rules and tags.
   entry: check-rule-has-tag
   language: python
   types:
