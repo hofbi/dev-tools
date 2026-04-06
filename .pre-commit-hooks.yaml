@@ -177,7 +177,7 @@
   always_run: true
   language: python
   additional_dependencies:
-    - "pre-commit >= 3.5.0"
+    - "pre-commit >= 4.2.0"
 - id: print-pre-commit-metrics
   name: Print pre-commit metrics such as number of excluded files
   description: |-
@@ -190,7 +190,7 @@
   pass_filenames: false
   language: python
   additional_dependencies:
-    - "pre-commit >= 3.5.0"
+    - "pre-commit >= 4.2.0"
 - id: sync-vscode-config
   name: Sync VSCode Config
   description: |-
@@ -291,3 +291,5 @@
   entry: check-ownership
   language: python
   always_run: true
+  additional_dependencies:
+    - whoowns>=0.7.0
