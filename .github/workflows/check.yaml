@@ -8,6 +8,10 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   prek:
     runs-on: ubuntu-latest

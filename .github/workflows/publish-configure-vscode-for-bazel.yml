@@ -5,6 +5,10 @@ on:
     tags:
       - 'configure-vscode-for-bazel-*'
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
