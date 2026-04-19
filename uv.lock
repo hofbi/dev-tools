@@ -168,20 +168,18 @@ dev = [
     { name = "pyfakefs" },
     { name = "pytest" },
     { name = "pytest-cov" },
-    { name = "ruamel-yaml" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "configure-vscode-for-bazel", editable = "packages/configure_vscode_for_bazel" },
     { name = "pre-commit", specifier = ">=4.2.0" },
-    { name = "pyfakefs", marker = "extra == 'dev'", specifier = "==6.1.6" },
+    { name = "pyfakefs", marker = "extra == 'dev'" },
     { name = "pyjson5", specifier = ">=1.6.8" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = "==9.0.3" },
-    { name = "pytest-cov", marker = "extra == 'dev'", specifier = "==7.1.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.3" },
+    { name = "pytest-cov", marker = "extra == 'dev'" },
     { name = "regex", specifier = ">=2026.2.28" },
-    { name = "ruamel-yaml", specifier = "==0.19.1" },
-    { name = "ruamel-yaml", marker = "extra == 'dev'", specifier = "==0.19.1" },
+    { name = "ruamel-yaml", specifier = ">=0.19.1" },
     { name = "whoowns", editable = "packages/whoowns" },
 ]
 provides-extras = ["dev"]
