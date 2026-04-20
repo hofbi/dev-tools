@@ -13,10 +13,6 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-def get_codeowners_path(repo_dir: Path) -> Path:
-    return repo_dir / ".github" / "CODEOWNERS"
-
-
 def find_codeowners_file(repo_dir: Path) -> Path | None:
     relative_codeowner_paths = [".github/CODEOWNERS", "CODEOWNERS", "docs/CODEOWNERS"]
     for relative_path in relative_codeowner_paths:
