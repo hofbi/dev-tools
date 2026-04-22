@@ -69,7 +69,7 @@ def _require_list(value: object, message: str) -> list:
 
 def _require_non_empty_str(value: object, message: str) -> str:
     if not isinstance(value, str):
-        msg = message + f"with type str. Got {type(value).__name__} instead."
+        msg = message + f" with type str. Got {type(value).__name__} instead."
         raise TypeError(msg)
     if not value:
         raise ValueError(message)
