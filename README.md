@@ -186,7 +186,7 @@ sync_versions:
       - path: .pre-commit-config.yaml
         pattern: rust:\s*([0-9.]+)
   - name: python
-    version: 3.14
+    version: '3.14'
     entries:
       - path: .python-version
         pattern: ([0-9]+\.[0-9]+)

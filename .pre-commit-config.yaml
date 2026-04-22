@@ -25,6 +25,7 @@ repos:
         args:
           - --verbose
       - id: check-max-one-sentence-per-line
+      - id: sync-tool-versions
   - repo: https://github.com/pre-commit/pre-commit
     rev: v4.5.1
     hooks:
