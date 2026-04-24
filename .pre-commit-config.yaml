@@ -143,7 +143,6 @@ repos:
         language: system
         types:
           - python
-        pass_filenames: false
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.21.2
     hooks:
