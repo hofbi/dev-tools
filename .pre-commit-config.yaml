@@ -27,7 +27,7 @@ repos:
       - id: check-max-one-sentence-per-line
       - id: sync-tool-versions
   - repo: https://github.com/pre-commit/pre-commit
-    rev: v4.5.1
+    rev: v4.6.0
     hooks:
       - id: validate_manifest
   - repo: https://github.com/pre-commit-ci/pre-commit-ci-config
@@ -136,7 +136,7 @@ repos:
         args:
           - --strict
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.20.1
+    rev: v1.20.2
     hooks:
       - id: mypy
   - repo: https://github.com/asottile/pyupgrade
