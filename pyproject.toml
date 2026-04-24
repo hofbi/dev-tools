@@ -24,7 +24,8 @@ dependencies = [
 dev = [
   "pytest>=9.0.3",
   "pytest-cov",
-  "pyfakefs"
+  "pyfakefs",
+  "types-regex"
 ]
 
 [project.scripts]
@@ -40,9 +41,6 @@ generate-hook-docs = "dev_tools.generate_hook_docs:main"
 print-pre-commit-metrics = "dev_tools.print_pre_commit_metrics:main"
 sync-vscode-config = "dev_tools.sync_vscode_config:main"
 sync-tool-versions = "dev_tools.sync_tool_versions:main"
-
-[tool.ty.analysis]
-replace-imports-with-any = ["regex.**"]
 
 [tool.ty.terminal]
 error-on-warning = true
