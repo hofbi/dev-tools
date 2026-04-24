@@ -140,9 +140,6 @@ venv.bak/
 # mkdocs documentation
 /site
 
-# ty
-.ty_cache/
-
 # Pyre type checker
 .pyre/
 
