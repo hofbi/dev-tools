@@ -42,9 +42,6 @@ print-pre-commit-metrics = "dev_tools.print_pre_commit_metrics:main"
 sync-vscode-config = "dev_tools.sync_vscode_config:main"
 sync-tool-versions = "dev_tools.sync_tool_versions:main"
 
-[tool.ty.terminal]
-error-on-warning = true
-
 [tool.pytest.ini_options]
 addopts = "--cov-report term-missing --cov=dev_tools --cov=packages/whoowns/whoowns --cov=packages/configure_vscode_for_bazel/configure_vscode_for_bazel -vv"
 testpaths = [
@@ -83,6 +80,9 @@ ignore = [
   "PLR2004", # Magic values in tests are ok since they are often the expected values
   "S101" # allow assertions in tests
 ]
+
+[tool.ty.terminal]
+error-on-warning = true
 
 [tool.uv.build-backend]
 module-root = "" # required to avoid the "src" layout, which is the default for uv_build
