@@ -6,11 +6,20 @@ from __future__ import annotations
 import itertools
 import sys
 from collections import Counter
+from functools import partial
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from pre_commit.clientlib import load_config
+from pre_commit.clientlib import load_config as pre_commit_load_config
 from pre_commit.constants import CONFIG_FILE
+from pre_commit.yaml import yaml_load
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+IGNORED_HOOK_ATTRIBUTES = {
+    "pass_filenames"  # https://prek.j178.dev/configuration/#pass_filenames supports also int instead of boolean in pre-commit
+}
 
 
 class Hook:
@@ -76,6 +85,26 @@ def is_regex_pattern(exclude: str) -> bool:
 
 def has_excludes(hook_config: dict[str, str]) -> bool:
     return bool(hook_config.get("exclude")) and hook_config.get("exclude") != "^$"
+
+
+def _load_config_ignoring_hook_attributes(contents: str) -> object:
+    config = yaml_load(contents)
+
+    if isinstance(config, dict):
+        for repo in config.get("repos", []):
+            if isinstance(repo, dict):
+                for hook in repo.get("hooks", []):
+                    if isinstance(hook, dict):
+                        for attribute in IGNORED_HOOK_ATTRIBUTES:
+                            hook.pop(attribute, None)
+
+    return config
+
+
+load_config: Callable[[Path], dict[str, Any]] = partial(
+    pre_commit_load_config,
+    load_strategy=_load_config_ignoring_hook_attributes,
+)
 
 
 def load_hooks(root_directory: Path, config_file: Path) -> list[Hook]:
