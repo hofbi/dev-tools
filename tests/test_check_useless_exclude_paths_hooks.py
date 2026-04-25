@@ -177,6 +177,31 @@ def test_load_hooks_for_pass_filenames_42_should_parse_config(fs: FakeFilesystem
     assert result[0].id == "check-snake-case"
 
 
+def test_load_hooks_for_repo_builtin_should_parse_config(fs: FakeFilesystem) -> None:
+    """Reproduce issue from https://github.com/hofbi/dev-tools/issues/113."""
+    root_directory = Path("Test_directory/")
+    fs.create_dir(root_directory)
+    config_file = root_directory / Path(".pre-commit-config.yaml")
+    fs.create_file(
+        config_file,
+        contents="""
+repos:
+  - repo: meta
+    hooks:
+      - id: check-hooks-apply
+  - repo: builtin
+    hooks:
+      - id: check-added-large-files
+        exclude: foo
+""",
+    )
+
+    result = load_hooks(root_directory, config_file)
+
+    assert len(result) == 1
+    assert result[0].id == "check-added-large-files"
+
+
 def test_have_non_existent_paths_or_duplicates_for_non_existing_paths(
     capsys: pytest.CaptureFixture,
     fs: FakeFilesystem,

@@ -87,12 +87,17 @@ def has_excludes(hook_config: dict[str, str]) -> bool:
     return bool(hook_config.get("exclude")) and hook_config.get("exclude") != "^$"
 
 
-def _load_config_ignoring_hook_attributes(contents: str) -> object:
+def _load_config_with_compatibility_overrides(contents: str) -> object:
     config = yaml_load(contents)
 
     if isinstance(config, dict):
         for repo in config.get("repos", []):
             if isinstance(repo, dict):
+                # Set a version for builtin since pre-commit does not know this as local repo
+                # prek only: https://prek.j178.dev/builtin/?h=buil#2-explicit-builtin-repository
+                if repo.get("repo") == "builtin":
+                    repo.setdefault("rev", "")
+
                 for hook in repo.get("hooks", []):
                     if isinstance(hook, dict):
                         for attribute in IGNORED_HOOK_ATTRIBUTES:
@@ -103,7 +108,7 @@ def _load_config_ignoring_hook_attributes(contents: str) -> object:
 
 load_config: Callable[[Path], dict[str, Any]] = partial(
     pre_commit_load_config,
-    load_strategy=_load_config_ignoring_hook_attributes,
+    load_strategy=_load_config_with_compatibility_overrides,
 )
 
 
