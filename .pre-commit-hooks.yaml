@@ -212,7 +212,7 @@
     )
   pass_filenames: false
   additional_dependencies:
-    - pyjson5==1.6.8
+    - pyjson5==2.0.0
 - id: sync-tool-versions
   name: Sync tool versions
   description: |-
