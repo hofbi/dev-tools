@@ -107,7 +107,10 @@ def test_has_excludes_for_non_existing_excludes_should_return_false() -> None:
     assert not has_excludes({"id": "check-snake-case"})
 
 
-def _create_yaml_content(yaml_file: Path, exclude: str) -> YAML:
+def _create_yaml_content(yaml_file: Path, exclude: str, extra_attributes: dict | None = None) -> YAML:
+    if extra_attributes is None:
+        extra_attributes = {}
+
     yaml = YAML()
     return yaml.dump(
         {
@@ -127,6 +130,7 @@ def _create_yaml_content(yaml_file: Path, exclude: str) -> YAML:
                             "entry": "python3 foo.py",
                             "language": "python",
                             **({"exclude": exclude} if exclude else {}),
+                            **extra_attributes,
                         },
                     ],
                 },
@@ -152,6 +156,21 @@ def test_load_hooks_for_exclude_files(fs: FakeFilesystem) -> None:
     config_file = root_directory / Path(".pre-commit-config.yaml")
     fs.create_file(config_file)
     _create_yaml_content(config_file, "(?x)^(python/aws_auth|packages/thirdparty/)")
+
+    result = load_hooks(root_directory, config_file)
+
+    assert len(result) == 1
+    assert result[0].id == "check-snake-case"
+
+
+def test_load_hooks_for_pass_filenames_42_should_parse_config(fs: FakeFilesystem) -> None:
+    """Reproduce issue from https://github.com/hofbi/dev-tools/issues/113."""
+    root_directory = Path("Test_directory/")
+    fs.create_dir(root_directory)
+    config_file = root_directory / Path(".pre-commit-config.yaml")
+    fs.create_file(config_file)
+    _create_yaml_content(config_file, "foo", extra_attributes={"pass_filenames": 42})
+
     result = load_hooks(root_directory, config_file)
 
     assert len(result) == 1
