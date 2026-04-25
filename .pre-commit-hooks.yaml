@@ -75,7 +75,7 @@
     - -w
     - -d=false
   additional_dependencies:
-    - golang.org/x/tools/cmd/goimports@v0.27.0
+    - golang.org/x/tools/cmd/goimports@v0.44.0
   language: golang
   types:
     - go
@@ -88,7 +88,7 @@
     - -formatter
     - friendly
   additional_dependencies:
-    - github.com/mgechev/revive@v1.5.1
+    - github.com/mgechev/revive@v1.15.0
   language: golang
   types:
     - go
@@ -100,7 +100,7 @@
   pass_filenames: false
   files: (README.md|.pre-commit-hooks.yaml)
   additional_dependencies:
-    - pre-commit>=4.2.0
+    - pre-commit==4.6.0
 - id: check-number-of-lines-count
   name: Check Number of Lines
   description: |-
@@ -177,7 +177,7 @@
   always_run: true
   language: python
   additional_dependencies:
-    - "pre-commit >= 4.2.0"
+    - pre-commit==4.6.0
 - id: print-pre-commit-metrics
   name: Print pre-commit metrics such as number of excluded files
   description: |-
@@ -190,7 +190,7 @@
   pass_filenames: false
   language: python
   additional_dependencies:
-    - "pre-commit >= 4.2.0"
+    - pre-commit==4.6.0
 - id: sync-vscode-config
   name: Sync VSCode Config
   description: |-
@@ -212,7 +212,7 @@
     )
   pass_filenames: false
   additional_dependencies:
-    - pyjson5>=1.6.8
+    - pyjson5==1.6.8
 - id: sync-tool-versions
   name: Sync tool versions
   description: |-
@@ -250,7 +250,7 @@
   pass_filenames: false
   always_run: true
   additional_dependencies:
-    - pre-commit>=4.2.0
+    - pre-commit==4.6.0
 - id: check-max-one-sentence-per-line
   name: Check max one sentence per line
   description: |-
@@ -261,7 +261,7 @@
     This hook doesn't respect surrounding indentation, so be sure to combine it with <https://github.com/hukkin/mdformat> or a similar formatter that fixes indentation.
   entry: check-max-one-sentence-per-line
   additional_dependencies:
-    - regex>=2026.2.28
+    - regex==2026.2.28
   language: python
   types_or:
     - asciidoc
