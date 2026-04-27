@@ -24,7 +24,8 @@ dependencies = [
 dev = [
   "pytest>=9.0.3",
   "pytest-cov",
-  "pyfakefs"
+  "pyfakefs",
+  "types-regex"
 ]
 
 [project.scripts]
