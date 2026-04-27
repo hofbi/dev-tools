@@ -142,9 +142,12 @@ repos:
         language: python
         entry: ty check
         pass_filenames: false
-        args: [--python=.venv/]
-        additional_dependencies: [ty]
-        types: [python]
+        args:
+          - --python=.venv/
+        additional_dependencies:
+          - ty
+        types:
+          - python
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.21.2
     hooks:
