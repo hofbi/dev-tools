@@ -135,10 +135,15 @@ repos:
       - id: yamllint
         args:
           - --strict
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.20.2
+  - repo: local
     hooks:
-      - id: mypy
+      - id: ty-check
+        name: ty-check
+        entry: uvx ty check
+        language: system
+        types:
+          - python
+        pass_filenames: false
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.21.2
     hooks:

@@ -41,23 +41,11 @@ print-pre-commit-metrics = "dev_tools.print_pre_commit_metrics:main"
 sync-vscode-config = "dev_tools.sync_vscode_config:main"
 sync-tool-versions = "dev_tools.sync_tool_versions:main"
 
-[tool.mypy]
-check_untyped_defs = true
-disallow_incomplete_defs = true
-disallow_untyped_calls = true
-disallow_untyped_defs = true
-ignore_missing_imports = true
-no_implicit_optional = true
-show_column_numbers = true
-show_error_codes = true
-show_error_context = true
-strict_equality = true
-strict_optional = true
-warn_no_return = true
-warn_redundant_casts = true
-warn_return_any = true
-warn_unused_configs = true
-warn_unused_ignores = true
+[tool.ty.analysis]
+replace-imports-with-any = ["regex.**"]
+
+[tool.ty.terminal]
+error-on-warning = true
 
 [tool.pytest.ini_options]
 addopts = "--cov-report term-missing --cov=dev_tools --cov=packages/whoowns/whoowns --cov=packages/configure_vscode_for_bazel/configure_vscode_for_bazel -vv"
