@@ -7,6 +7,7 @@ ci:
   autofix_commit_msg: 'style: pre-commit.ci fixes'
   skip:
     - markdownlint # TODO: try to enable again
+    - ty-check
 
 repos:
   - repo: meta
@@ -135,10 +136,19 @@ repos:
       - id: yamllint
         args:
           - --strict
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.20.2
+  - repo: local
     hooks:
-      - id: mypy
+      - id: ty-check
+        name: ty-check
+        language: python
+        entry: ty check
+        pass_filenames: false
+        args:
+          - --python=.venv/
+        additional_dependencies:
+          - ty==0.0.32
+        types:
+          - python
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.21.2
     hooks:

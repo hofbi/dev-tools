@@ -168,6 +168,7 @@ dev = [
     { name = "pyfakefs" },
     { name = "pytest" },
     { name = "pytest-cov" },
+    { name = "types-regex" },
 ]
 
 [package.metadata]
@@ -180,6 +181,7 @@ requires-dist = [
     { name = "pytest-cov", marker = "extra == 'dev'" },
     { name = "regex", specifier = ">=2026.2.28" },
     { name = "ruamel-yaml", specifier = ">=0.19.1" },
+    { name = "types-regex", marker = "extra == 'dev'" },
     { name = "whoowns", editable = "packages/whoowns" },
 ]
 provides-extras = ["dev"]
@@ -721,6 +723,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/12/64/da524626d3b9cc40c168a13da8335fe1c51be12c0a63685cc6db7308daae/tomli-2.4.1-cp314-cp314t-win_amd64.whl", hash = "sha256:2c1c351919aca02858f740c6d33adea0c5deea37f9ecca1cc1ef9e884a619d26", size = 121196, upload-time = "2026-03-25T20:22:01.169Z" },
     { url = "https://files.pythonhosted.org/packages/5a/cd/e80b62269fc78fc36c9af5a6b89c835baa8af28ff5ad28c7028d60860320/tomli-2.4.1-cp314-cp314t-win_arm64.whl", hash = "sha256:eab21f45c7f66c13f2a9e0e1535309cee140182a9cdae1e041d02e47291e8396", size = 100393, upload-time = "2026-03-25T20:22:02.137Z" },
     { url = "https://files.pythonhosted.org/packages/7b/61/cceae43728b7de99d9b847560c262873a1f6c98202171fd5ed62640b494b/tomli-2.4.1-py3-none-any.whl", hash = "sha256:0d85819802132122da43cb86656f8d1f8c6587d54ae7dcaf30e90533028b49fe", size = 14583, upload-time = "2026-03-25T20:22:03.012Z" },
+]
+
+[[package]]
+name = "types-regex"
+version = "2026.4.4.20260408"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/92/42/d7c691fc5a8a8ecfba3f23c1c4c087a089af0767610d88c29201193d8f60/types_regex-2026.4.4.20260408.tar.gz", hash = "sha256:86b2975ff11b06e7f538839821510daea2566d9cb18bb8acde47834315409cf9", size = 13182, upload-time = "2026-04-08T04:31:11.887Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e1/92/e109654a804d11d9b60d67c7b29d64b2beac6b2e3209ea075e268e5a1021/types_regex-2026.4.4.20260408-py3-none-any.whl", hash = "sha256:d436bcc409abf9b06747b7e038014afc6d40ef7b72329655c353a1955534068f", size = 11116, upload-time = "2026-04-08T04:31:11.01Z" },
 ]
 
 [[package]]
