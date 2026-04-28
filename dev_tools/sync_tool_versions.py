@@ -230,7 +230,12 @@ def _sync_entry(spec: VersionSyncSpec, entry: SyncEntry) -> tuple[bool, list[str
 
     resolved_entry = _resolve_sync_entry(entry)
     if not resolved_entry.paths:
-        errors.append(f"Error: sync_versions entry '{spec.name}' references missing file: {entry.resolved_path}")
+        if resolved_entry.is_glob:
+            errors.append(
+                f"Error: sync_versions entry '{spec.name}' path did not match any files: {entry.resolved_path}"
+            )
+        else:
+            errors.append(f"Error: sync_versions entry '{spec.name}' references missing file: {entry.resolved_path}")
         return False, errors
 
     if not resolved_entry.is_glob and not resolved_entry.paths[0].is_file():

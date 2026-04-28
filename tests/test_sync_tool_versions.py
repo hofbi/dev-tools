@@ -92,6 +92,40 @@ def test_sync_tool_versions_supports_glob_paths(fs: FakeFilesystem) -> None:
     assert ignored_file.read_text() == 'target-version = "py313"\n'
 
 
+def test_sync_tool_versions_supports_star_glob_paths(fs: FakeFilesystem) -> None:
+    repo_root = Path("Repo")
+    fs.create_dir(repo_root / "bin")
+    first_file = repo_root / "bin" / "setup.sh"
+    second_file = repo_root / "bin" / "release.sh"
+    ignored_file = repo_root / "bin" / "README.md"
+
+    first_file.write_text("rustup default 1.87.0\n")
+    second_file.write_text("rustup default 1.87.0\n")
+    ignored_file.write_text("rustup default 1.87.0\n")
+
+    config_path = repo_root / ".versions.yaml"
+    _write_versions_config(
+        config_path,
+        {
+            "name": "tool-versions",
+            "sync_versions": [
+                {
+                    "name": "rust",
+                    "version": "1.91.0",
+                    "entries": [{"path": "bin/*.sh", "pattern": "rustup default THE_VERSION"}],
+                },
+            ],
+        },
+    )
+
+    result = main(["--config", str(config_path)])
+
+    assert result == 1
+    assert first_file.read_text() == "rustup default 1.91.0\n"
+    assert second_file.read_text() == "rustup default 1.91.0\n"
+    assert ignored_file.read_text() == "rustup default 1.87.0\n"
+
+
 def test_sync_tool_versions_for_glob_match_without_pattern_should_skip_file(
     capsys: pytest.CaptureFixture[str],
     fs: FakeFilesystem,
@@ -210,7 +244,7 @@ def test_sync_tool_versions_for_unmatched_glob_should_report_error(
     output = capsys.readouterr().out
 
     assert result == 1
-    assert "missing file" in output
+    assert "path did not match any files" in output
     assert "packages/**/pyproject.toml" in output
 
 
