@@ -191,7 +191,7 @@ sync_versions:
       - path: .python-version
         pattern: ([0-9]+\.[0-9]+)
       - path: pyproject.toml
-        pattern: target-version\s*=\s*\"py([0-9]+)\"
+        pattern: target-version\s*=\s*"py([0-9]+)"
         version_override: '314'
 ```
 
