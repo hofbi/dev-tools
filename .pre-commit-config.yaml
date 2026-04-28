@@ -7,6 +7,7 @@ ci:
   autofix_commit_msg: 'style: pre-commit.ci fixes'
   skip:
     - markdownlint # TODO: try to enable again
+    - ty-check
 
 repos:
   - repo: meta
