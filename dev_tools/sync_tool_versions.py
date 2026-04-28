@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 import sys
 from dataclasses import dataclass
+from glob import has_magic
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -33,6 +34,19 @@ class SyncEntry:
     path: Path
     pattern: str
     version_override: str | None = None
+    base_dir: Path | None = None
+
+    @property
+    def resolved_path(self) -> Path:
+        return self.path if self.base_dir is None else self.base_dir / self.path
+
+
+@dataclass(frozen=True)
+class ResolvedSyncEntry:
+    """Represent the concrete files matched by one configured sync entry."""
+
+    paths: list[Path]
+    is_glob: bool
 
 
 @dataclass(frozen=True)
@@ -91,7 +105,7 @@ def _parse_sync_entry(entry: dict, base_dir: Path, config_path: Path) -> SyncEnt
             override,
             f"Each entries item 'version_override' must be a non-empty string in {config_path}",
         )
-    return SyncEntry(base_dir / Path(path_value), pattern, override)
+    return SyncEntry(Path(path_value), pattern, override, base_dir)
 
 
 def _parse_version_spec(entry: dict, base_dir: Path, config_path: Path) -> VersionSyncSpec:
@@ -158,59 +172,98 @@ def _make_replacer(version: str) -> Callable[[re.Match[str]], str]:
     return replace
 
 
-def prepare_sync(spec: VersionSyncSpec, entry: SyncEntry) -> tuple[re.Pattern[str] | None, str | None, list[str]]:
+def _compile_pattern(spec: VersionSyncSpec, entry: SyncEntry) -> tuple[re.Pattern[str] | None, list[str]]:
     errors: list[str] = []
-    if not entry.path.is_file():
-        errors.append(f"Error: sync_versions entry '{spec.name}' references missing file: {entry.path}")
-        return None, None, errors
-
     pattern = entry.pattern
     if VERSION_PLACEHOLDER in pattern:
         if pattern.count(VERSION_PLACEHOLDER) != 1:
             errors.append(
                 f"Error: sync_versions entry '{spec.name}' pattern must include {VERSION_PLACEHOLDER} exactly once "
-                f"in {entry.path}: {entry.pattern}"
+                f"in {entry.resolved_path}: {entry.pattern}"
             )
-            return None, None, errors
+            return None, errors
         pattern = pattern.replace(VERSION_PLACEHOLDER, SEMVER_CAPTURE_GROUP)
 
     try:
         regex = re.compile(pattern, re.MULTILINE)
     except re.error as exc:
-        errors.append(f"Error: sync_versions entry '{spec.name}' has invalid pattern for {entry.path}: {exc}")
-        return None, None, errors
+        errors.append(f"Error: sync_versions entry '{spec.name}' has invalid pattern for {entry.resolved_path}: {exc}")
+        return None, errors
 
     if regex.groups != 1:
         errors.append(
             f"Error: sync_versions entry '{spec.name}' pattern must have exactly one capture group "
-            f"in {entry.path}: {entry.pattern}"
+            f"in {entry.resolved_path}: {entry.pattern}"
         )
-        return None, None, errors
+        return None, errors
 
-    content = entry.path.read_text()
+    return regex, errors
+
+
+def _resolve_sync_entry(entry: SyncEntry) -> ResolvedSyncEntry:
+    path_pattern = entry.path.as_posix()
+    is_glob = has_magic(path_pattern)
+    base_dir = entry.base_dir or Path()
+    if not is_glob:
+        return ResolvedSyncEntry(paths=[base_dir / entry.path], is_glob=False)
+
+    paths = sorted(path for path in base_dir.glob(path_pattern) if path.is_file())
+    return ResolvedSyncEntry(paths=paths, is_glob=True)
+
+
+def _sync_file(path: Path, regex: re.Pattern[str], replacement_version: str) -> tuple[bool, bool]:
+    content = path.read_text()
     if not regex.search(content):
-        errors.append(
-            f"Error: sync_versions entry '{spec.name}' pattern did not match in {entry.path}: {entry.pattern}"
-        )
-        return None, None, errors
+        return False, False
 
-    return regex, content, errors
+    new_content, _ = regex.subn(_make_replacer(replacement_version), content)
+    if new_content != content:
+        path.write_text(new_content)
+
+    return True, new_content != content
+
+
+def _sync_entry(spec: VersionSyncSpec, entry: SyncEntry) -> tuple[bool, list[str]]:
+    regex, errors = _compile_pattern(spec, entry)
+    if regex is None:
+        return False, errors
+
+    resolved_entry = _resolve_sync_entry(entry)
+    if not resolved_entry.paths:
+        errors.append(f"Error: sync_versions entry '{spec.name}' references missing file: {entry.resolved_path}")
+        return False, errors
+
+    if not resolved_entry.is_glob and not resolved_entry.paths[0].is_file():
+        errors.append(f"Error: sync_versions entry '{spec.name}' references missing file: {entry.resolved_path}")
+        return False, errors
+
+    replacement_version = entry.version_override or spec.version
+    sync_results = [_sync_file(path, regex, replacement_version) for path in resolved_entry.paths]
+
+    if not any(matched_file for matched_file, _ in sync_results):
+        if resolved_entry.is_glob:
+            errors.append(
+                f"Error: sync_versions entry '{spec.name}' pattern did not match in any files matched by "
+                f"{entry.resolved_path}: {entry.pattern}"
+            )
+        else:
+            errors.append(
+                f"Error: sync_versions entry '{spec.name}' pattern did not match in {entry.resolved_path}: "
+                f"{entry.pattern}"
+            )
+
+    return any(changed_file for _, changed_file in sync_results), errors
 
 
 def sync_versions(specs: list[VersionSyncSpec]) -> tuple[bool, list[str]]:
     changed = False
     errors: list[str] = []
-    targets = [(spec, entry) for spec in specs for entry in spec.entries]
 
-    for spec, entry in targets:
-        regex, content, entry_errors = prepare_sync(spec, entry)
-        errors.extend(entry_errors)
-        if regex is not None and content is not None:
-            replacement_version = entry.version_override or spec.version
-            new_content, _ = regex.subn(_make_replacer(replacement_version), content)
-            if new_content != content:
-                entry.path.write_text(new_content)
-                changed = True
+    for spec in specs:
+        for entry in spec.entries:
+            entry_changed, entry_errors = _sync_entry(spec, entry)
+            changed = changed or entry_changed
+            errors.extend(entry_errors)
 
     return changed, errors
 
