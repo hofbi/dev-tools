@@ -42,6 +42,20 @@ def test_update_hooks_documentation_in_readme__valid_markers__should_update_read
     assert "should be gone" not in content, "Should not have the old hooks documentation"
 
 
+def test_update_hooks_documentation_in_readme__backslash_docs__should_update_readme(fs: FakeFilesystem) -> None:
+    readme = Path("README.md")
+    fs.create_file(
+        readme,
+        contents="# Main title\n\n<!-- hooks-doc start -->\nshould be gone\n<!-- hooks-doc end -->\n## Other subtitle",
+    )
+
+    docs = r'### `my-hook`\n\nUse `pattern: RUST_VERSION\s*=\s*"THE_VERSION"`'
+
+    update_hooks_documentation_in_readme(readme, docs)
+
+    assert docs in readme.read_text()
+
+
 def test_update_hooks_documentation_in_readme__no_markers__should_not_update_readme(fs: FakeFilesystem) -> None:
     readme = Path("README.md")
     content = "# Main title\n\n## Other subtitle"

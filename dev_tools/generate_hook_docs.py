@@ -19,7 +19,7 @@ def update_hooks_documentation_in_readme(readme: Path, docs: str) -> None:
     content = readme.read_text()
     content = re.sub(
         r"(<!-- hooks-doc start -->\n)(.*?)(<!-- hooks-doc end -->)",
-        rf"\1\n{docs}\3",
+        lambda match: f"{match.group(1)}\n{docs}{match.group(3)}",
         content,
         flags=re.DOTALL,
     )
