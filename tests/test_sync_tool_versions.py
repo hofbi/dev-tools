@@ -51,6 +51,82 @@ def test_sync_tool_versions_for_multiple_matches_should_update_all(fs: FakeFiles
     assert pre_commit_config.read_text() == "rust: 1.91.0\nrust: 1.91.0\n"
 
 
+def test_sync_tool_versions_supports_glob_paths(fs: FakeFilesystem) -> None:
+    repo_root = Path("Repo")
+    fs.create_dir(repo_root / "packages" / "one")
+    fs.create_dir(repo_root / "packages" / "two")
+    first_file = repo_root / "packages" / "one" / "pyproject.toml"
+    second_file = repo_root / "packages" / "two" / "pyproject.toml"
+    ignored_file = repo_root / "packages" / "two" / "README.md"
+
+    first_file.write_text('target-version = "py313"\n')
+    second_file.write_text('target-version = "py313"\n')
+    ignored_file.write_text('target-version = "py313"\n')
+
+    config_path = repo_root / ".versions.yaml"
+    _write_versions_config(
+        config_path,
+        {
+            "name": "tool-versions",
+            "sync_versions": [
+                {
+                    "name": "python",
+                    "version": "3.14",
+                    "entries": [
+                        {
+                            "path": "packages/**/pyproject.toml",
+                            "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                            "version_override": "314",
+                        }
+                    ],
+                },
+            ],
+        },
+    )
+
+    result = main(["--config", str(config_path)])
+
+    assert result == 1
+    assert first_file.read_text() == 'target-version = "py314"\n'
+    assert second_file.read_text() == 'target-version = "py314"\n'
+    assert ignored_file.read_text() == 'target-version = "py313"\n'
+
+
+def test_sync_tool_versions_for_unmatched_glob_should_report_error(
+    capsys: pytest.CaptureFixture[str],
+    fs: FakeFilesystem,
+) -> None:
+    repo_root = Path("Repo")
+    fs.create_dir(repo_root)
+
+    config_path = repo_root / ".versions.yaml"
+    _write_versions_config(
+        config_path,
+        {
+            "name": "tool-versions",
+            "sync_versions": [
+                {
+                    "name": "python",
+                    "version": "3.14",
+                    "entries": [
+                        {
+                            "path": "packages/**/pyproject.toml",
+                            "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                        }
+                    ],
+                },
+            ],
+        },
+    )
+
+    result = main(["--config", str(config_path)])
+    output = capsys.readouterr().out
+
+    assert result == 1
+    assert "missing file" in output
+    assert "packages/**/pyproject.toml" in output
+
+
 def test_sync_tool_versions_supports_the_version_placeholder(fs: FakeFilesystem) -> None:
     repo_root = Path("Repo")
     fs.create_dir(repo_root)

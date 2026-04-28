@@ -168,6 +168,7 @@ In this case, define your `default_install_hook_types` in the pre-commit config 
 Sync tool versions across files based on `.versions.yaml`.
 Each version entry defines a `name`, a `version`, and a list of `entries` containing
 a file `path` and a regex `pattern` with a single capture group for the version.
+The `path` is relative to `.versions.yaml` and can be any glob pattern supported by `pathlib.Path.glob`.
 You can also use `THE_VERSION` in the pattern as a placeholder for that capture group
 (defaults to SemVer with an optional leading `v`).
 Use `version_override` on an entry to replace with a different value than the sync `version`.
@@ -192,6 +193,9 @@ sync_versions:
         pattern: ([0-9]+\.[0-9]+)
       - path: pyproject.toml
         pattern: target-version\s*=\s*"py([0-9]+)"
+        version_override: '314'
+      - path: packages/**/pyproject.toml
+        pattern: target-version\s*=\s*\"py([0-9]+)\"
         version_override: '314'
 ```
 

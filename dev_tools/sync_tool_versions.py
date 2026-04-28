@@ -76,7 +76,7 @@ def _require_non_empty_str(value: object, message: str) -> str:
     return value
 
 
-def _parse_sync_entry(entry: dict, base_dir: Path, config_path: Path) -> SyncEntry:
+def _parse_sync_entry(entry: dict, base_dir: Path, config_path: Path) -> list[SyncEntry]:
     path_value = _require_non_empty_str(
         entry.get("path"),
         f"Each entries item must have a non-empty 'path' in {config_path}",
@@ -91,7 +91,15 @@ def _parse_sync_entry(entry: dict, base_dir: Path, config_path: Path) -> SyncEnt
             override,
             f"Each entries item 'version_override' must be a non-empty string in {config_path}",
         )
-    return SyncEntry(base_dir / Path(path_value), pattern, override)
+    path = Path(path_value)
+    if path.is_absolute():
+        return [SyncEntry(path, pattern, override)]
+
+    matched_paths = sorted(path for path in base_dir.glob(path_value) if path.is_file())
+    if matched_paths:
+        return [SyncEntry(path, pattern, override) for path in matched_paths]
+
+    return [SyncEntry(base_dir / path, pattern, override)]
 
 
 def _parse_version_spec(entry: dict, base_dir: Path, config_path: Path) -> VersionSyncSpec:
@@ -112,12 +120,13 @@ def _parse_version_spec(entry: dict, base_dir: Path, config_path: Path) -> Versi
         raise ValueError(msg)
 
     sync_entries = [
-        _parse_sync_entry(
+        sync_entry
+        for item in entries
+        for sync_entry in _parse_sync_entry(
             _require_mapping(item, f"Each entries item must be a mapping in {config_path}"),
             base_dir,
             config_path,
         )
-        for item in entries
     ]
     return VersionSyncSpec(name=name, version=version, entries=sync_entries)
 
