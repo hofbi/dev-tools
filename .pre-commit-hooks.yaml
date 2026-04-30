@@ -165,6 +165,19 @@
   language: python
   types:
     - bazel
+- id: check-forbidden-tags
+  name: Check that Bazel rules do not use forbidden tags
+  description: |-
+    Check that Bazel rules do not contain forbidden tags in their `tags` attribute.
+
+    Use `--forbidden-tag` to define the disallowed tag.
+    Use `--allow-in-rule-kind` to permit that tag for rule kinds matching a regular expression.
+
+    Example args in the pre-commit config: `args: [--forbidden-tag=no-remote, --allow-in-rule-kind=pkg_tar]`
+  entry: check-forbidden-tags
+  language: python
+  types:
+    - bazel
 - id: check-non-existing-and-duplicate-excludes
   name: Check non-existing and duplicate excludes in pre-commit-config
   description: |-

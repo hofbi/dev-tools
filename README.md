@@ -31,6 +31,7 @@ These tools are used to help developers in their day-to-day tasks.
   - [`check-jira-reference-in-todo`](#check-jira-reference-in-todo)
   - [`check-load-statement`](#check-load-statement)
   - [`check-rule-has-tag`](#check-rule-has-tag)
+  - [`check-forbidden-tags`](#check-forbidden-tags)
   - [`check-non-existing-and-duplicate-excludes`](#check-non-existing-and-duplicate-excludes)
   - [`print-pre-commit-metrics`](#print-pre-commit-metrics)
   - [`sync-vscode-config`](#sync-vscode-config)
@@ -138,6 +139,15 @@ Alternatively, you can
 - wrap the rule with a macro that always applies these tags (combine this with the [`check-load-statement`](#check-load-statement) hook to make sure users always use the wrapper)
 
 This hook can be used multiple times to check different rules and tags.
+
+### `check-forbidden-tags`
+
+Check that Bazel rules do not contain forbidden tags in their `tags` attribute.
+
+Use `--forbidden-tag` to define the disallowed tag.
+Use `--allow-in-rule-kind` to permit that tag for rule kinds matching a regular expression.
+
+Example args in the pre-commit config: `args: [--forbidden-tag=no-remote, --allow-in-rule-kind=pkg_tar]`
 
 ### `check-non-existing-and-duplicate-excludes`
 
