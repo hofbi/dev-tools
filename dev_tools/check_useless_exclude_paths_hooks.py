@@ -6,20 +6,12 @@ from __future__ import annotations
 import itertools
 import sys
 from collections import Counter
-from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
-from pre_commit.clientlib import load_config as pre_commit_load_config
-from pre_commit.constants import CONFIG_FILE
-from pre_commit.yaml import yaml_load
+from ruamel.yaml import YAML
 
-if TYPE_CHECKING:
-    from collections.abc import Callable
-
-IGNORED_HOOK_ATTRIBUTES = {
-    "pass_filenames"  # https://prek.j178.dev/configuration/#pass_filenames supports also int instead of boolean in pre-commit
-}
+CONFIG_FILE = ".pre-commit-config.yaml"
 
 
 class Hook:
@@ -87,29 +79,11 @@ def has_excludes(hook_config: dict[str, str]) -> bool:
     return bool(hook_config.get("exclude")) and hook_config.get("exclude") != "^$"
 
 
-def _load_config_with_compatibility_overrides(contents: str) -> object:
-    config = yaml_load(contents)
+def load_config(config_file: Path) -> dict[str, Any]:
+    yaml = YAML(typ="safe")
+    config = yaml.load(config_file.read_text(encoding="utf-8"))
 
-    if isinstance(config, dict):
-        for repo in config.get("repos", []):
-            if isinstance(repo, dict):
-                # Set a version for builtin since pre-commit does not know this as local repo
-                # prek only: https://prek.j178.dev/builtin/?h=buil#2-explicit-builtin-repository
-                if repo.get("repo") == "builtin":
-                    repo.setdefault("rev", "")
-
-                for hook in repo.get("hooks", []):
-                    if isinstance(hook, dict):
-                        for attribute in IGNORED_HOOK_ATTRIBUTES:
-                            hook.pop(attribute, None)
-
-    return config
-
-
-load_config: Callable[[Path], dict[str, Any]] = partial(
-    pre_commit_load_config,
-    load_strategy=_load_config_with_compatibility_overrides,
-)
+    return config if isinstance(config, dict) else {}
 
 
 def load_hooks(root_directory: Path, config_file: Path) -> list[Hook]:

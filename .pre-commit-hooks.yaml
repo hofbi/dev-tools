@@ -190,7 +190,7 @@
   always_run: true
   language: python
   additional_dependencies:
-    - pre-commit==4.6.0
+    - ruamel-yaml==0.19.1
 - id: print-pre-commit-metrics
   name: Print pre-commit metrics such as number of excluded files
   description: |-
@@ -203,7 +203,7 @@
   pass_filenames: false
   language: python
   additional_dependencies:
-    - pre-commit==4.6.0
+    - ruamel-yaml==0.19.1
 - id: sync-vscode-config
   name: Sync VSCode Config
   description: |-
