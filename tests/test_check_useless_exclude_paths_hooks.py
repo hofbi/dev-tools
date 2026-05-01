@@ -55,6 +55,30 @@ def test_from_hook_config_for_multiple_paths(fs: FakeFilesystem) -> None:
     ]
 
 
+def test_from_hook_config_for_keep_sorted_comments_should_ignore_comments(fs: FakeFilesystem) -> None:
+    root_directory = Path("Test_directory/")
+    fs.create_dir(root_directory)
+    hook_instance = Hook.from_hook_config(
+        root_directory,
+        {
+            "id": "buildifier",
+            "exclude": r"""(?x)^(
+  # keep-sorted start ignore_prefixes=*
+  BUILD.bazel|
+  bar/.*\.png|
+  # keep-sorted end *
+  foo.txt
+)""",
+        },
+    )
+
+    assert hook_instance.id == "buildifier"
+    assert hook_instance.exclude_paths == [
+        root_directory / Path("BUILD.bazel"),
+        root_directory / Path("foo.txt"),
+    ]
+
+
 def test_find_duplicates_for_duplicate_paths_should_return_duplicate_paths(fs: FakeFilesystem) -> None:
     fs.create_file(Path("Repo/existing_path1"))
     fs.create_file(Path("Repo/existing_path2"))
