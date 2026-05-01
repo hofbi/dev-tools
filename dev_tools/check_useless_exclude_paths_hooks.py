@@ -23,18 +23,8 @@ class Hook:
 
     @classmethod
     def from_hook_config(cls: type[Hook], root_directory: Path, hook_config: dict[str, str]) -> Hook:
-        exclude_list = (
-            _remove_verbose_regex_comments(hook_config["exclude"])
-            .replace("\n", "")
-            .replace(" ", "")
-            .replace("(?x)^(", "")
-            .replace("^", "")
-            .replace(")", "")
-            .split("|")
-        )
-
         excluded_paths_list = [
-            root_directory / Path(exclude) for exclude in exclude_list if not is_regex_pattern(exclude)
+            root_directory / Path(exclude) for exclude in extract_literal_exclude_paths(hook_config["exclude"])
         ]
 
         return cls(hook_config["id"], excluded_paths_list)
@@ -73,6 +63,20 @@ class Hook:
 
 def is_regex_pattern(exclude: str) -> bool:
     return any(regex_key in exclude for regex_key in ["*", "$", "^"])
+
+
+def extract_literal_exclude_paths(exclude_regex: str) -> list[str]:
+    exclude_list = (
+        _remove_verbose_regex_comments(exclude_regex)
+        .replace("\n", "")
+        .replace(" ", "")
+        .replace("(?x)^(", "")
+        .replace("^", "")
+        .replace(")", "")
+        .split("|")
+    )
+
+    return [exclude for exclude in exclude_list if not is_regex_pattern(exclude)]
 
 
 def _remove_verbose_regex_comments(exclude: str) -> str:

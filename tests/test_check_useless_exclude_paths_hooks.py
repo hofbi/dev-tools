@@ -11,6 +11,7 @@ from ruamel.yaml import YAML
 
 from dev_tools.check_useless_exclude_paths_hooks import (
     Hook,
+    extract_literal_exclude_paths,
     has_excludes,
     have_non_existent_paths_or_duplicates,
     is_regex_pattern,
@@ -28,6 +29,33 @@ def test_is_regex_pattern_for_regex_should_be_true(pattern: str) -> None:
 
 def test_is_regex_pattern_for_no_regex_should_be_false() -> None:
     assert is_regex_pattern("packages/thirdparty/") is False
+
+
+def test_extract_literal_exclude_paths_should_ignore_regex_patterns_and_comments() -> None:
+    assert extract_literal_exclude_paths(
+        r"""(?x)^(
+  # keep-sorted start ignore_prefixes=*
+  BUILD.bazel|
+  bar/.*\.png|
+  # keep-sorted end *
+  foo.txt
+)""",
+    ) == ["BUILD.bazel", "foo.txt"]
+
+
+def test_extract_literal_exclude_paths_for_regex_only_exclude_should_return_empty_list() -> None:
+    assert extract_literal_exclude_paths(r"(?x)^(bar/.*\.png|.*\.lock$)") == []
+
+
+def test_extract_literal_exclude_paths_for_single_literal_should_return_path() -> None:
+    assert extract_literal_exclude_paths("packages/thirdparty/") == ["packages/thirdparty/"]
+
+
+def test_extract_literal_exclude_paths_for_multiple_literals_should_return_paths() -> None:
+    assert extract_literal_exclude_paths("(?x)^(python/aws_auth|packages/thirdparty/)") == [
+        "python/aws_auth",
+        "packages/thirdparty/",
+    ]
 
 
 def test_from_hook_config_for_single_path(fs: FakeFilesystem) -> None:
