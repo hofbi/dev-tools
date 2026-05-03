@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from dev_tools.build_file_parsing_util import find_rule_calls, rule_has_tag
+from dev_tools.utils.build_file_parsing_utils import find_rule_calls, rule_has_tag
 
 
 @pytest.mark.parametrize(

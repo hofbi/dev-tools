@@ -2,7 +2,7 @@ import re
 
 import pytest
 
-from dev_tools.pre_commit_utils import get_hook_by_id
+from dev_tools.utils.pre_commit_utils import get_hook_by_id
 
 
 @pytest.fixture

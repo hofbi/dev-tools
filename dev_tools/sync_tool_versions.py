@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 
 from ruamel.yaml import YAML
 
-from dev_tools.git_hook_utils import create_default_parser
+from dev_tools.utils.git_hook_utils import create_default_parser
 
 if TYPE_CHECKING:
     import argparse

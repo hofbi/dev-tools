@@ -16,7 +16,7 @@ from whoowns.ownership_utils import (
     get_ownership_entries,
 )
 
-from dev_tools.git_hook_utils import create_default_parser
+from dev_tools.utils.git_hook_utils import create_default_parser
 
 if TYPE_CHECKING:
     from argparse import Namespace
