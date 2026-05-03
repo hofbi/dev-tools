@@ -292,7 +292,7 @@
     - rst
     - tex
 - id: check-ownership
-  name: Check `.github/CODEOWNERS` consistency (can take a while)
+  name: Check CODEOWNERS consistency (can take a while)
   description: |
     Check if all folders in the `CODEOWNERS` file exist, there are no duplicates, and it has acceptable codeowners.
 
@@ -311,8 +311,10 @@
     ```
 
     If the hook detects `CODEOWNERS_OWNER` owns anything else than `.github/CODEOWNERS` it will fail to make sure every file added has an acceptable codeowner.
+
+    Supported providers and their CODEOWNERS files are GitHub, GitLab, and Bitbucket.
   entry: check-ownership
   language: python
   always_run: true
   additional_dependencies:
-    - whoowns>=0.7.0
+    - whoowns>=0.8.0

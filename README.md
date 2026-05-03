@@ -242,6 +242,8 @@ Your `CODEOWNERS` file should look as follows:
 
 If the hook detects `CODEOWNERS_OWNER` owns anything else than `.github/CODEOWNERS` it will fail to make sure every file added has an acceptable codeowner.
 
+Supported providers and their CODEOWNERS files are GitHub, GitLab, and Bitbucket.
+
 <!-- hooks-doc end -->
 
 ## Contributing
