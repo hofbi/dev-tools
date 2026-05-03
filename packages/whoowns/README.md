@@ -17,4 +17,9 @@ uvx whoowns path/to/your/file/or/folder
 
 Specify the `--level N` to see the owners of child items in the N-th directory level below your provided folder.
 
-Currently, this supports only GitHub's `CODEOWNERS` file format, but support for other formats such as GitLab may be added upon request.
+Currently, this supports `CODEOWNERS` file format for GitHub, GitLab, and Bitbucket.
+See their docs for more details on where to place the `CODEOWNERS` file.
+
+- GitHub: <https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#codeowners-file-location>
+- GitLab: <https://docs.gitlab.com/user/project/codeowners/#codeowners-file>
+- Bitbucket: <https://support.atlassian.com/bitbucket-cloud/docs/set-up-and-use-code-owners/>
