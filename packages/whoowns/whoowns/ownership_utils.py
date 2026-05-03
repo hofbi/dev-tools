@@ -14,7 +14,19 @@ if TYPE_CHECKING:
 
 
 def find_codeowners_file(repo_dir: Path) -> Path | None:
-    relative_codeowner_paths = [".github/CODEOWNERS", "CODEOWNERS", "docs/CODEOWNERS"]
+    """Try to find the codeowners file in predefined locations.
+
+    GitHub: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#codeowners-file-location
+    GitLab: https://docs.gitlab.com/user/project/codeowners/#codeowners-file
+    Bitbucket: https://support.atlassian.com/bitbucket-cloud/docs/set-up-and-use-code-owners/
+    """
+    relative_codeowner_paths = [
+        ".github/CODEOWNERS",
+        "CODEOWNERS",
+        "docs/CODEOWNERS",
+        ".gitlab/CODEOWNERS",
+        ".bitbucket/CODEOWNERS",
+    ]
     for relative_path in relative_codeowner_paths:
         codeowners_file = repo_dir / relative_path
         if codeowners_file.exists():
