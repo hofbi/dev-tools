@@ -2,17 +2,12 @@ import re
 
 import pytest
 
-from dev_tools.pre_commit_utils import get_hooks_manifest
+from dev_tools.pre_commit_utils import get_hook_by_id
 
 
 @pytest.fixture
 def cpp_tests_name_hook() -> dict:
-    hook_id = "check-cpp-and-cu-unit-test-naming-pattern"
-    for hook in get_hooks_manifest():
-        if hook["id"] == hook_id:
-            return hook
-    msg = f"{hook_id} not found in hooks manifest"
-    raise ValueError(msg)
+    return get_hook_by_id("check-cpp-and-cu-unit-test-naming-pattern")
 
 
 def test__hook_validating_test_filenames__is_defined_for_files(cpp_tests_name_hook: dict) -> None:

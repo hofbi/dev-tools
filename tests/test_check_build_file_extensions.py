@@ -2,17 +2,12 @@ import re
 
 import pytest
 
-from dev_tools.pre_commit_utils import get_hooks_manifest
+from dev_tools.pre_commit_utils import get_hook_by_id
 
 
 @pytest.fixture
 def build_file_extensions_hook() -> dict:
-    hook_id = "check-build-file-without-extensions"
-    for hook in get_hooks_manifest():
-        if hook["id"] == hook_id:
-            return hook
-    msg = f"{hook_id} not found in hooks manifest"
-    raise ValueError(msg)
+    return get_hook_by_id("check-build-file-without-extensions")
 
 
 def test__hook_validating_build_filenames__is_defined_for_files(build_file_extensions_hook: dict) -> None:
