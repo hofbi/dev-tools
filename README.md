@@ -17,6 +17,7 @@ These tools are used to help developers in their day-to-day tasks.
   - [Whoowns](#whoowns)
 - [Hooks](#hooks)
   - [`check-build-file-without-extensions`](#check-build-file-without-extensions)
+  - [`check-readme-md-consistency`](#check-readme-md-consistency)
   - [`check-snake-case`](#check-snake-case)
   - [`check-cpp-and-cu-unit-test-naming-pattern`](#check-cpp-and-cu-unit-test-naming-pattern)
   - [`check-no-dashes`](#check-no-dashes)
@@ -59,6 +60,10 @@ See the [README.md](packages/whoowns/README.md) in the `whoowns` package for doc
 ### `check-build-file-without-extensions`
 
 Check that `BUILD` files have a `.bazel` ending. `BUILD.bazel` file is the recommended way to name these files.
+
+### `check-readme-md-consistency`
+
+Check that readme files are consistently named `README.md`.
 
 ### `check-snake-case`
 

@@ -4,6 +4,12 @@
   entry: BUILD files must have a .bazel ending
   language: fail
   files: "(^|/)BUILD$"
+- id: check-readme-md-consistency
+  name: check README.md consistency
+  description: Check that readme files are consistently named `README.md`.
+  entry: Readme files must be named README.md
+  language: fail
+  files: "(^|/)(?!README\\.md$)(?i:readme)(?:\\.[^/]*)?$"
 - id: check-snake-case
   name: check snake case
   description: Check that all source code files are `snake_case`. We don't want to use `camelCase` or `kebab-case` file names.
