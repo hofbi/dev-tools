@@ -62,10 +62,7 @@ jobs:
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           python-version: "3.14"
-      - name: Build local whoowns package
-        run: uv build --package whoowns
+      - name: Use local whoowns package
+        run: sed -E -i "s|^([[:space:]]*)-[[:space:]]*whoowns[>=<~!,.0-9[:space:]]*$|\1- whoowns @ file://${PWD}/packages/whoowns|" .pre-commit-hooks.yaml
       - name: Run ${{ matrix.tool }} try repo
-        env:
-          PIP_FIND_LINKS: ${{ github.workspace }}/dist
-          UV_FIND_LINKS: ${{ github.workspace }}/dist
         run: SKIP=check-jira-reference-in-todo,go-revive,go-fmt,go-imports,check-number-of-lines-count uvx ${{ matrix.tool }} try-repo "$PWD" --all-files --color=always --verbose
