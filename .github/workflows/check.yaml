@@ -46,6 +46,8 @@ jobs:
         run: uv sync --extra dev --locked
       - name: Run test suite
         run: uv run pytest --import-mode importlib
+      - name: Build all packages
+        run: uv build --all-packages
 
   e2e-tests:
     runs-on: ubuntu-latest
