@@ -12,7 +12,7 @@ from whoowns.ownership_utils import (
     GithubOwnerShip,
     OwnerShipEntry,
     check_git,
-    find_codeowners_file,
+    find_codeowners_file_foo,
     get_ownership_entries,
 )
 
@@ -143,7 +143,7 @@ def check_if_codeowners_has_ineffective_rules(all_entries: list[OwnerShipEntry])
 
 
 def perform_all_codeowners_checks(repo_dir: Path) -> ReturnCode:
-    codeowners = find_codeowners_file(repo_dir)
+    codeowners = find_codeowners_file_foo(repo_dir)
     if codeowners is None:
         print("No CODEOWNERS file found. Skipping ownership checks.")
         return ReturnCode.ERROR_NO_CODEOWNERS_FILE
@@ -176,7 +176,7 @@ def check_for_files_without_team_ownership(
         print("No codeowners-owner provided. Skipping check.")
         return ReturnCode.SUCCESS
 
-    codeowners = find_codeowners_file(repo_dir)
+    codeowners = find_codeowners_file_foo(repo_dir)
     if codeowners is None:
         print("No CODEOWNERS file found. Skipping check.")
         return ReturnCode.ERROR_NO_CODEOWNERS_FILE
