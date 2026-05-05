@@ -63,6 +63,9 @@ jobs:
         with:
           python-version: "3.14"
       - name: Use local whoowns package
-        run: sed -E -i "s|^([[:space:]]*)-[[:space:]]*whoowns[>=<~!,.0-9[:space:]]*$|\1- whoowns @ file://${PWD}/packages/whoowns|" .pre-commit-hooks.yaml
+        run: echo "whoowns @ file://${PWD}/packages/whoowns" > constraints-e2e.txt
       - name: Run ${{ matrix.tool }} try repo
+        env:
+          PIP_CONSTRAINT: ${{ github.workspace }}/constraints-e2e.txt
+          UV_CONSTRAINT: ${{ github.workspace }}/constraints-e2e.txt
         run: SKIP=check-jira-reference-in-todo,go-revive,go-fmt,go-imports,check-number-of-lines-count uvx ${{ matrix.tool }} try-repo "$PWD" --all-files --color=always --verbose
