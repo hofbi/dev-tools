@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-def find_codeowners_file_foo(repo_dir: Path) -> Path | None:
+def find_codeowners_file(repo_dir: Path) -> Path | None:
     """Try to find the codeowners file in predefined locations.
 
     GitHub: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#codeowners-file-location

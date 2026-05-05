@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
-from whoowns.ownership_utils import GithubOwnerShip, find_codeowners_file_foo, get_ownership_entries
+from whoowns.ownership_utils import GithubOwnerShip, find_codeowners_file, get_ownership_entries
 
 if TYPE_CHECKING:
     from pyfakefs.fake_filesystem import FakeFilesystem
@@ -29,7 +29,7 @@ def _create_repo_path_with_codeowners_file(fs: FakeFilesystem, codeowners_conten
         Path(".bitbucket") / "CODEOWNERS",
     ],
 )
-def test_find_codeowners_file_foo__known_locations__returns_codeowners_path(
+def test_find_codeowners_file__known_locations__returns_codeowners_path(
     fs: FakeFilesystem,
     codeowners_file_path: Path,
 ) -> None:
@@ -37,25 +37,25 @@ def test_find_codeowners_file_foo__known_locations__returns_codeowners_path(
     codeowners_file = repo_dir / codeowners_file_path
     fs.create_file(codeowners_file)
 
-    assert find_codeowners_file_foo(repo_dir) == codeowners_file
+    assert find_codeowners_file(repo_dir) == codeowners_file
 
 
-def test_find_codeowners_file_foo__multiple_known_locations__returns_first_preferred_path(fs: FakeFilesystem) -> None:
+def test_find_codeowners_file__multiple_known_locations__returns_first_preferred_path(fs: FakeFilesystem) -> None:
     repo_dir = Path("repo")
     fs.create_file(repo_dir / "CODEOWNERS")
     fs.create_file(repo_dir / ".github" / "CODEOWNERS")
 
-    assert find_codeowners_file_foo(repo_dir) == repo_dir / ".github" / "CODEOWNERS"
+    assert find_codeowners_file(repo_dir) == repo_dir / ".github" / "CODEOWNERS"
 
 
-def test_find_codeowners_file_foo__no_known_location__returns_none(
+def test_find_codeowners_file__no_known_location__returns_none(
     fs: FakeFilesystem,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     repo_dir = Path("repo")
     fs.create_dir(repo_dir)
 
-    assert find_codeowners_file_foo(repo_dir) is None
+    assert find_codeowners_file(repo_dir) is None
     assert "Error: No CODEOWNERS file found" in capsys.readouterr().out
 
 
