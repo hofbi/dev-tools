@@ -214,3 +214,7 @@ repos:
     rev: v0.8.0
     hooks:
       - id: keep-sorted
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.13.1-1
+    hooks:
+      - id: shfmt

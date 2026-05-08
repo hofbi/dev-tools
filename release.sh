@@ -32,7 +32,7 @@ if ! grep -qE '^version = "[^"]+"' "${PYPROJECT_PATH}"; then
   exit 1
 fi
 
-sed -E '1,/^version = "[^"]+"/ s/^version = "[^"]+"/version = "'"${PACKAGE_VERSION}"'"/' "${PYPROJECT_PATH}" > "${tmp_file}"
+sed -E '1,/^version = "[^"]+"/ s/^version = "[^"]+"/version = "'"${PACKAGE_VERSION}"'"/' "${PYPROJECT_PATH}" >"${tmp_file}"
 
 if cmp -s "${PYPROJECT_PATH}" "${tmp_file}"; then
   echo "Version already set to ${PACKAGE_VERSION}; nothing to commit." >&2
