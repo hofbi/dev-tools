@@ -12,6 +12,7 @@ fi
 
 cd "${SCRIPT_DIR}"
 
+# shuck: disable=C003
 source "${SCRIPT_DIR}/scripts/check_release.sh"
 parse_release_tag "${VERSION}"
 

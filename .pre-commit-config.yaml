@@ -218,3 +218,9 @@ repos:
     rev: v3.13.1-1
     hooks:
       - id: shfmt
+  - repo: https://github.com/ewhauser/shuck
+    rev: v0.0.39
+    hooks:
+      - id: shuck
+        args:
+          - "--fix"
