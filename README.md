@@ -10,7 +10,7 @@ These tools are used to help developers in their day-to-day tasks.
 > Since I was the main author of these tools while working at Luminar, I am maintaining this fork to keep them up to date.
 > I try to contribute back if possible but since I am no longer working at Luminar, it is not guaranteed that my contributions are accepted.
 
-<!-- mdformat-toc start --slug=github --no-anchors --maxlevel=6 --minlevel=2 -->
+<!-- toc -->
 
 - [Tools](#tools)
   - [Configure VS Code for Bazel](#configure-vs-code-for-bazel)
@@ -41,7 +41,7 @@ These tools are used to help developers in their day-to-day tasks.
   - [`check-ownership`](#check-ownership)
 - [Contributing](#contributing)
 
-<!-- mdformat-toc end -->
+<!-- tocstop -->
 
 ## Tools
 
