@@ -181,7 +181,7 @@ repos:
       - id: rumdl
         language: python # ensures that Renovate can update additional_dependencies
         additional_dependencies:
-          - shuck-cli==v0.0.40
+          - shuck-cli==0.0.40
   - repo: https://github.com/jendrikseipp/vulture
     rev: v2.16
     hooks:
