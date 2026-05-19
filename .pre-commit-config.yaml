@@ -189,14 +189,6 @@ repos:
       - id: blacken-docs
         args:
           - --line-length=120
-  - repo: https://github.com/tcort/markdown-link-check
-    rev: v3.14.2
-    hooks:
-      - id: markdown-link-check
-        args:
-          - "--quiet"
-          - "--config"
-          - ".md-link-config.json"
   - repo: https://github.com/rvben/rumdl-pre-commit
     rev: v0.1.94
     hooks:
