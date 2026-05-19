@@ -32,7 +32,7 @@ pip3 install -e .
 
 That will install the tools in editable mode, meaning that your code changes will be visible as soon as you run the scripts again.
 
-## Creating a release
+## Creating a Release
 
 To release a new version of dev-tools:
 

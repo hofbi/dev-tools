@@ -1,4 +1,4 @@
-[global]
+enable = ["ALL"]
 disable = [
   "MD013"
 ]

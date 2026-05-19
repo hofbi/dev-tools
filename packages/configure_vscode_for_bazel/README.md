@@ -1,4 +1,4 @@
-# configure-vscode-for-bazel
+# Configure-Vscode-for-Bazel
 
 [![PyPI](https://img.shields.io/pypi/v/configure-vscode-for-bazel)](https://pypi.org/project/configure-vscode-for-bazel/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/configure-vscode-for-bazel)](https://pypi.org/project/configure-vscode-for-bazel/)

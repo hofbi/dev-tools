@@ -200,6 +200,7 @@ repos:
   - repo: https://github.com/rvben/rumdl-pre-commit
     rev: v0.1.94
     hooks:
+      - id: rumdl-fmt
       - id: rumdl
   - repo: https://github.com/jendrikseipp/vulture
     rev: v2.16

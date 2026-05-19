@@ -1,4 +1,4 @@
-# whoowns
+# Whoowns
 
 [![PyPI](https://img.shields.io/pypi/v/whoowns)](https://pypi.org/project/whoowns/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/whoowns)](https://pypi.org/project/whoowns/)
