@@ -59,6 +59,48 @@ date
     assert main([str(file)]) == 0
 
 
+def test_pass_for_custom_bash_options(fs: FakeFilesystem) -> None:
+    file = "valid_file.sh"
+    fs.create_file(
+        file,
+        contents="""#!/usr/bin/bash
+set -euo pipefail
+date
+""",
+        st_mode=EXECUTABLE_FILE,
+    )
+
+    assert main(["--bash-options", "set -euo pipefail", str(file)]) == 0
+
+
+def test_pass_for_custom_shell_options(fs: FakeFilesystem) -> None:
+    file = "sh_file.sh"
+    fs.create_file(
+        file,
+        contents="""#!/bin/sh
+set -eu
+date
+""",
+        st_mode=EXECUTABLE_FILE,
+    )
+
+    assert main(["--shell-options", "set -eu", str(file)]) == 0
+
+
+def test_fail_when_custom_bash_options_are_missing(fs: FakeFilesystem) -> None:
+    file = "valid_file.sh"
+    fs.create_file(
+        file,
+        contents="""#!/usr/bin/bash
+set -euxo pipefail
+date
+""",
+        st_mode=EXECUTABLE_FILE,
+    )
+
+    assert main(["--bash-options", "set -euo pipefail", str(file)]) == 1
+
+
 def test_pass_for_sh_file_from_env(fs: FakeFilesystem) -> None:
     file = "sh_file.sh"
     fs.create_file(

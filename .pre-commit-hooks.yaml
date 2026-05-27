@@ -124,7 +124,8 @@
 - id: check-shellscript-set-options
   name: Check 'set' options
   description: |-
-    Check if options are set with `set -euxo pipefail`.
+    Check if options are set with `set -euxo pipefail` for bash scripts and `set -eux` for sh scripts.
+    Use `--bash-options` or `--shell-options` to set different expected options.
     Use `# nolint(set_options)` to ignore this check.
   entry: check-shellscript-set-options
   language: python
