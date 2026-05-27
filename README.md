@@ -113,7 +113,8 @@ Default is 50 for shell scripts.
 
 ### `check-shellscript-set-options`
 
-Check if options are set with `set -euxo pipefail`.
+Check if options are set with `set -euxo pipefail` for bash scripts and `set -eux` for sh scripts.
+Use `--bash-options` or `--shell-options` to set different expected options.
 Use `# nolint(set_options)` to ignore this check.
 
 ### `check-jira-reference-in-todo`

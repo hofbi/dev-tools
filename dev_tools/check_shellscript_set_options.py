@@ -9,9 +9,10 @@ import re
 import sys
 from typing import TYPE_CHECKING
 
-from dev_tools.utils.git_hook_utils import parse_arguments
+from dev_tools.utils.git_hook_utils import create_default_parser
 
 if TYPE_CHECKING:
+    import argparse
     from collections.abc import Sequence
     from pathlib import Path
 
@@ -63,12 +64,30 @@ def _are_shell_files_valid(shell_files: list[Path], expected_options: str) -> bo
     return bool(not invalid_shell_files)
 
 
+def parse_arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    default_bash_options = "set -euxo pipefail"
+    default_sh_options = "set -eux"
+
+    parser = create_default_parser()
+    parser.add_argument(
+        "--bash-options",
+        default=default_bash_options,
+        help=f"Expected set options for bash scripts. Defaults to '{default_bash_options}'.",
+    )
+    parser.add_argument(
+        "--shell-options",
+        default=default_sh_options,
+        help=f"Expected set options for sh scripts. Defaults to '{default_sh_options}'.",
+    )
+    return parser.parse_args(argv)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_arguments(argv)
 
     are_all_files_valid, bash_files, sh_files = _separate_bash_from_sh_files(args.filenames)
-    are_all_files_valid &= _are_shell_files_valid(bash_files, "set -euxo pipefail")
-    are_all_files_valid &= _are_shell_files_valid(sh_files, "set -eux")
+    are_all_files_valid &= _are_shell_files_valid(bash_files, args.bash_options)
+    are_all_files_valid &= _are_shell_files_valid(sh_files, args.shell_options)
 
     return 0 if are_all_files_valid else 1
 
