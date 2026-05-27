@@ -6,6 +6,7 @@
     ":enablePreCommit",
     ":maintainLockFilesMonthly"
   ],
+  "minimumReleaseAge": "7 days",
   "packageRules": [
     {
       "groupName": "{{packageFileDir}} dependency updates",
