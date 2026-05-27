@@ -1,7 +1,9 @@
 # Dev Tools
 
+<!-- rumdl-disable MD013 -->
 [![Check](https://github.com/hofbi/dev-tools/actions/workflows/check.yaml/badge.svg)](https://github.com/hofbi/dev-tools/actions/workflows/check.yaml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/hofbi/dev-tools/master.svg)](https://results.pre-commit.ci/latest/github/hofbi/dev-tools/master)
+<!-- rumdl-enable MD013 -->
 
 This is a collection of Luminar's development tools.
 These tools are used to help developers in their day-to-day tasks.
@@ -67,12 +69,12 @@ Check that readme files are consistently named `README.md`.
 
 ### `check-snake-case`
 
-Check that all source code files are `snake_case`. We don't want to use `camelCase` or `kebab-case` file names.
+Check that all source code files are `snake_case`.
+We don't want to use `camelCase` or `kebab-case` file names.
 
 ### `check-cpp-and-cu-unit-test-naming-pattern`
 
-Check that all C++ and Cuda unit test files end with `_test.cpp` or `_test.cu` (no `_tests`)
-and that they're under a `/tests/` folder (not `/test/`).
+Check that all C++ and Cuda unit test files end with `_test.cpp` or `_test.cu` (no `_tests`) and that they're under a `/tests/` folder (not `/test/`).
 
 ### `check-no-dashes`
 
@@ -100,7 +102,8 @@ Run Go Revive linter
 
 ### `generate-hook-docs`
 
-Generate markdown documentation from the hook descriptions in `.pre-commit-hooks.yaml` into the `README.md`. Docs are generated between `hooks-doc start` and `hooks-doc end` markdown comment blocks.
+Generate markdown documentation from the hook descriptions in `.pre-commit-hooks.yaml` into the `README.md`.
+Docs are generated between `hooks-doc start` and `hooks-doc end` markdown comment blocks.
 
 ### `check-number-of-lines-count`
 
@@ -110,7 +113,8 @@ Default is 50 for shell scripts.
 
 ### `check-shellscript-set-options`
 
-Check if options are set with `set -euxo pipefail`. Use `# nolint(set_options)` to ignore this check.
+Check if options are set with `set -euxo pipefail`.
+Use `# nolint(set_options)` to ignore this check.
 
 ### `check-jira-reference-in-todo`
 
@@ -136,6 +140,7 @@ Use `--rule-name` to select the rule and `--tag` to define the required tag.
 Both arguments are required.
 
 Example args in the pre-commit config: `args: [--rule-name=py_venv, --tag=manual]`
+
 This is useful for checks such as: `py_venv(..., tags = ["manual"])` or `pkg_tar(..., tags = ["no-remote"])`.
 
 Alternatively, you can
@@ -181,11 +186,9 @@ In this case, define your `default_install_hook_types` in the pre-commit config 
 ### `sync-tool-versions`
 
 Sync tool versions across files based on `.versions.yaml`.
-Each version entry defines a `name`, a `version`, and a list of `entries` containing
-a file `path` and a regex `pattern` with a single capture group for the version.
+Each version entry defines a `name`, a `version`, and a list of `entries` containing a file `path` and a regex `pattern` with a single capture group for the version.
 The `path` is relative to `.versions.yaml` and can be any glob pattern supported by `pathlib.Path.glob`.
-You can also use `THE_VERSION` in the pattern as a placeholder for that capture group
-(defaults to SemVer with an optional leading `v`).
+You can also use `THE_VERSION` in the pattern as a placeholder for that capture group (defaults to SemVer with an optional leading `v`).
 Use `version_override` on an entry to replace with a different value than the sync `version`.
 If you need prefixes like `py314`, use an explicit capture group instead of `THE_VERSION`.
 
@@ -215,6 +218,9 @@ sync_versions:
 ```
 
 ### `check-max-one-sentence-per-line`
+
+This hook is a simplified version of [rumdl MD013 sentence-per-line-mode](https://github.com/rvben/rumdl/blob/main/docs/md013.md#sentence-per-line-mode).
+We recommend rumdl over this hook if possible.
 
 Check that each line in markdown files contains at most one sentence.
 This makes diffs easier to read and avoids merge conflicts.

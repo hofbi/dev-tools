@@ -12,7 +12,9 @@
   files: "(^|/)(?!README\\.md$)(?i:readme)(?:\\.[^/]*)?$"
 - id: check-snake-case
   name: check snake case
-  description: Check that all source code files are `snake_case`. We don't want to use `camelCase` or `kebab-case` file names.
+  description: |-
+    Check that all source code files are `snake_case`.
+    We don't want to use `camelCase` or `kebab-case` file names.
   entry: file names and paths must be snake_case
   language: fail
   files: "-|[A-Z]"
@@ -23,9 +25,7 @@
     - shell
 - id: check-cpp-and-cu-unit-test-naming-pattern
   name: Check c++ and cu unit test naming pattern
-  description: |-
-    Check that all C++ and Cuda unit test files end with `_test.cpp` or `_test.cu` (no `_tests`)
-    and that they're under a `/tests/` folder (not `/test/`).
+  description: Check that all C++ and Cuda unit test files end with `_test.cpp` or `_test.cu` (no `_tests`) and that they're under a `/tests/` folder (not `/test/`).
   entry: C++ and Cuda unit tests must be matched by `**/tests/**/*_test.(cpp|cu)`
   language: fail
   # The last pattern below matches any test that doesn't contain /tests/ in the path.
@@ -100,7 +100,9 @@
     - go
 - id: generate-hook-docs
   name: generate hook docs
-  description: Generate markdown documentation from the hook descriptions in `.pre-commit-hooks.yaml` into the `README.md`. Docs are generated between `hooks-doc start` and `hooks-doc end` markdown comment blocks.
+  description: |-
+    Generate markdown documentation from the hook descriptions in `.pre-commit-hooks.yaml` into the `README.md`.
+    Docs are generated between `hooks-doc start` and `hooks-doc end` markdown comment blocks.
   entry: generate-hook-docs
   language: python
   pass_filenames: false
@@ -121,7 +123,9 @@
     - --max-lines=50
 - id: check-shellscript-set-options
   name: Check 'set' options
-  description: Check if options are set with `set -euxo pipefail`. Use `# nolint(set_options)` to ignore this check.
+  description: |-
+    Check if options are set with `set -euxo pipefail`.
+    Use `# nolint(set_options)` to ignore this check.
   entry: check-shellscript-set-options
   language: python
   types_or:
@@ -159,6 +163,7 @@
     Both arguments are required.
 
     Example args in the pre-commit config: `args: [--rule-name=py_venv, --tag=manual]`
+
     This is useful for checks such as: `py_venv(..., tags = ["manual"])` or `pkg_tar(..., tags = ["no-remote"])`.
 
     Alternatively, you can
@@ -236,11 +241,9 @@
   name: Sync tool versions
   description: |-
     Sync tool versions across files based on `.versions.yaml`.
-    Each version entry defines a `name`, a `version`, and a list of `entries` containing
-    a file `path` and a regex `pattern` with a single capture group for the version.
+    Each version entry defines a `name`, a `version`, and a list of `entries` containing a file `path` and a regex `pattern` with a single capture group for the version.
     The `path` is relative to `.versions.yaml` and can be any glob pattern supported by `pathlib.Path.glob`.
-    You can also use `THE_VERSION` in the pattern as a placeholder for that capture group
-    (defaults to SemVer with an optional leading `v`).
+    You can also use `THE_VERSION` in the pattern as a placeholder for that capture group (defaults to SemVer with an optional leading `v`).
     Use `version_override` on an entry to replace with a different value than the sync `version`.
     If you need prefixes like `py314`, use an explicit capture group instead of `THE_VERSION`.
 
@@ -277,6 +280,9 @@
 - id: check-max-one-sentence-per-line
   name: Check max one sentence per line
   description: |-
+    This hook is a simplified version of [rumdl MD013 sentence-per-line-mode](https://github.com/rvben/rumdl/blob/main/docs/md013.md#sentence-per-line-mode).
+    We recommend rumdl over this hook if possible.
+
     Check that each line in markdown files contains at most one sentence.
     This makes diffs easier to read and avoids merge conflicts.
     Sentences are split on `.`, `!`, or `?` followed by a space and a capital letter.
