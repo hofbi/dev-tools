@@ -86,16 +86,16 @@ repos:
       - id: search-and-replace
         language_version: default # https://github.com/mattlqx/pre-commit-search-and-replace/issues/28
   - repo: https://github.com/pre-commit/sync-pre-commit-deps
-    rev: v0.0.3
+    rev: v0.0.4
     hooks:
       - id: sync-pre-commit-deps
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.12
+    rev: v0.15.14
     hooks:
       - id: ruff-format
       - id: ruff-check
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.11.13
+    rev: 0.11.16
     hooks:
       - id: uv-lock
   - repo: https://github.com/pre-commit/pygrep-hooks
@@ -147,7 +147,7 @@ repos:
           - --fix
           - --python=.venv/
         additional_dependencies:
-          - ty==0.0.34
+          - ty==0.0.38
         types:
           - python
   - repo: https://github.com/asottile/pyupgrade
@@ -166,13 +166,13 @@ repos:
     hooks:
       - id: actionlint
   - repo: https://github.com/crate-ci/typos
-    rev: v1.46.1
+    rev: v1.46.2
     hooks:
       - id: typos
         exclude_types:
           - svg
   - repo: https://github.com/rvben/rumdl-pre-commit
-    rev: v0.1.94
+    rev: v0.2.0
     hooks:
       - id: rumdl-fmt
         language: python # ensures that Renovate can update additional_dependencies
@@ -181,7 +181,7 @@ repos:
       - id: rumdl
         language: python # ensures that Renovate can update additional_dependencies
         additional_dependencies:
-          - shuck-cli==0.0.40
+          - shuck-cli==0.0.41
   - repo: https://github.com/jendrikseipp/vulture
     rev: v2.16
     hooks:
@@ -196,7 +196,7 @@ repos:
     hooks:
       - id: shfmt
   - repo: https://github.com/ewhauser/shuck
-    rev: v0.0.40
+    rev: v0.0.41
     hooks:
       - id: shuck
         args:
