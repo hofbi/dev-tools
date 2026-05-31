@@ -221,7 +221,7 @@ sync_versions:
 ### `check-max-one-sentence-per-line`
 
 This hook is a simplified version of [rumdl MD013 sentence-per-line-mode](https://github.com/rvben/rumdl/blob/main/docs/md013.md#sentence-per-line-mode).
-We recommend rumdl over this hook if possible.
+In contrast to rumdl, this hook doesn't reflow all your text; it only enforces one sentence per line.
 
 Check that each line in markdown files contains at most one sentence.
 This makes diffs easier to read and avoids merge conflicts.
