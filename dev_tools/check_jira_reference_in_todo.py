@@ -5,13 +5,21 @@ from __future__ import annotations
 
 import re
 import sys
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
 from dev_tools.utils.git_hook_utils import parse_arguments
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
+
+
+class IncorrectTodo(TypedDict):
+    """Incorrect Todo."""
+
+    file_path: Path
+    line_number: int
+    line_content: str
 
 
 def line_has_incorrect_todo(line: str) -> bool:
@@ -22,8 +30,8 @@ def line_has_incorrect_todo(line: str) -> bool:
     )
 
 
-def find_files_with_incorrect_jira_reference_in_todo(files: list[Path]) -> list[dict[str, object]]:
-    incorrect_files = []
+def find_files_with_incorrect_jira_reference_in_todo(files: list[Path]) -> list[IncorrectTodo]:
+    incorrect_files: list[IncorrectTodo] = []
     for file in files:
         lines = file.read_text(errors="ignore").splitlines()
         for line_number, line in enumerate(lines, 1):
