@@ -27,6 +27,11 @@ def test_is_regex_pattern_for_regex_should_be_true(pattern: str) -> None:
     assert is_regex_pattern(pattern)
 
 
+@pytest.mark.parametrize("pattern", [r"foo\$bar", r"foo\^bar", r"foo\*bar"])
+def test_is_regex_pattern_for_escaped_regex_characters_should_be_false(pattern: str) -> None:
+    assert is_regex_pattern(pattern) is False
+
+
 def test_is_regex_pattern_for_no_regex_should_be_false() -> None:
     assert is_regex_pattern("packages/thirdparty/") is False
 
@@ -55,6 +60,14 @@ def test_extract_literal_exclude_paths_for_multiple_literals_should_return_paths
     assert extract_literal_exclude_paths("(?x)^(python/aws_auth|packages/thirdparty/)") == [
         "python/aws_auth",
         "packages/thirdparty/",
+    ]
+
+
+def test_extract_literal_exclude_paths_should_unescape_literal_regex_elements() -> None:
+    assert extract_literal_exclude_paths(r"(?x)^(foo\.txt|bar\/baz|foo\$bar)") == [
+        "foo.txt",
+        "bar/baz",
+        "foo$bar",
     ]
 
 

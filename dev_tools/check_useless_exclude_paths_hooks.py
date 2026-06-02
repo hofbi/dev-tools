@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import itertools
+import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -12,6 +13,7 @@ from typing import Any
 from ruamel.yaml import YAML
 
 CONFIG_FILE = ".pre-commit-config.yaml"
+REGEX_ESCAPE_SEQUENCE = re.compile(r"\\([.^$*+?{}\[\]()|/\\])")
 
 
 class Hook:
@@ -62,7 +64,29 @@ class Hook:
 
 
 def is_regex_pattern(exclude: str) -> bool:
-    return any(regex_key in exclude for regex_key in ["*", "$", "^"])
+    return any(_contains_unescaped_char(exclude, regex_key) for regex_key in ["*", "$", "^"])
+
+
+def _contains_unescaped_char(text: str, char: str) -> bool:
+    escaped = False
+
+    for current_char in text:
+        if escaped:
+            escaped = False
+            continue
+
+        if current_char == "\\":
+            escaped = True
+            continue
+
+        if current_char == char:
+            return True
+
+    return False
+
+
+def _unescape_literal_regex_elements(text: str) -> str:
+    return REGEX_ESCAPE_SEQUENCE.sub(r"\1", text)
 
 
 def extract_literal_exclude_paths(exclude_regex: str) -> list[str]:
@@ -76,7 +100,7 @@ def extract_literal_exclude_paths(exclude_regex: str) -> list[str]:
         .split("|")
     )
 
-    return [exclude for exclude in exclude_list if not is_regex_pattern(exclude)]
+    return [_unescape_literal_regex_elements(exclude) for exclude in exclude_list if not is_regex_pattern(exclude)]
 
 
 def _remove_verbose_regex_comments(exclude: str) -> str:
