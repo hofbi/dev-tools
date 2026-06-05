@@ -167,6 +167,9 @@ Check for non existing and duplicate paths in `.pre-commit-config.yaml`.
 Background: In a big codebase, the exclude lists can be quite long and it's easy to make a typo or forget to remove an entry when it's no longer needed.
 This hook helps you to maintain a clean and up to date exclude list.
 
+Note: This hook deliberately only supports simple `|`-separated lists of file paths in `exclude` fields — complex regular expressions are not supported.
+Keeping exclusions as plain `|`-separated paths also makes it easier for humans to maintain an overview of what is excluded.
+
 ### `print-pre-commit-metrics`
 
 Count the number of excludes in `.pre-commit-config.yaml` and print them in json format.
