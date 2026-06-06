@@ -1,3 +1,10 @@
 [lint]
 select = ["ALL"]
 fixable = ["ALL"]
+ignore = [
+  "S083", # In our opinion overkill
+  "S084" # In our opinion overkill
+]
+
+[lint.per-file-ignores]
+".github/workflows/*" = ["S081"] # missing-file-description does not make sense for github actions

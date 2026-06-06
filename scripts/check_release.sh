@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# shuck: disable=C158
+
+# Validate tag version against pyproject.toml
 
 set -euxo pipefail
 
@@ -55,6 +58,7 @@ check_release_version() {
   fi
 }
 
+# shuck: disable=S085
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   set -euo pipefail
   check_release_version "${1:-}"

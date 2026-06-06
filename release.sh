@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Create a new release by bumping versions, committing, pushing, and tagging.
+
 set -euxo pipefail
 
 VERSION="${1:-}"
@@ -12,7 +14,7 @@ fi
 
 cd "${SCRIPT_DIR}"
 
-# shuck: disable=C003
+# shuck: disable=C003,C160
 source "${SCRIPT_DIR}/scripts/check_release.sh"
 parse_release_tag "${VERSION}"
 
