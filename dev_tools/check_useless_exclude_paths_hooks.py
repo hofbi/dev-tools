@@ -72,6 +72,7 @@ def extract_literal_exclude_paths(exclude_regex: str) -> list[str]:
         .replace(" ", "")
         .replace("(?x)^(", "")
         .replace("^", "")
+        .replace(r"\.", ".")
         .replace(")", "")
         .split("|")
     )

@@ -47,6 +47,10 @@ def test_extract_literal_exclude_paths_for_regex_only_exclude_should_return_empt
     assert extract_literal_exclude_paths(r"(?x)^(bar/.*\.png|.*\.lock$)") == []
 
 
+def test_extract_literal_exclude_paths_for_escaped_dot_should_unescape() -> None:
+    assert extract_literal_exclude_paths(r"(?x)^(foo/bar\.py)") == ["foo/bar.py"]
+
+
 def test_extract_literal_exclude_paths_for_single_literal_should_return_path() -> None:
     assert extract_literal_exclude_paths("packages/thirdparty/") == ["packages/thirdparty/"]
 
