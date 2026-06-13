@@ -5,8 +5,6 @@ ci:
   autoupdate_commit_msg: 'chore(deps): pre-commit.ci autoupdate'
   autoupdate_schedule: quarterly # We want to do updates via renovate since we can exclude hooks from being updated
   autofix_commit_msg: 'style: pre-commit.ci fixes'
-  skip:
-    - ty-check
 
 repos:
   - repo: meta
@@ -136,20 +134,10 @@ repos:
       - id: yamllint
         args:
           - --strict
-  - repo: local
+  - repo: https://github.com/astral-sh/ty-pre-commit
+    rev: v0.0.49
     hooks:
-      - id: ty-check
-        name: ty-check
-        language: python
-        entry: ty check
-        pass_filenames: false
-        args:
-          - --fix
-          - --python=.venv/
-        additional_dependencies:
-          - ty==0.0.38
-        types:
-          - python
+      - id: ty
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.21.2
     hooks:

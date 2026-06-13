@@ -23,7 +23,7 @@ def line_has_incorrect_todo(line: str) -> bool:
 
 
 def find_files_with_incorrect_jira_reference_in_todo(files: list[Path]) -> list[dict[str, object]]:
-    incorrect_files = []
+    incorrect_files: list[dict[str, object]] = []
     for file in files:
         lines = file.read_text(errors="ignore").splitlines()
         for line_number, line in enumerate(lines, 1):
