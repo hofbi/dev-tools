@@ -5,9 +5,8 @@ import sys
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
-from pre_commit.constants import CONFIG_FILE
-
 from dev_tools.check_useless_exclude_paths_hooks import Hook, load_hooks
+from dev_tools.utils.pre_commit_utils import PRE_COMMIT_CONFIG_FILE
 
 
 def parse_arguments() -> Namespace:
@@ -38,7 +37,7 @@ def write_pre_commit_metrics(output_data: dict, output_file: Path) -> None:
 def main() -> int:
     args = parse_arguments()
     repo_root = Path.cwd()
-    pre_commit_config = repo_root / CONFIG_FILE
+    pre_commit_config = repo_root / PRE_COMMIT_CONFIG_FILE
     hooks_list = load_hooks(repo_root, pre_commit_config)
     output_data = create_excluded_files_report(hooks_list)
 
