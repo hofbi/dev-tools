@@ -107,6 +107,8 @@
   language: python
   pass_filenames: false
   files: (README.md|.pre-commit-hooks.yaml)
+  additional_dependencies:
+    - pre-commit==4.6.0
 - id: check-number-of-lines-count
   name: Check Number of Lines
   description: |-

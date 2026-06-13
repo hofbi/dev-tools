@@ -7,7 +7,8 @@ import re
 import sys
 from pathlib import Path
 
-from dev_tools.utils.pre_commit_utils import get_hooks_manifest
+from pre_commit.clientlib import load_manifest
+from pre_commit.constants import MANIFEST_FILE
 
 
 def generate_hooks_documentation(hooks: list[dict]) -> str:
@@ -28,7 +29,8 @@ def update_hooks_documentation_in_readme(readme: Path, docs: str) -> None:
 def main() -> int:
     repo_root = Path.cwd()
     readme = repo_root / "README.md"
-    hooks = get_hooks_manifest(repo_root)
+    hooks_manifest = repo_root / MANIFEST_FILE
+    hooks = list(load_manifest(hooks_manifest))
     docs = generate_hooks_documentation(hooks)
     update_hooks_documentation_in_readme(readme, docs)
     return 0
