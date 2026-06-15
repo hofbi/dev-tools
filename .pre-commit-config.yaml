@@ -7,6 +7,7 @@ ci:
   autofix_commit_msg: 'style: pre-commit.ci fixes'
   skip:
     - ty
+    - uv-audit
 
 repos:
   - repo: meta
