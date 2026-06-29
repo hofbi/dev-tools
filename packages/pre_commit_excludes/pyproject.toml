@@ -31,6 +31,9 @@ classifiers = [
   "Topic :: Software Development :: Version Control :: Git"
 ]
 
+[project.scripts]
+remove-unnecessary-excludes = "pre_commit_excludes.remove_unnecessary_excludes:main"
+
 [project.urls]
 Homepage = "https://github.com/hofbi/dev-tools"
 Repository = "https://github.com/hofbi/dev-tools"
