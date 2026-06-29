@@ -291,7 +291,7 @@ wheels = [
 
 [[package]]
 name = "pre-commit-excludes"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "packages/pre_commit_excludes" }
 
 [[package]]
