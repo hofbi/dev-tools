@@ -14,7 +14,9 @@ authors = [
 license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+  "ruamel-yaml>=0.19.1"
+]
 keywords = ["pre-commit", "prek"]
 classifiers = [
   "Development Status :: 4 - Beta",

@@ -293,6 +293,12 @@ wheels = [
 name = "pre-commit-excludes"
 version = "0.2.0"
 source = { editable = "packages/pre_commit_excludes" }
+dependencies = [
+    { name = "ruamel-yaml" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "ruamel-yaml", specifier = ">=0.19.1" }]
 
 [[package]]
 name = "pyfakefs"
