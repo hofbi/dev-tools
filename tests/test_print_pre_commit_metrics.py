@@ -4,7 +4,8 @@ import json
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from dev_tools.check_useless_exclude_paths_hooks import Hook
+from pre_commit_excludes.hook_utils import Hook
+
 from dev_tools.print_pre_commit_metrics import create_excluded_files_report, write_pre_commit_metrics
 
 if TYPE_CHECKING:

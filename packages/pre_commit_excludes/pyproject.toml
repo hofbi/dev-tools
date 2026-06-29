@@ -1,0 +1,38 @@
+[build-system]
+requires = ["uv_build>=0.10.0,<0.12"]
+build-backend = "uv_build"
+
+[project]
+name = "pre_commit_excludes"
+version = "0.1.0"
+description = "Tools to maintain pre-commit exclude lists"
+readme = "README.md"
+authors = [
+  {name = "Markus Hofbauer"},
+  {name = "Chris Bachhuber"}
+]
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+dependencies = []
+keywords = ["pre-commit", "prek"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Software Development :: Version Control :: Git"
+]
+
+[project.urls]
+Homepage = "https://github.com/hofbi/dev-tools"
+Repository = "https://github.com/hofbi/dev-tools"
+Issues = "https://github.com/hofbi/dev-tools/issues"
+
+[tool.uv.build-backend]
+module-root = "" # required to avoid the "src" layout, which is the default for uv_build

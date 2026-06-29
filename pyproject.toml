@@ -18,6 +18,7 @@ dependencies = [
   "pyjson5>=1.6.8",
   "regex>=2026.2.28",
   "ruamel-yaml>=0.19.1",
+  "pre-commit-excludes",
   "configure-vscode-for-bazel",
   "whoowns"
 ]
@@ -46,7 +47,7 @@ sync-vscode-config = "dev_tools.sync_vscode_config:main"
 sync-tool-versions = "dev_tools.sync_tool_versions:main"
 
 [tool.pytest.ini_options]
-addopts = "--cov-report term-missing --cov=dev_tools --cov=packages/whoowns/whoowns --cov=packages/configure_vscode_for_bazel/configure_vscode_for_bazel -vv"
+addopts = "--cov-report term-missing --cov=dev_tools --cov=packages/whoowns/whoowns --cov=packages/pre_commit_excludes/pre_commit_excludes --cov=packages/configure_vscode_for_bazel/configure_vscode_for_bazel -vv"
 testpaths = [
   "tests"
 ]
@@ -92,10 +93,15 @@ module-root = "" # required to avoid the "src" layout, which is the default for 
 
 [tool.uv.sources]
 configure-vscode-for-bazel = {workspace = true}
+pre-commit-excludes = {workspace = true}
 whoowns = {workspace = true}
 
 [tool.uv.workspace]
-members = ["packages/configure_vscode_for_bazel", "packages/whoowns"]
+members = [
+  "packages/configure_vscode_for_bazel",
+  "packages/pre_commit_excludes",
+  "packages/whoowns"
+]
 
 [tool.vulture]
 min_confidence = 100

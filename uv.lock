@@ -6,6 +6,7 @@ requires-python = ">=3.10"
 members = [
     "configure-vscode-for-bazel",
     "dev-tools",
+    "pre-commit-excludes",
     "whoowns",
 ]
 
@@ -157,6 +158,7 @@ source = { editable = "." }
 dependencies = [
     { name = "configure-vscode-for-bazel" },
     { name = "pre-commit" },
+    { name = "pre-commit-excludes" },
     { name = "pyjson5" },
     { name = "regex" },
     { name = "ruamel-yaml" },
@@ -175,6 +177,7 @@ dev = [
 requires-dist = [
     { name = "configure-vscode-for-bazel", editable = "packages/configure_vscode_for_bazel" },
     { name = "pre-commit", specifier = ">=4.2.0" },
+    { name = "pre-commit-excludes", editable = "packages/pre_commit_excludes" },
     { name = "pyfakefs", marker = "extra == 'dev'" },
     { name = "pyjson5", specifier = ">=1.6.8" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.3" },
@@ -285,6 +288,11 @@ sdist = { url = "https://files.pythonhosted.org/packages/8e/22/2de9408ac81acbb8a
 wheels = [
     { url = "https://files.pythonhosted.org/packages/80/6e/4b28b62ecb6aae56769c34a8ff1d661473ec1e9519e2d5f8b2c150086b26/pre_commit-4.6.0-py2.py3-none-any.whl", hash = "sha256:e2cf246f7299edcabcf15f9b0571fdce06058527f0a06535068a86d38089f29b", size = 226472, upload-time = "2026-04-21T20:31:40.092Z" },
 ]
+
+[[package]]
+name = "pre-commit-excludes"
+version = "0.1.0"
+source = { editable = "packages/pre_commit_excludes" }
 
 [[package]]
 name = "pyfakefs"
