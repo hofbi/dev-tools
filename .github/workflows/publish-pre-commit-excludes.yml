@@ -1,0 +1,33 @@
+name: Publish pre-commit-excludes to PyPI
+
+on:
+  push:
+    tags:
+      - 'pre-commit-excludes-*'
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pre-commit-excludes
+    permissions:
+      id-token: write # Required for trusted (OIDC) publishing
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: Validate tag version against pyproject.toml
+        run: ./scripts/check_release.sh "${{ github.ref_name }}"
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: "3.12"
+      - name: Build pre-commit-excludes package
+        run: uv build --package pre-commit-excludes
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
+        with:
+          packages-dir: dist/

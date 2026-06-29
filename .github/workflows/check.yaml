@@ -64,11 +64,13 @@ jobs:
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           python-version: "3.14"
-      - name: Use local whoowns package
-        run: echo "whoowns @ file://${PWD}/packages/whoowns" > constraints-e2e.txt
+      - name: Prepare local package constraints
+        run: |
+          echo "whoowns @ file://${PWD}/packages/whoowns" > constraints-e2e.txt
+          echo "pre-commit-excludes @ file://${PWD}/packages/pre_commit_excludes" >> constraints-e2e.txt
       - name: Run ${{ matrix.tool }} try repo
         env:
-          # Do not set UV_CONSTRAINT here: prek/uv already resolves whoowns from the copied try-repo workspace.
+          # Do not set UV_CONSTRAINT here: prek/uv already resolves local packages from the copied try-repo workspace.
           # Constraining uv to the original checkout creates conflicting file URLs for the same package.
           PIP_CONSTRAINT: ${{ github.workspace }}/constraints-e2e.txt
         run: SKIP=check-jira-reference-in-todo,go-revive,go-fmt,go-imports,check-number-of-lines-count uvx "${{ matrix.tool }}" try-repo "$PWD" --all-files --color=always --verbose

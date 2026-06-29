@@ -6,8 +6,7 @@ from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
 from pre_commit.constants import CONFIG_FILE
-
-from dev_tools.check_useless_exclude_paths_hooks import Hook, load_hooks
+from pre_commit_excludes.hook_utils import Hook, load_hooks
 
 
 def parse_arguments() -> Namespace:
