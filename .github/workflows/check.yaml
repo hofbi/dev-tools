@@ -72,5 +72,5 @@ jobs:
         env:
           # Do not set UV_CONSTRAINT here: prek/uv already resolves local packages from the copied try-repo workspace.
           # Constraining uv to the original checkout creates conflicting file URLs for the same package.
-          PIP_CONSTRAINT: ${{ github.workspace }}/constraints-e2e.txt
+          PIP_BUILD_CONSTRAINT: ${{ github.workspace }}/constraints-e2e.txt
         run: SKIP=check-jira-reference-in-todo,go-revive,go-fmt,go-imports,check-number-of-lines-count uvx "${{ matrix.tool }}" try-repo "$PWD" --all-files --color=always --verbose
