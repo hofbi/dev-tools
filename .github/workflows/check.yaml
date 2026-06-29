@@ -67,7 +67,7 @@ jobs:
       - name: Prepare local package constraints
         run: |
           echo "whoowns @ file://${PWD}/packages/whoowns" > constraints-e2e.txt
-          echo "pre-commit-excludes @ file://${PWD}/packages/pre-commit-excludes" >> constraints-e2e.txt
+          echo "pre-commit-excludes @ file://${PWD}/packages/pre_commit_excludes" >> constraints-e2e.txt
       - name: Run ${{ matrix.tool }} try repo
         env:
           # Do not set UV_CONSTRAINT here: prek/uv already resolves local packages from the copied try-repo workspace.
