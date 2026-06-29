@@ -9,7 +9,9 @@ from pre_commit_excludes.hook_utils import (
     extract_literal_exclude_paths,
     has_excludes,
     is_regex_pattern,
+    load_config,
     load_hooks,
+    write_config,
 )
 from ruamel.yaml import YAML
 
@@ -273,6 +275,31 @@ repos:
     result = load_hooks(root_directory, config_file)
 
     assert len(result) == 0
+
+
+def test_write_config_should_write_loadable_yaml_file(fs: FakeFilesystem) -> None:
+    config_file = Path("Test_directory/.pre-commit-config.yaml")
+    fs.create_dir(config_file.parent)
+    config = {
+        "repos": [
+            {
+                "repo": "local",
+                "hooks": [
+                    {
+                        "id": "check-snake-case",
+                        "name": "check snake case",
+                        "entry": "python3 foo.py",
+                        "language": "python",
+                        "exclude": "packages/thirdparty/",
+                    },
+                ],
+            },
+        ],
+    }
+
+    write_config(config_file, config)
+
+    assert load_config(config_file) == config
 
 
 def test_count_excluded_files_for_single_file(fs: FakeFilesystem) -> None:

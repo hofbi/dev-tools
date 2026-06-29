@@ -89,6 +89,12 @@ def load_config(config_file: Path) -> dict[str, Any]:
     return config if isinstance(config, dict) else {}
 
 
+def write_config(config_file: Path, config: dict[str, Any]) -> None:
+    yaml = YAML(typ="safe")
+    with config_file.open("w", encoding="utf-8") as output:
+        yaml.dump(config, output)
+
+
 def load_hooks(root_directory: Path, config_file: Path) -> list[Hook]:
     config = load_config(config_file)
     hook_configs = itertools.chain(*[repo["hooks"] for repo in config["repos"]])
