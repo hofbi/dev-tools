@@ -7,7 +7,7 @@ reflow-mode = "sentence-per-line"
 
 [code-block-tools]
 enabled = true
-on-missing-language-definition = "fail"
+# on-missing-language-definition = "fail" # missing yaml for now
 on-missing-tool-binary = "fail"
 
 [code-block-tools.languages]
