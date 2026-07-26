@@ -301,6 +301,19 @@
     - markdown
     - rst
     - tex
+- id: check-repo-links
+  name: Check @repo links
+  description: |-
+    Check that `@repo` relative links in text files point to existing files or directories.
+
+    Mark a link with the literal `@repo` marker followed by whitespace and a path, e.g. `// see @repo src/foo.hpp`.
+    Paths starting with `/` are resolved from the repository root, all others relative to the file the link appears in.
+    Existence is checked against `git ls-files`, so links may point to any tracked file or directory.
+    URLs, mailto links and anchor-only targets are ignored.
+  entry: check-repo-links
+  language: python
+  types:
+    - text
 - id: check-ownership
   name: Check CODEOWNERS consistency (can take a while)
   description: |

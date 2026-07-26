@@ -40,6 +40,7 @@ These tools are used to help developers in their day-to-day tasks.
   - [`sync-vscode-config`](#sync-vscode-config)
   - [`sync-tool-versions`](#sync-tool-versions)
   - [`check-max-one-sentence-per-line`](#check-max-one-sentence-per-line)
+  - [`check-repo-links`](#check-repo-links)
   - [`check-ownership`](#check-ownership)
 - [Contributing](#contributing)
 
@@ -231,6 +232,15 @@ This makes diffs easier to read and avoids merge conflicts.
 Sentences are split on `.`, `!`, or `?` followed by a space and a capital letter.
 
 This hook doesn't respect surrounding indentation, so be sure to combine it with <https://github.com/hukkin/mdformat> or a similar formatter that fixes indentation.
+
+### `check-repo-links`
+
+Check that `@repo` relative links in text files point to existing files or directories.
+
+Mark a link with the literal `@repo` marker followed by whitespace and a path, e.g. `// see @repo src/foo.hpp`.
+Paths starting with `/` are resolved from the repository root, all others relative to the file the link appears in.
+Existence is checked against `git ls-files`, so links may point to any tracked file or directory.
+URLs, mailto links and anchor-only targets are ignored.
 
 ### `check-ownership`
 
