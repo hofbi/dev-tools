@@ -102,6 +102,11 @@ def build_set_of_valid_link_targets(tracked_files: Iterable[str]) -> set[str]:
     return valid_targets
 
 
+def build_target_existence_check(tracked_files: Iterable[str]) -> Callable[[str], bool]:
+    """Return a predicate reporting whether a link target is a tracked file or directory."""
+    return build_set_of_valid_link_targets(tracked_files).__contains__
+
+
 def get_repository_root() -> Path:
     output = subprocess.run(
         ["git", "rev-parse", "--show-toplevel"],  # noqa: S607
@@ -132,7 +137,7 @@ def print_broken_links(broken_links: list[BrokenLink]) -> None:
 def main(argv: Sequence[str] | None = None) -> int:
     files = parse_arguments(argv).filenames
     repository_root = get_repository_root()
-    does_target_exist = build_set_of_valid_link_targets(list_tracked_files(repository_root)).__contains__
+    does_target_exist = build_target_existence_check(list_tracked_files(repository_root))
     broken_links = find_broken_links(files, repository_root, does_target_exist)
     print_broken_links(broken_links)
     return 1 if broken_links else 0

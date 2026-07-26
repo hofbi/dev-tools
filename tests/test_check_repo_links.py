@@ -11,6 +11,7 @@ import pytest
 from dev_tools.check_repo_links import (
     BrokenLink,
     build_set_of_valid_link_targets,
+    build_target_existence_check,
     find_broken_links,
     find_broken_links_in_content,
     main,
@@ -20,19 +21,13 @@ from dev_tools.check_repo_links import (
 )
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
-
     from pyfakefs.fake_filesystem import FakeFilesystem
 
 TRACKED = ["README.md", "docs/readme.md", "src/foo.hpp", "src/util/helper.h", "src/c.h"]
 
 
-def exists(*paths: str) -> Callable[[str], bool]:
-    return build_set_of_valid_link_targets(paths).__contains__
-
-
 def scan(text: str, file_path: str = "src/foo.cpp", *, tracked: tuple[str, ...] = ()) -> list[BrokenLink]:
-    return find_broken_links_in_content(text.encode(), file_path, exists(*tracked))
+    return find_broken_links_in_content(text.encode(), file_path, build_target_existence_check(tracked))
 
 
 # --- resolve_link_target --------------------------------------------------------------------
@@ -128,7 +123,9 @@ def test_prefilter_skips_files_without_marker() -> None:
 def test_find_broken_links_reads_files(fs: FakeFilesystem) -> None:
     fs.create_file(Path("src/a.cpp"), contents="// @repo missing.h\n")
     fs.create_file(Path("src/b.cpp"), contents="// @repo a.cpp\n")
-    broken = find_broken_links([Path("src/a.cpp"), Path("src/b.cpp")], Path.cwd(), exists("src/a.cpp"))
+    broken = find_broken_links(
+        [Path("src/a.cpp"), Path("src/b.cpp")], Path.cwd(), build_target_existence_check(["src/a.cpp"])
+    )
     assert broken == [BrokenLink("src/a.cpp", 1, 10, "missing.h")]
 
 
