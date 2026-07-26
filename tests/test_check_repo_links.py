@@ -36,13 +36,22 @@ def scan(text: str, file_path: str = "src/foo.cpp", *, tracked: tuple[str, ...] 
 @pytest.mark.parametrize(
     ("link", "file_path", "expected"),
     [
-        ("foo.hpp", "src/foo.cpp", "src/foo.hpp"),  # sibling file
-        ("../c.h", "src/util/helper.h", "src/c.h"),  # parent traversal
-        ("/src/foo.hpp", "docs/readme.md", "src/foo.hpp"),  # leading slash = repo root
-        ("readme.md", "README.md", "readme.md"),  # file at the repo root
-        ("foo.hpp#section", "src/foo.cpp", "src/foo.hpp"),  # anchor stripped
-        ("foo.hpp?v=1", "src/foo.cpp", "src/foo.hpp"),  # query stripped
-        ("foo.hpp.", "src/foo.cpp", "src/foo.hpp"),  # trailing prose punctuation stripped
+        ("foo.hpp", "src/foo.cpp", "src/foo.hpp"),
+        ("../c.h", "src/util/helper.h", "src/c.h"),
+        ("/src/foo.hpp", "docs/readme.md", "src/foo.hpp"),
+        ("readme.md", "README.md", "readme.md"),
+        ("foo.hpp#section", "src/foo.cpp", "src/foo.hpp"),
+        ("foo.hpp?v=1", "src/foo.cpp", "src/foo.hpp"),
+        ("foo.hpp.", "src/foo.cpp", "src/foo.hpp"),
+    ],
+    ids=[
+        "sibling file",
+        "parent traversal",
+        "leading slash is repo root",
+        "file at repo root",
+        "anchor stripped",
+        "query stripped",
+        "trailing punctuation stripped",
     ],
 )
 def test_resolve_link_target(link: str, file_path: str, expected: str) -> None:
@@ -79,26 +88,18 @@ def test_broken_link_is_reported_with_location() -> None:
     assert scan("// see @repo missing/file.md here") == [BrokenLink("src/foo.cpp", 1, 14, "missing/file.md")]
 
 
-def test_valid_link_is_not_reported() -> None:
-    assert scan("// see @repo foo.hpp for details", tracked=("src/foo.hpp",)) == []
-
-
-def test_doxygen_param_tag_is_ignored() -> None:
-    # `@report...` has no whitespace after `@repo`, so the marker never matches.
-    assert scan(" * @report_new: populate the report\n * @reported: bool") == []
-
-
-def test_npm_scope_is_ignored() -> None:
-    # `@repo/ui` is followed by `/`, not whitespace, so it is not our marker.
-    assert scan('import { Button } from "@repo/ui";') == []
-
-
-def test_marker_must_not_follow_word_character() -> None:
-    assert scan("foo@repo missing.md") == []
-
-
-def test_url_target_is_skipped() -> None:
-    assert scan("// @repo https://example.com/page") == []
+@pytest.mark.parametrize(
+    ("text", "tracked"),
+    [
+        pytest.param("// see @repo foo.hpp for details", ("src/foo.hpp",), id="valid link"),
+        pytest.param(" * @report_new: populate the report", (), id="doxygen @report tag"),
+        pytest.param('import { Button } from "@repo/ui";', (), id="npm @repo scope"),
+        pytest.param("foo@repo missing.md", (), id="marker preceded by word char"),
+        pytest.param("// @repo https://example.com/page", (), id="url target"),
+    ],
+)
+def test_scan_reports_no_broken_links(text: str, tracked: tuple[str, ...]) -> None:
+    assert scan(text, tracked=tracked) == []
 
 
 def test_leading_slash_resolves_from_repo_root() -> None:
