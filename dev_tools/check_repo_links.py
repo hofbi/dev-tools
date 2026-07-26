@@ -9,13 +9,13 @@ import posixpath
 import re
 import subprocess
 import sys
+from pathlib import Path
 from typing import TYPE_CHECKING, NamedTuple
 
 from dev_tools.utils.git_hook_utils import parse_arguments
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Sequence
-    from pathlib import Path
 
 # The marker must not be preceded by a word character or another ``@`` (so ``@report``, ``foo@repo``
 # and ``@@repo`` never match) and must be followed by same-line whitespace and a non-whitespace path.
@@ -78,10 +78,15 @@ def find_broken_links_in_content(
     return broken_links
 
 
-def find_broken_links(files_to_check: list[Path], does_target_exist: Callable[[str], bool]) -> list[BrokenLink]:
+def find_broken_links(
+    files_to_check: list[Path],
+    repository_root: Path,
+    does_target_exist: Callable[[str], bool],
+) -> list[BrokenLink]:
     broken_links: list[BrokenLink] = []
     for file in files_to_check:
-        broken_links.extend(find_broken_links_in_content(file.read_bytes(), file.as_posix(), does_target_exist))
+        repo_relative_path = file.resolve().relative_to(repository_root).as_posix()
+        broken_links.extend(find_broken_links_in_content(file.read_bytes(), repo_relative_path, does_target_exist))
     return broken_links
 
 
@@ -97,8 +102,22 @@ def build_set_of_valid_link_targets(tracked_files: Iterable[str]) -> set[str]:
     return valid_targets
 
 
-def list_tracked_files() -> list[str]:
-    output = subprocess.run(["git", "ls-files", "-z"], capture_output=True, check=True).stdout  # noqa: S607
+def get_repository_root() -> Path:
+    output = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],  # noqa: S607
+        capture_output=True,
+        check=True,
+        text=True,
+    ).stdout
+    return Path(output.strip())
+
+
+def list_tracked_files(repository_root: Path) -> list[str]:
+    output = subprocess.run(
+        ["git", "-C", str(repository_root), "ls-files", "-z"],  # noqa: S607
+        capture_output=True,
+        check=True,
+    ).stdout
     return [path.decode("utf-8", "surrogateescape") for path in output.split(b"\0") if path]
 
 
@@ -112,8 +131,9 @@ def print_broken_links(broken_links: list[BrokenLink]) -> None:
 
 def main(argv: Sequence[str] | None = None) -> int:
     files = parse_arguments(argv).filenames
-    does_target_exist = build_set_of_valid_link_targets(list_tracked_files()).__contains__
-    broken_links = find_broken_links(files, does_target_exist)
+    repository_root = get_repository_root()
+    does_target_exist = build_set_of_valid_link_targets(list_tracked_files(repository_root)).__contains__
+    broken_links = find_broken_links(files, repository_root, does_target_exist)
     print_broken_links(broken_links)
     return 1 if broken_links else 0
 

@@ -128,7 +128,7 @@ def test_prefilter_skips_files_without_marker() -> None:
 def test_find_broken_links_reads_files(fs: FakeFilesystem) -> None:
     fs.create_file(Path("src/a.cpp"), contents="// @repo missing.h\n")
     fs.create_file(Path("src/b.cpp"), contents="// @repo a.cpp\n")
-    broken = find_broken_links([Path("src/a.cpp"), Path("src/b.cpp")], exists("src/a.cpp"))
+    broken = find_broken_links([Path("src/a.cpp"), Path("src/b.cpp")], Path.cwd(), exists("src/a.cpp"))
     assert broken == [BrokenLink("src/a.cpp", 1, 10, "missing.h")]
 
 
@@ -156,7 +156,8 @@ def test_main_returns_one_for_broken_links(
     capsys: pytest.CaptureFixture,
 ) -> None:
     fs.create_file(Path("src/a.cpp"), contents="// @repo missing.h\n")
-    monkeypatch.setattr("dev_tools.check_repo_links.list_tracked_files", lambda: ["src/a.cpp"])
+    monkeypatch.setattr("dev_tools.check_repo_links.get_repository_root", Path.cwd)
+    monkeypatch.setattr("dev_tools.check_repo_links.list_tracked_files", lambda _root: ["src/a.cpp"])
     assert main(["src/a.cpp"]) == 1
     assert "src/a.cpp:1:10 missing.h" in capsys.readouterr().out
 
@@ -164,5 +165,6 @@ def test_main_returns_one_for_broken_links(
 def test_main_returns_zero_for_valid_links(fs: FakeFilesystem, monkeypatch: pytest.MonkeyPatch) -> None:
     fs.create_file(Path("src/a.cpp"), contents="// @repo b.h\n")
     fs.create_file(Path("src/b.h"), contents="")
-    monkeypatch.setattr("dev_tools.check_repo_links.list_tracked_files", lambda: ["src/a.cpp", "src/b.h"])
+    monkeypatch.setattr("dev_tools.check_repo_links.get_repository_root", Path.cwd)
+    monkeypatch.setattr("dev_tools.check_repo_links.list_tracked_files", lambda _root: ["src/a.cpp", "src/b.h"])
     assert main(["src/a.cpp"]) == 0
