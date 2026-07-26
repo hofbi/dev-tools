@@ -87,16 +87,16 @@ def find_broken_links(files: list[Path], target_exists: Callable[[str], bool]) -
     return broken
 
 
-def build_valid_target_set(tracked_files: Iterable[str]) -> set[str]:
+def build_set_of_valid_link_targets(tracked_files: Iterable[str]) -> set[str]:
     """Build the set of valid link targets: every tracked file plus all of their parent directories."""
-    valid = set(tracked_files)
-    for path in list(valid):
+    valid_targets = set(tracked_files)
+    for path in list(valid_targets):
         parent = posixpath.dirname(path)
         while parent:
-            valid.add(parent)
+            valid_targets.add(parent)
             parent = posixpath.dirname(parent)
-    valid.add(".")  # the repository root itself
-    return valid
+    valid_targets.add(".")  # the repository root itself
+    return valid_targets
 
 
 def list_tracked_files() -> list[str]:
@@ -115,7 +115,7 @@ def report_broken_links(broken: list[BrokenLink]) -> bool:
 
 def main(argv: Sequence[str] | None = None) -> int:
     files = parse_arguments(argv).filenames
-    target_exists = build_valid_target_set(list_tracked_files()).__contains__
+    target_exists = build_set_of_valid_link_targets(list_tracked_files()).__contains__
     return 1 if report_broken_links(find_broken_links(files, target_exists)) else 0
 
 

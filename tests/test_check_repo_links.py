@@ -10,7 +10,7 @@ import pytest
 
 from dev_tools.check_repo_links import (
     BrokenLink,
-    build_valid_target_set,
+    build_set_of_valid_link_targets,
     find_broken_links,
     find_broken_links_in_content,
     main,
@@ -28,7 +28,7 @@ TRACKED = ["README.md", "docs/readme.md", "src/foo.hpp", "src/util/helper.h", "s
 
 
 def exists(*paths: str) -> Callable[[str], bool]:
-    return build_valid_target_set(paths).__contains__
+    return build_set_of_valid_link_targets(paths).__contains__
 
 
 def scan(text: str, file_path: str = "src/foo.cpp", *, tracked: tuple[str, ...] = ()) -> list[BrokenLink]:
@@ -72,7 +72,7 @@ def test_offset_to_line_and_column() -> None:
 
 
 def test_build_valid_target_set_includes_files_dirs_and_root() -> None:
-    valid = build_valid_target_set(["src/util/helper.h", "README.md"])
+    valid = build_set_of_valid_link_targets(["src/util/helper.h", "README.md"])
     assert valid.issuperset({"src/util/helper.h", "src/util", "src", "README.md", "."})
     assert "src/missing.h" not in valid
 
