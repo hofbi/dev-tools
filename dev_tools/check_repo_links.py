@@ -47,10 +47,8 @@ def resolve_link_target(link: str, file_path: str) -> str | None:
     if not link or "://" in link or link.startswith("mailto:"):
         return None
     if link.startswith("/"):
-        base, relative = "", link[1:]
-    else:
-        base, relative = posixpath.dirname(file_path), link
-    return posixpath.normpath(posixpath.join(base, relative))
+        return posixpath.normpath(link[1:])
+    return posixpath.normpath(posixpath.join(posixpath.dirname(file_path), link))
 
 
 def offset_to_line_and_column(content: bytes, offset: int) -> tuple[int, int]:
