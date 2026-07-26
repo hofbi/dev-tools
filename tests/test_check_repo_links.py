@@ -15,7 +15,7 @@ from dev_tools.check_repo_links import (
     find_broken_links_in_content,
     main,
     offset_to_line_and_column,
-    report_broken_links,
+    print_broken_links,
     resolve_link_target,
 )
 
@@ -135,15 +135,15 @@ def test_find_broken_links_reads_files(fs: FakeFilesystem) -> None:
 # --- report_broken_links --------------------------------------------------------------------
 
 
-def test_report_broken_links_prints_findings(capsys: pytest.CaptureFixture) -> None:
-    assert report_broken_links([BrokenLink("src/a.cpp", 3, 12, "missing.h")])
+def test_print_broken_links_prints_findings(capsys: pytest.CaptureFixture) -> None:
+    print_broken_links([BrokenLink("src/a.cpp", 3, 12, "missing.h")])
     out = capsys.readouterr().out
     assert "Found broken links:" in out
     assert "src/a.cpp:3:12 missing.h" in out
 
 
-def test_report_broken_links_is_silent_when_empty(capsys: pytest.CaptureFixture) -> None:
-    assert not report_broken_links([])
+def test_print_broken_links_is_silent_when_empty(capsys: pytest.CaptureFixture) -> None:
+    print_broken_links([])
     assert not capsys.readouterr().out
 
 

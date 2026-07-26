@@ -102,19 +102,20 @@ def list_tracked_files() -> list[str]:
     return [path.decode("utf-8", "surrogateescape") for path in output.split(b"\0") if path]
 
 
-def report_broken_links(broken: list[BrokenLink]) -> bool:
-    if not broken:
-        return False
+def print_broken_links(broken_links: list[BrokenLink]) -> None:
+    if not broken_links:
+        return
     print("Found broken links:")
-    for link in broken:
+    for link in broken_links:
         print(f"{link.file_path}:{link.line}:{link.column} {link.link}")
-    return True
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     files = parse_arguments(argv).filenames
     does_target_exist = build_set_of_valid_link_targets(list_tracked_files()).__contains__
-    return 1 if report_broken_links(find_broken_links(files, does_target_exist)) else 0
+    broken_links = find_broken_links(files, does_target_exist)
+    print_broken_links(broken_links)
+    return 1 if broken_links else 0
 
 
 if __name__ == "__main__":
