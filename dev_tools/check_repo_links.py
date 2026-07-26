@@ -61,30 +61,30 @@ def offset_to_line_and_column(content: bytes, offset: int) -> tuple[int, int]:
 def find_broken_links_in_content(
     content: bytes,
     file_path: str,
-    target_exists: Callable[[str], bool],
+    does_target_exist: Callable[[str], bool],
 ) -> list[BrokenLink]:
     """Scan a single file's bytes and return the broken ``@repo`` links it contains."""
     # Fast pre-filter: skip the overwhelming majority of files without running the regex.
     if b"@repo" not in content:
         return []
-    broken: list[BrokenLink] = []
+    broken_links: list[BrokenLink] = []
     for match in MARKER.finditer(content):
         link = match.group(1).decode("utf-8", errors="replace")
         target = resolve_link_target(link, file_path)
-        if target is None or target_exists(target):
+        if target is None or does_target_exist(target):
             continue
         # Only for a confirmed broken link do we pay for computing the precise location.
         line, column = offset_to_line_and_column(content, match.start(1))
-        broken.append(BrokenLink(file_path, line, column, link))
-    return broken
+        broken_links.append(BrokenLink(file_path, line, column, link))
+    return broken_links
 
 
-def find_broken_links(files: list[Path], target_exists: Callable[[str], bool]) -> list[BrokenLink]:
-    broken: list[BrokenLink] = []
-    for file in files:
+def find_broken_links(files_to_check: list[Path], does_target_exist: Callable[[str], bool]) -> list[BrokenLink]:
+    broken_links: list[BrokenLink] = []
+    for file in files_to_check:
         with contextlib.suppress(OSError):
-            broken.extend(find_broken_links_in_content(file.read_bytes(), file.as_posix(), target_exists))
-    return broken
+            broken_links.extend(find_broken_links_in_content(file.read_bytes(), file.as_posix(), does_target_exist))
+    return broken_links
 
 
 def build_set_of_valid_link_targets(tracked_files: Iterable[str]) -> set[str]:
@@ -115,8 +115,8 @@ def report_broken_links(broken: list[BrokenLink]) -> bool:
 
 def main(argv: Sequence[str] | None = None) -> int:
     files = parse_arguments(argv).filenames
-    target_exists = build_set_of_valid_link_targets(list_tracked_files()).__contains__
-    return 1 if report_broken_links(find_broken_links(files, target_exists)) else 0
+    does_target_exist = build_set_of_valid_link_targets(list_tracked_files()).__contains__
+    return 1 if report_broken_links(find_broken_links(files, does_target_exist)) else 0
 
 
 if __name__ == "__main__":
