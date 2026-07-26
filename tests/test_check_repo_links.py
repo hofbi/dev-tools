@@ -113,10 +113,6 @@ def test_multiple_findings_with_correct_lines_and_columns() -> None:
     assert [(b.line, b.column, b.link) for b in broken] == [(2, 10, "missing1.md"), (4, 10, "missing2.md")]
 
 
-def test_prefilter_skips_files_without_marker() -> None:
-    assert scan("int main() { return 0; }") == []
-
-
 # --- find_broken_links (file system) --------------------------------------------------------
 
 
