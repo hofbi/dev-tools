@@ -5,7 +5,6 @@
 
 from __future__ import annotations
 
-import contextlib
 import posixpath
 import re
 import subprocess
@@ -82,8 +81,7 @@ def find_broken_links_in_content(
 def find_broken_links(files_to_check: list[Path], does_target_exist: Callable[[str], bool]) -> list[BrokenLink]:
     broken_links: list[BrokenLink] = []
     for file in files_to_check:
-        with contextlib.suppress(OSError):
-            broken_links.extend(find_broken_links_in_content(file.read_bytes(), file.as_posix(), does_target_exist))
+        broken_links.extend(find_broken_links_in_content(file.read_bytes(), file.as_posix(), does_target_exist))
     return broken_links
 
 

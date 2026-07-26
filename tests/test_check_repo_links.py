@@ -132,10 +132,6 @@ def test_find_broken_links_reads_files(fs: FakeFilesystem) -> None:
     assert broken == [BrokenLink("src/a.cpp", 1, 10, "missing.h")]
 
 
-def test_find_broken_links_ignores_unreadable_files() -> None:
-    assert find_broken_links([Path("does/not/exist.cpp")], exists()) == []
-
-
 # --- report_broken_links --------------------------------------------------------------------
 
 
