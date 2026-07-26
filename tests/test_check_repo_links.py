@@ -72,13 +72,17 @@ def test_offset_to_line_and_column() -> None:
     assert offset_to_line_and_column(content, 12) == (3, 1)  # 'X' after two newlines
 
 
-# --- build_valid_target_set -----------------------------------------------------------------
+# --- build_set_of_valid_link_targets --------------------------------------------------------
 
 
-def test_build_valid_target_set_includes_files_dirs_and_root() -> None:
-    valid = build_set_of_valid_link_targets(["src/util/helper.h", "README.md"])
-    assert valid.issuperset({"src/util/helper.h", "src/util", "src", "README.md", "."})
-    assert "src/missing.h" not in valid
+def test_build_set_of_valid_link_targets_includes_files_dirs_and_root() -> None:
+    assert build_set_of_valid_link_targets(["src/util/helper.h", "README.md"]) == {
+        "src/util/helper.h",
+        "src/util",
+        "src",
+        "README.md",
+        ".",
+    }
 
 
 # --- find_broken_links_in_content -----------------------------------------------------------
