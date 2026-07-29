@@ -47,6 +47,8 @@ These tools are used to help developers in their day-to-day tasks.
 
 ## Tools
 
+Standalone tools available on <https://pypi.org/>.
+
 ### Configure VS Code for Bazel
 
 See the [README.md](packages/configure_vscode_for_bazel/README.md) in the `configure_vscode_for_bazel` package for documentation on the `configure-vscode-for-bazel` tool.
@@ -56,6 +58,8 @@ See the [README.md](packages/configure_vscode_for_bazel/README.md) in the `confi
 See the [README.md](packages/whoowns/README.md) in the `whoowns` package for documentation on the `whoowns` tool.
 
 ## Hooks
+
+Collection of pre-commit hooks.
 
 <!-- hooks-doc start -->
 
