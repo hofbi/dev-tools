@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 import sys
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from dev_tools.utils.build_file_parsing_utils import find_rule_calls, rule_has_tag
 from dev_tools.utils.git_hook_utils import create_default_parser
@@ -38,7 +38,7 @@ def find_files_with_forbidden_tags(
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
-    allowed_rule_kind_re = re.compile(args.allow_in_rule_kind) if args.allow_in_rule_kind else None
+    allowed_rule_kind_re = re.compile(cast("str", args.allow_in_rule_kind)) if args.allow_in_rule_kind else None
     invalid_files = find_files_with_forbidden_tags(args.filenames, args.forbidden_tag, allowed_rule_kind_re)
 
     for filename in invalid_files:
