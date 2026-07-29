@@ -21,8 +21,8 @@ More automation will come in future releases.
 
 ```shell
 # Cleanup the entire config for all hooks
-uvx remove-unnecessary-excludes .pre-commit-config.yaml --pre-commit-binary prek --git-binary git --all
+uvx --from pre-commit-excludes remove-unnecessary-excludes .pre-commit-config.yaml --pre-commit-binary prek --git-binary git --all
 
 # Cleanup only specific hooks such as typos and ruff-check
-uvx remove-unnecessary-excludes .pre-commit-config.yaml --pre-commit-binary prek --git-binary git --hook typos --hook ruff-check
+uvx --from pre-commit-excludes remove-unnecessary-excludes .pre-commit-config.yaml --pre-commit-binary prek --git-binary git --hook typos --hook ruff-check
 ```
