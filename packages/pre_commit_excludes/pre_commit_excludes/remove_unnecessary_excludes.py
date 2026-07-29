@@ -30,7 +30,7 @@ def get_files_from_exclude_path(exclude_path: Path) -> list[Path]:
     return [exclude_path] if exclude_path.is_file() else list(exclude_path.rglob("*"))
 
 
-def run_prek(
+def run_pre_commit(
     pre_commit_binary: Path, pre_commit_config: Path, hook_id: str, files: list[Path], *, verbose: bool = False
 ) -> int:
     return subprocess.run(
@@ -97,7 +97,7 @@ def main() -> int:
         for exclude in hook.exclude_paths:
             files = get_files_from_exclude_path(exclude)
             if (
-                run_prek(
+                run_pre_commit(
                     args.pre_commit_binary, pre_commit_config_without_excludes, hook.id, files, verbose=args.verbose
                 )
                 == 0

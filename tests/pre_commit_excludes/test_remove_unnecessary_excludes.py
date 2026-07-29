@@ -8,7 +8,7 @@ from pre_commit_excludes.hook_utils import Hook, load_config, write_config
 from pre_commit_excludes.remove_unnecessary_excludes import (
     get_files_from_exclude_path,
     get_hooks_to_cleanup,
-    run_prek,
+    run_pre_commit,
     write_tmp_pre_commit_config_without_excludes,
 )
 
@@ -147,7 +147,7 @@ def test_write_tmp_pre_commit_config_without_excludes_should_remove_all_excludes
     assert load_config(config_file) == config
 
 
-def test_run_prek_should_return_exit_code(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_run_pre_commit_should_return_exit_code(monkeypatch: pytest.MonkeyPatch) -> None:
     command = []
 
     def fake_run(
@@ -164,7 +164,7 @@ def test_run_prek_should_return_exit_code(monkeypatch: pytest.MonkeyPatch) -> No
     monkeypatch.setattr("pre_commit_excludes.remove_unnecessary_excludes.subprocess.run", fake_run)
 
     assert (
-        run_prek(
+        run_pre_commit(
             Path("/usr/bin/prek"),
             Path("Test_directory/tmp.pre-commit-config.yaml"),
             "check-snake-case",
