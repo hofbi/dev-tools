@@ -64,6 +64,7 @@ ignore = [
   "A00",
   "ANN001",
   "COM812",
+  "CPY001",
   "D100", # In our opinion overkill
   "D102", # In our opinion overkill
   "D103",
