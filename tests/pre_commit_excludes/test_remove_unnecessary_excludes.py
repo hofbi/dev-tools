@@ -4,13 +4,14 @@ import argparse
 import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, call
 
 import pytest
 from pre_commit_excludes.hook_utils import Hook, load_config, write_config
 from pre_commit_excludes.remove_unnecessary_excludes import (
     CLITools,
     SkippedExclude,
+    find_unnecessary_excludes,
     get_files_from_exclude_path,
     get_hooks_to_cleanup,
     is_exclude_unnecessary,
@@ -145,6 +146,79 @@ def test_is_exclude_unnecessary_when_pre_commit_fails_should_restore_and_return_
         tools.pre_commit, Path("tmp-pre-commit-config.yaml"), "ruff", [excluded_file], verbose=False
     )
     undo_changes_mock.assert_called_once_with(exclude, tools.git)
+
+
+def test_find_unnecessary_excludes_should_return_only_unnecessary_excludes(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    unnecessary_exclude = Path("Repo/unnecessary.py")
+    necessary_exclude = Path("Repo/necessary.py")
+    temporary_config = Path("Repo/tmp.pre-commit-config.yaml")
+    tools = CLITools(pre_commit=Path("/usr/bin/prek"), git=Path("/usr/bin/git"))
+    is_exclude_unnecessary_mock = MagicMock(side_effect=[True, False])
+    monkeypatch.setattr(
+        "pre_commit_excludes.remove_unnecessary_excludes.is_exclude_unnecessary",
+        is_exclude_unnecessary_mock,
+    )
+
+    result = find_unnecessary_excludes(
+        [Hook("ruff", [unnecessary_exclude, necessary_exclude])],
+        temporary_config,
+        set(),
+        tools,
+        verbose=True,
+    )
+
+    assert dict(result) == {"ruff": [unnecessary_exclude]}
+    assert is_exclude_unnecessary_mock.call_args_list == [
+        call("ruff", unnecessary_exclude, temporary_config, tools, verbose=True),
+        call("ruff", necessary_exclude, temporary_config, tools, verbose=True),
+    ]
+
+
+def test_find_unnecessary_excludes_should_skip_only_matching_hook_and_path(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    shared_exclude = Path("Repo/shared.py")
+    temporary_config = Path("Repo/tmp.pre-commit-config.yaml")
+    tools = CLITools(pre_commit=Path("/usr/bin/prek"), git=Path("/usr/bin/git"))
+    is_exclude_unnecessary_mock = MagicMock(return_value=True)
+    monkeypatch.setattr(
+        "pre_commit_excludes.remove_unnecessary_excludes.is_exclude_unnecessary",
+        is_exclude_unnecessary_mock,
+    )
+
+    result = find_unnecessary_excludes(
+        [Hook("ruff", [shared_exclude]), Hook("black", [shared_exclude])],
+        temporary_config,
+        {SkippedExclude("ruff", shared_exclude)},
+        tools,
+    )
+
+    assert dict(result) == {"black": [shared_exclude]}
+    is_exclude_unnecessary_mock.assert_called_once_with("black", shared_exclude, temporary_config, tools, verbose=False)
+
+
+def test_find_unnecessary_excludes_when_all_excludes_are_skipped_should_return_empty_result(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    exclude = Path("Repo/skipped.py")
+    tools = CLITools(pre_commit=Path("/usr/bin/prek"), git=Path("/usr/bin/git"))
+    is_exclude_unnecessary_mock = MagicMock()
+    monkeypatch.setattr(
+        "pre_commit_excludes.remove_unnecessary_excludes.is_exclude_unnecessary",
+        is_exclude_unnecessary_mock,
+    )
+
+    result = find_unnecessary_excludes(
+        [Hook("ruff", [exclude])],
+        Path("Repo/tmp.pre-commit-config.yaml"),
+        {SkippedExclude("ruff", exclude)},
+        tools,
+    )
+
+    assert dict(result) == {}
+    is_exclude_unnecessary_mock.assert_not_called()
 
 
 def test_write_tmp_pre_commit_config_without_excludes_should_remove_all_excludes(fs: FakeFilesystem) -> None:

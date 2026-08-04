@@ -85,6 +85,25 @@ def is_exclude_unnecessary(
     return False
 
 
+def find_unnecessary_excludes(
+    hooks_to_cleanup: list[Hook],
+    pre_commit_config_without_excludes: Path,
+    skipped_excludes: set[SkippedExclude],
+    tools: CLITools,
+    *,
+    verbose: bool = False,
+) -> defaultdict[str, list[Path]]:
+    excludes_to_remove = defaultdict(list)
+    for hook in hooks_to_cleanup:
+        for exclude in hook.exclude_paths:
+            if SkippedExclude(hook.id, exclude) in skipped_excludes:
+                continue
+
+            if is_exclude_unnecessary(hook.id, exclude, pre_commit_config_without_excludes, tools, verbose=verbose):
+                excludes_to_remove[hook.id].append(exclude)
+    return excludes_to_remove
+
+
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -147,17 +166,9 @@ def main() -> int:
         for skipped_exclude in args.skip_exclude
     }
 
-    excludes_to_remove = defaultdict(list)
-    for hook in hooks_to_cleanup:
-        for exclude in hook.exclude_paths:
-            if SkippedExclude(hook.id, exclude) in skipped_excludes:
-                continue
-
-            if is_exclude_unnecessary(
-                hook.id, exclude, pre_commit_config_without_excludes, cli_tools, verbose=args.verbose
-            ):
-                excludes_to_remove[hook.id].append(exclude)
-
+    excludes_to_remove = find_unnecessary_excludes(
+        hooks_to_cleanup, pre_commit_config_without_excludes, skipped_excludes, cli_tools, verbose=args.verbose
+    )
     pre_commit_config_without_excludes.unlink()
 
     print()
