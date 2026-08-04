@@ -1,20 +1,48 @@
 from __future__ import annotations
 
+import argparse
 import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import pytest
 from pre_commit_excludes.hook_utils import Hook, load_config, write_config
 from pre_commit_excludes.remove_unnecessary_excludes import (
+    SkippedExclude,
     get_files_from_exclude_path,
     get_hooks_to_cleanup,
+    parse_skipped_exclude,
     run_pre_commit,
     write_tmp_pre_commit_config_without_excludes,
 )
 
 if TYPE_CHECKING:
-    import pytest
     from pyfakefs.fake_filesystem import FakeFilesystem
+
+
+def test_parse_skipped_exclude_should_return_skipped_exclude() -> None:
+    assert parse_skipped_exclude("ruff:packages/example/foo.py") == SkippedExclude(
+        hook_id="ruff",
+        path=Path("packages/example/foo.py"),
+    )
+
+
+def test_parse_skipped_exclude_for_path_with_colon_should_preserve_colon() -> None:
+    assert parse_skipped_exclude("ruff:packages/example:generated/foo.py") == SkippedExclude(
+        hook_id="ruff",
+        path=Path("packages/example:generated/foo.py"),
+    )
+
+
+def test_parse_skipped_exclude_for_missing_separator_should_raise_error() -> None:
+    with pytest.raises(argparse.ArgumentTypeError, match="expected HOOK_ID:EXCLUDE_PATH"):
+        parse_skipped_exclude("ruff")
+
+
+@pytest.mark.parametrize("value", [":packages/example/foo.py", "ruff:"])
+def test_parse_skipped_exclude_for_empty_value_should_raise_error(value: str) -> None:
+    with pytest.raises(argparse.ArgumentTypeError, match="hook ID and exclude path must not be empty"):
+        parse_skipped_exclude(value)
 
 
 def test_get_hooks_to_cleanup_for_selected_hooks_should_return_matching_hooks() -> None:

@@ -4,9 +4,32 @@ import argparse
 import subprocess
 import sys
 from collections import defaultdict
+from dataclasses import dataclass
 from pathlib import Path
 
 from pre_commit_excludes.hook_utils import Hook, load_config, load_hooks, write_config
+
+
+@dataclass(frozen=True)
+class SkippedExclude:
+    """A pair of hook ID and exclude path that should be skipped from removal."""
+
+    hook_id: str
+    path: Path
+
+
+def parse_skipped_exclude(value: str) -> SkippedExclude:
+    try:
+        hook_id, exclude_path = value.split(":", maxsplit=1)
+    except ValueError as error:
+        msg = "expected HOOK_ID:EXCLUDE_PATH"
+        raise argparse.ArgumentTypeError(msg) from error
+
+    if not hook_id or not exclude_path:
+        msg = "hook ID and exclude path must not be empty"
+        raise argparse.ArgumentTypeError(msg)
+
+    return SkippedExclude(hook_id, Path(exclude_path))
 
 
 def get_hooks_to_cleanup(hooks: list[Hook], selected_hooks: list[str] | None) -> list[Hook]:
@@ -69,6 +92,15 @@ def parse_arguments() -> argparse.Namespace:
         action="store_true",
         help="Verbose output for debugging.",
     )
+    parser.add_argument(
+        "-s",
+        "--skip-exclude",
+        type=parse_skipped_exclude,
+        nargs="+",
+        default=[],
+        metavar="HOOK_ID:EXCLUDE_PATH",
+        help="Skip specific excludes from being removed using HOOK_ID:EXCLUDE_PATH.",
+    )
     hook_group = parser.add_mutually_exclusive_group()
     hook_group.add_argument(
         "-a",
@@ -91,10 +123,17 @@ def main() -> int:
     pre_commit_config_without_excludes = write_tmp_pre_commit_config_without_excludes(args.config)
     hooks_with_excludes = load_hooks(args.config.parent, args.config)
     hooks_to_cleanup = hooks_with_excludes if args.all else get_hooks_to_cleanup(hooks_with_excludes, args.hook)
+    skipped_excludes = {
+        SkippedExclude(skipped_exclude.hook_id, args.config.parent / skipped_exclude.path)
+        for skipped_exclude in args.skip_exclude
+    }
 
     excludes_to_remove = defaultdict(list)
     for hook in hooks_to_cleanup:
         for exclude in hook.exclude_paths:
+            if SkippedExclude(hook.id, exclude) in skipped_excludes:
+                continue
+
             files = get_files_from_exclude_path(exclude)
             if (
                 run_pre_commit(
