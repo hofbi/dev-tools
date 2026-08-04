@@ -25,4 +25,7 @@ uvx --from pre-commit-excludes remove-unnecessary-excludes .pre-commit-config.ya
 
 # Cleanup only specific hooks such as typos and ruff-check
 uvx --from pre-commit-excludes remove-unnecessary-excludes .pre-commit-config.yaml --pre-commit-binary prek --git-binary git --hook typos --hook ruff-check
+
+# Skip excludes that you want to keep
+uvx --from pre-commit-excludes remove-unnecessary-excludes .pre-commit-config.yaml --pre-commit-binary prek --git-binary git --all --skip-exclude "check-json:tests/invalid.json"
 ```
