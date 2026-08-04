@@ -4,13 +4,16 @@ import argparse
 import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
+from unittest.mock import MagicMock
 
 import pytest
 from pre_commit_excludes.hook_utils import Hook, load_config, write_config
 from pre_commit_excludes.remove_unnecessary_excludes import (
+    CLITools,
     SkippedExclude,
     get_files_from_exclude_path,
     get_hooks_to_cleanup,
+    is_exclude_unnecessary,
     parse_skipped_exclude,
     run_pre_commit,
     write_tmp_pre_commit_config_without_excludes,
@@ -102,6 +105,46 @@ def test_get_files_from_exclude_path_for_empty_directory_should_return_empty_lis
     fs.create_dir(exclude_path)
 
     assert get_files_from_exclude_path(exclude_path) == []
+
+
+def test_is_exclude_unnecessary_when_pre_commit_succeeds_should_return_true(
+    fs: FakeFilesystem,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    exclude = Path("Repo/excluded")
+    excluded_file = exclude / "foo.py"
+    fs.create_file(excluded_file)
+    tools = CLITools(pre_commit=Path("/usr/bin/prek"), git=Path("/usr/bin/git"))
+    run_pre_commit_mock = MagicMock(return_value=0)
+    undo_changes_mock = MagicMock()
+    monkeypatch.setattr("pre_commit_excludes.remove_unnecessary_excludes.run_pre_commit", run_pre_commit_mock)
+    monkeypatch.setattr("pre_commit_excludes.remove_unnecessary_excludes.undo_changes", undo_changes_mock)
+
+    assert is_exclude_unnecessary("ruff", exclude, Path("tmp-pre-commit-config.yaml"), tools, verbose=True)
+    run_pre_commit_mock.assert_called_once_with(
+        tools.pre_commit, Path("tmp-pre-commit-config.yaml"), "ruff", [excluded_file], verbose=True
+    )
+    undo_changes_mock.assert_not_called()
+
+
+def test_is_exclude_unnecessary_when_pre_commit_fails_should_restore_and_return_false(
+    fs: FakeFilesystem,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    exclude = Path("Repo/excluded")
+    excluded_file = exclude / "foo.py"
+    fs.create_file(excluded_file)
+    tools = CLITools(pre_commit=Path("/usr/bin/prek"), git=Path("/usr/bin/git"))
+    run_pre_commit_mock = MagicMock(return_value=1)
+    undo_changes_mock = MagicMock()
+    monkeypatch.setattr("pre_commit_excludes.remove_unnecessary_excludes.run_pre_commit", run_pre_commit_mock)
+    monkeypatch.setattr("pre_commit_excludes.remove_unnecessary_excludes.undo_changes", undo_changes_mock)
+
+    assert not is_exclude_unnecessary("ruff", exclude, Path("tmp-pre-commit-config.yaml"), tools)
+    run_pre_commit_mock.assert_called_once_with(
+        tools.pre_commit, Path("tmp-pre-commit-config.yaml"), "ruff", [excluded_file], verbose=False
+    )
+    undo_changes_mock.assert_called_once_with(exclude, tools.git)
 
 
 def test_write_tmp_pre_commit_config_without_excludes_should_remove_all_excludes(fs: FakeFilesystem) -> None:

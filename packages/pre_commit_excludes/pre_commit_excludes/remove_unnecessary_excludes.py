@@ -18,6 +18,14 @@ class SkippedExclude:
     path: Path
 
 
+@dataclass(frozen=True)
+class CLITools:
+    """Binaries used to find the excludes."""
+
+    pre_commit: Path
+    git: Path
+
+
 def parse_skipped_exclude(value: str) -> SkippedExclude:
     try:
         hook_id, exclude_path = value.split(":", maxsplit=1)
@@ -65,6 +73,16 @@ def run_pre_commit(
 
 def undo_changes(exclude_path: Path, git_binary) -> None:
     subprocess.run([git_binary, "restore", exclude_path], check=True)
+
+
+def is_exclude_unnecessary(
+    hook_id: str, exclude: Path, pre_commit_config_without_excludes: Path, tools: CLITools, *, verbose: bool = False
+) -> bool:
+    files = get_files_from_exclude_path(exclude)
+    if run_pre_commit(tools.pre_commit, pre_commit_config_without_excludes, hook_id, files, verbose=verbose) == 0:
+        return True
+    undo_changes(exclude, tools.git)
+    return False
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -121,6 +139,7 @@ def main() -> int:
     args = parse_arguments()
 
     pre_commit_config_without_excludes = write_tmp_pre_commit_config_without_excludes(args.config)
+    cli_tools = CLITools(args.pre_commit_binary, args.git_binary)
     hooks_with_excludes = load_hooks(args.config.parent, args.config)
     hooks_to_cleanup = hooks_with_excludes if args.all else get_hooks_to_cleanup(hooks_with_excludes, args.hook)
     skipped_excludes = {
@@ -134,16 +153,10 @@ def main() -> int:
             if SkippedExclude(hook.id, exclude) in skipped_excludes:
                 continue
 
-            files = get_files_from_exclude_path(exclude)
-            if (
-                run_pre_commit(
-                    args.pre_commit_binary, pre_commit_config_without_excludes, hook.id, files, verbose=args.verbose
-                )
-                == 0
+            if is_exclude_unnecessary(
+                hook.id, exclude, pre_commit_config_without_excludes, cli_tools, verbose=args.verbose
             ):
                 excludes_to_remove[hook.id].append(exclude)
-            else:
-                undo_changes(exclude, args.git_binary)
 
     pre_commit_config_without_excludes.unlink()
 
