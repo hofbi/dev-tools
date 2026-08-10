@@ -281,6 +281,18 @@
   always_run: true
   additional_dependencies:
     - pre-commit==4.6.0
+- id: check-stale-references
+  name: Check for stale references to deleted/renamed files
+  description: |-
+    When files are deleted or renamed, check that no remaining tracked file still references the old path.
+    Searches for both the full repo-relative path and the basename of deleted files.
+    This catches broken cross-references in comments, documentation, configs, and build files.
+  entry: check-stale-references
+  language: python
+  pass_filenames: false
+  always_run: true
+  stages:
+    - pre-commit
 - id: check-max-one-sentence-per-line
   name: Check max one sentence per line
   description: |-

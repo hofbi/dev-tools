@@ -45,6 +45,7 @@ generate-hook-docs = "dev_tools.generate_hook_docs:main"
 print-pre-commit-metrics = "dev_tools.print_pre_commit_metrics:main"
 sync-vscode-config = "dev_tools.sync_vscode_config:main"
 sync-tool-versions = "dev_tools.sync_tool_versions:main"
+check-stale-references = "dev_tools.check_stale_references:main"
 
 [tool.pytest.ini_options]
 addopts = "--cov-report term-missing --cov=dev_tools --cov=packages/whoowns/whoowns --cov=packages/pre_commit_excludes/pre_commit_excludes --cov=packages/configure_vscode_for_bazel/configure_vscode_for_bazel -vv"
@@ -82,6 +83,7 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = [
   "ANN201", # don't require -> None for every test. Accept non-enforcement for test helper functions
+  "D101", # test classes don't need docstrings
   "PLR2004", # Magic values in tests are ok since they are often the expected values
   "S101" # allow assertions in tests
 ]
