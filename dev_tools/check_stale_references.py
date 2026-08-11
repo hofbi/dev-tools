@@ -112,7 +112,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if not deleted_paths:
         return 0
 
-    if (stale_refs := find_stale_references(deleted_paths)):
+    if stale_refs := find_stale_references(deleted_paths):
         print("Stale references to deleted/renamed files:")
         for ref in stale_refs:
             print(f"  {ref}")
