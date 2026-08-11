@@ -7,11 +7,10 @@ import re
 import subprocess
 import sys
 from dataclasses import dataclass
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Sequence
+    from collections.abc import Sequence
 
 
 @dataclass(frozen=True)
@@ -22,93 +21,89 @@ class StaleReference:
     line: int
     deleted_path: str
 
+    def __str__(self) -> str:
+        """Format as file:line references deleted_path."""
+        return f"{self.file}:{self.line} references {self.deleted_path}"
 
-def get_repo_root() -> str:
-    return subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip()  # noqa: S607
+
+def _run_git(*args: str) -> str:
+    return subprocess.run(
+        ["git", *args],  # noqa: S607
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout
 
 
 def get_deleted_paths() -> list[str]:
     """Return repo-relative paths of files being deleted or renamed away in the staged commit."""
-    output = subprocess.check_output(
-        ["git", "diff", "--cached", "--diff-filter=DR", "--name-status"],  # noqa: S607
-        text=True,
-    )
+    output = _run_git("diff", "--cached", "--diff-filter=DR", "--name-status")
     deleted: list[str] = []
     for line in output.splitlines():
         parts = line.split("\t")
-        if parts[0].startswith("D"):
-            deleted.append(parts[1])
-        elif parts[0].startswith("R"):
-            # For renames, the old (now-gone) path is the second column
-            deleted.append(parts[1])
+        # Both D(eleted) and R(enamed) have the vanishing path in column 1
+        deleted.append(parts[1])
     return deleted
 
 
-def get_tracked_files() -> list[str]:
-    """Return all files that will exist after the staged commit."""
-    return subprocess.check_output(["git", "ls-files"], text=True).splitlines()  # noqa: S607
+def build_path_pattern(deleted_path: str) -> re.Pattern[str]:
+    """Build a regex for a deleted path that matches references to it.
 
-
-def build_path_patterns(deleted_paths: list[str]) -> dict[str, re.Pattern[str]]:
-    """Build a regex per deleted path that matches references to it.
-
-    For path "a/b/c.txt", matches (with non-word boundaries):
+    For path "a/b/c.txt", matches (with non-word/dot/dash boundaries):
       - /?a/b/c.txt        (full path, optional leading /)
       - (../)*b/c.txt      (intermediate suffix with optional ../ prefix)
       - (../)*c.txt        (basename with optional ../ prefix)
     """
-    patterns: dict[str, re.Pattern[str]] = {}
-    for path in deleted_paths:
-        segments = path.split("/")
-        alternatives: list[str] = []
-        for i in range(len(segments)):
-            suffix = "/".join(segments[i:])
-            escaped_suffix = re.escape(suffix)
-            if i == 0:
-                alternatives.append(rf"/?{escaped_suffix}")
-            else:
-                alternatives.append(rf"(?:\.\./)*{escaped_suffix}")
-        patterns[path] = re.compile(rf"(?<!\w)(?:{'|'.join(alternatives)})(?!\w)")
-    return patterns
+    segments = deleted_path.split("/")
+    alternatives: list[str] = []
+    for i in range(len(segments)):
+        suffix = "/".join(segments[i:])
+        escaped_suffix = re.escape(suffix)
+        if i == 0:
+            alternatives.append(rf"/?{escaped_suffix}")
+        else:
+            alternatives.append(rf"(?:\.\./)*{escaped_suffix}")
+    return re.compile(rf"(?<![\w.-])(?:{'|'.join(alternatives)})(?![\w.-])")
 
 
-def find_stale_references(
-    tracked_files: list[str],
-    deleted_paths: list[str],
-    read_file: Callable[[str], str] | None = None,
-) -> list[StaleReference]:
-    """Search tracked files for references to deleted paths."""
+def git_grep(pattern: str) -> list[tuple[str, int, str]]:
+    """Run git grep and return (file, line_number, line_text) tuples."""
+    result = subprocess.run(
+        ["git", "grep", "-nE", pattern],  # noqa: S607
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    matches: list[tuple[str, int, str]] = []
+    for line in result.stdout.splitlines():
+        # git grep output: file:line_number:matched_line
+        file, line_no, text = line.split(":", 2)
+        matches.append((file, int(line_no), text))
+    return matches
+
+
+def find_stale_references(deleted_paths: list[str]) -> list[StaleReference]:
+    """Search tracked files for references to deleted paths using git grep."""
     if not deleted_paths:
         return []
 
-    path_patterns = build_path_patterns(deleted_paths)
     deleted_set = set(deleted_paths)
     stale: list[StaleReference] = []
 
-    for filepath in tracked_files:
-        if filepath in deleted_set:
-            continue
-        try:
-            if read_file is not None:
-                content = read_file(filepath)
-            else:
-                with Path(filepath).open(errors="replace") as f:
-                    content = f.read()
-        except OSError:
-            continue
+    for deleted_path in deleted_paths:
+        pattern = build_path_pattern(deleted_path)
+        # Build a git grep ERE from the path suffixes (unanchored, case-sensitive)
+        segments = deleted_path.split("/")
+        suffixes = ["/".join(segments[i:]) for i in range(len(segments))]
+        grep_pattern = "|".join(re.escape(s) for s in suffixes)
 
-        for line_number, line in enumerate(content.splitlines(), start=1):
-            for deleted_path, pattern in path_patterns.items():
-                if pattern.search(line):
-                    stale.append(StaleReference(filepath, line_number, deleted_path))
+        for file, line_no, text in git_grep(grep_pattern):
+            if file in deleted_set:
+                continue
+            if pattern.search(text):
+                stale.append(StaleReference(file, line_no, deleted_path))
 
     return stale
-
-
-def print_stale_references(stale_refs: list[StaleReference]) -> None:
-    print("Stale references to deleted/renamed files:")
-    for ref in stale_refs:
-        print(f"  {ref.file}:{ref.line} references {ref.deleted_path}")
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -117,10 +112,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     if not deleted_paths:
         return 0
 
-    tracked_files = get_tracked_files()
-
-    if stale_refs := find_stale_references(tracked_files, deleted_paths):
-        print_stale_references(stale_refs)
+    stale_refs = find_stale_references(deleted_paths)
+    if stale_refs:
+        print("Stale references to deleted/renamed files:")
+        for ref in stale_refs:
+            print(f"  {ref}")
         return 1
     return 0
 
