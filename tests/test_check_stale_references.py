@@ -49,6 +49,10 @@ class TestBuildPathPattern:
         pattern = build_path_pattern("src/lib/foo.hpp")
         assert not pattern.search("foo.hpp-old")
 
+    def test_dot_in_extension_is_literal(self) -> None:
+        pattern = build_path_pattern("src/lib/foo.hpp")
+        assert not pattern.search("fooXhpp")
+
 
 class TestStaleReferenceStr:
     def test_str(self) -> None:
