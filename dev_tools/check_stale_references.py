@@ -26,12 +26,12 @@ class StaleReference:
         return f"{self.file}:{self.line} references {self.deleted_path}"
 
 
-def _run_git(*args: str) -> str:
+def _run_git(*args: str, check: bool = True) -> str:
     return subprocess.run(
         ["git", *args],  # noqa: S607
         capture_output=True,
         text=True,
-        check=True,
+        check=check,
     ).stdout
 
 
@@ -64,25 +64,16 @@ def build_path_pattern(deleted_path: str) -> re.Pattern[str]:
 
 def git_grep(pattern: str) -> list[tuple[str, int, str]]:
     """Run git grep and return (file, line_number, line_text) tuples."""
-    result = subprocess.run(
-        ["git", "grep", "-nE", pattern],  # noqa: S607
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    output = _run_git("grep", "-nE", pattern, check=False)
     matches: list[tuple[str, int, str]] = []
-    for line in result.stdout.splitlines():
-        # git grep output: file:line_number:matched_line
+    for line in output.splitlines():
         file, line_no, text = line.split(":", 2)
         matches.append((file, int(line_no), text))
     return matches
 
 
 def find_stale_references(deleted_paths: list[str]) -> list[StaleReference]:
-    """Search tracked files for references to deleted paths using git grep."""
-    if not deleted_paths:
-        return []
-
+    """Search tracked files for references to deleted paths."""
     deleted_set = set(deleted_paths)
     stale: list[StaleReference] = []
 
