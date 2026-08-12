@@ -42,8 +42,8 @@ def get_deleted_paths() -> list[str]:
     return [line.split("\t")[1] for line in output.splitlines()]
 
 
-def build_path_pattern(deleted_path: str) -> re.Pattern[str]:
-    """Build a regex for a deleted path that matches references to it.
+def build_path_pattern(deleted_path: str) -> str:
+    """Build a PCRE pattern for a deleted path that matches references to it.
 
     For path "a/b/c.txt", matches (with non-word/dot/dash boundaries):
       - /?a/b/c.txt        (full path, optional leading /)
@@ -59,12 +59,12 @@ def build_path_pattern(deleted_path: str) -> re.Pattern[str]:
             alternatives.append(rf"/?{escaped_suffix}")
         else:
             alternatives.append(rf"(?:\.\./)*{escaped_suffix}")
-    return re.compile(rf"(?<![\w.-])(?:{'|'.join(alternatives)})(?![\w.-])")
+    return rf"(?<![\w.-])(?:{'|'.join(alternatives)})(?![\w.-])"
 
 
 def git_grep(pattern: str) -> list[tuple[str, int, str]]:
-    """Run git grep and return (file, line_number, line_text) tuples."""
-    output = _run_git("grep", "-nE", pattern, check=False)
+    """Run git grep with PCRE and return (file, line_number, line_text) tuples."""
+    output = _run_git("grep", "-nP", pattern, check=False)
     matches: list[tuple[str, int, str]] = []
     for line in output.splitlines():
         file, line_no, text = line.split(":", 2)
@@ -79,16 +79,11 @@ def find_stale_references(deleted_paths: list[str]) -> list[StaleReference]:
 
     for deleted_path in deleted_paths:
         pattern = build_path_pattern(deleted_path)
-        # Build a git grep ERE from the path suffixes (unanchored, case-sensitive)
-        segments = deleted_path.split("/")
-        suffixes = ["/".join(segments[i:]) for i in range(len(segments))]
-        grep_pattern = "|".join(re.escape(s) for s in suffixes)
 
-        for file, line_no, text in git_grep(grep_pattern):
+        for file, line_no, _text in git_grep(pattern):
             if file in deleted_set:
                 continue
-            if pattern.search(text):
-                stale.append(StaleReference(file, line_no, deleted_path))
+            stale.append(StaleReference(file, line_no, deleted_path))
 
     return stale
 
@@ -96,8 +91,6 @@ def find_stale_references(deleted_paths: list[str]) -> list[StaleReference]:
 def main(argv: Sequence[str] | None = None) -> int:
     del argv
     deleted_paths = get_deleted_paths()
-    if not deleted_paths:
-        return 0
 
     if stale_refs := find_stale_references(deleted_paths):
         print("Stale references to deleted/renamed files:")

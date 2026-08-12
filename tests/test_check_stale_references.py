@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import re
 from unittest.mock import patch
 
 from dev_tools.check_stale_references import (
@@ -15,43 +16,43 @@ from dev_tools.check_stale_references import (
 class TestBuildPathPattern:
     def test_matches_full_path(self) -> None:
         pattern = build_path_pattern("src/lib/foo.hpp")
-        assert pattern.search("see src/lib/foo.hpp for details")
+        assert re.search(pattern, "see src/lib/foo.hpp for details")
 
     def test_matches_full_path_with_leading_slash(self) -> None:
         pattern = build_path_pattern("src/lib/foo.hpp")
-        assert pattern.search("see /src/lib/foo.hpp for details")
+        assert re.search(pattern, "see /src/lib/foo.hpp for details")
 
     def test_matches_intermediate_suffix(self) -> None:
         pattern = build_path_pattern("src/lib/foo.hpp")
-        assert pattern.search("see lib/foo.hpp here")
+        assert re.search(pattern, "see lib/foo.hpp here")
 
     def test_matches_intermediate_suffix_with_dotdot(self) -> None:
         pattern = build_path_pattern("src/lib/foo.hpp")
-        assert pattern.search("see ../lib/foo.hpp here")
+        assert re.search(pattern, "see ../lib/foo.hpp here")
 
     def test_matches_basename(self) -> None:
         pattern = build_path_pattern("src/lib/foo.hpp")
-        assert pattern.search("see foo.hpp for details")
+        assert re.search(pattern, "see foo.hpp for details")
 
     def test_matches_basename_with_dotdot(self) -> None:
         pattern = build_path_pattern("src/lib/foo.hpp")
-        assert pattern.search("see ../../foo.hpp for details")
+        assert re.search(pattern, "see ../../foo.hpp for details")
 
     def test_no_substring_match(self) -> None:
         pattern = build_path_pattern("src/lib/foo.hpp")
-        assert not pattern.search("notfoo.hpp")
+        assert not re.search(pattern, "notfoo.hpp")
 
     def test_no_match_with_dot_suffix(self) -> None:
         pattern = build_path_pattern("src/lib/foo.hpp")
-        assert not pattern.search("foo.hpp.bak")
+        assert not re.search(pattern, "foo.hpp.bak")
 
     def test_no_match_with_dash_suffix(self) -> None:
         pattern = build_path_pattern("src/lib/foo.hpp")
-        assert not pattern.search("foo.hpp-old")
+        assert not re.search(pattern, "foo.hpp-old")
 
     def test_dot_in_extension_is_literal(self) -> None:
         pattern = build_path_pattern("src/lib/foo.hpp")
-        assert not pattern.search("fooXhpp")
+        assert not re.search(pattern, "fooXhpp")
 
 
 class TestStaleReferenceStr:
@@ -81,12 +82,6 @@ class TestFindStaleReferences:
 
     def test_empty_deleted_paths_returns_empty(self) -> None:
         assert find_stale_references([]) == []
-
-    @patch("dev_tools.check_stale_references.git_grep")
-    def test_filters_false_positive_from_git_grep(self, mock_grep) -> None:
-        mock_grep.return_value = [("a.cpp", 1, "notfoo.hpp")]
-        result = find_stale_references(["src/lib/foo.hpp"])
-        assert result == []
 
     @patch("dev_tools.check_stale_references.git_grep")
     def test_multiple_files_with_references(self, mock_grep) -> None:
