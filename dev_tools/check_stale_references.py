@@ -62,13 +62,13 @@ def build_path_pattern(deleted_path: str) -> str:
     return rf"(?<![\w.-])(?:{'|'.join(alternatives)})(?![\w.-])"
 
 
-def git_grep(pattern: str) -> list[tuple[str, int, str]]:
-    """Run git grep with PCRE and return (file, line_number, line_text) tuples."""
+def git_grep(pattern: str) -> list[tuple[str, int]]:
+    """Run git grep with PCRE and return (file, line_number) tuples."""
     output = _run_git("grep", "-nP", pattern, check=False)
-    matches: list[tuple[str, int, str]] = []
+    matches: list[tuple[str, int]] = []
     for line in output.splitlines():
-        file, line_no, text = line.split(":", 2)
-        matches.append((file, int(line_no), text))
+        file, line_no, _text = line.split(":", 2)
+        matches.append((file, int(line_no)))
     return matches
 
 
@@ -80,7 +80,7 @@ def find_stale_references(deleted_paths: list[str]) -> list[StaleReference]:
     for deleted_path in deleted_paths:
         pattern = build_path_pattern(deleted_path)
 
-        for file, line_no, _text in git_grep(pattern):
+        for file, line_no in git_grep(pattern):
             if file in deleted_set:
                 continue
             stale.append(StaleReference(file, line_no, deleted_path))

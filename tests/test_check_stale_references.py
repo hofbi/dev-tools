@@ -64,7 +64,7 @@ class TestStaleReferenceStr:
 class TestFindStaleReferences:
     @patch("dev_tools.check_stale_references.git_grep")
     def test_finds_reference_to_deleted_file(self, mock_grep) -> None:
-        mock_grep.return_value = [("src/main.cpp", 1, "// see src/utils/helper.hpp for details")]
+        mock_grep.return_value = [("src/main.cpp", 1)]
         result = find_stale_references(["src/utils/helper.hpp"])
         assert result == [StaleReference("src/main.cpp", 1, "src/utils/helper.hpp")]
 
@@ -76,7 +76,7 @@ class TestFindStaleReferences:
 
     @patch("dev_tools.check_stale_references.git_grep")
     def test_skips_deleted_file_itself(self, mock_grep) -> None:
-        mock_grep.return_value = [("src/utils/helper.hpp", 1, "#include helper.hpp")]
+        mock_grep.return_value = [("src/utils/helper.hpp", 1)]
         result = find_stale_references(["src/utils/helper.hpp"])
         assert result == []
 
@@ -86,8 +86,8 @@ class TestFindStaleReferences:
     @patch("dev_tools.check_stale_references.git_grep")
     def test_multiple_files_with_references(self, mock_grep) -> None:
         mock_grep.return_value = [
-            ("a.cpp", 1, "see helper.hpp"),
-            ("c.md", 3, "also helper.hpp"),
+            ("a.cpp", 1),
+            ("c.md", 3),
         ]
         result = find_stale_references(["src/helper.hpp"])
         assert len(result) == 2
