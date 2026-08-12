@@ -63,32 +63,42 @@ class TestStaleReferenceStr:
 
 class TestFindStaleReferences:
     @patch("dev_tools.check_stale_references.git_grep")
-    def test_finds_reference_to_deleted_file(self, mock_grep) -> None:
+    @patch("dev_tools.check_stale_references.get_deleted_paths")
+    def test_finds_reference_to_deleted_file(self, mock_deleted, mock_grep) -> None:
+        mock_deleted.return_value = {"src/utils/helper.hpp"}
         mock_grep.return_value = [("src/main.cpp", 1)]
-        result = find_stale_references(["src/utils/helper.hpp"])
+        result = find_stale_references()
         assert result == [StaleReference("src/main.cpp", 1, "src/utils/helper.hpp")]
 
     @patch("dev_tools.check_stale_references.git_grep")
-    def test_no_reference_no_finding(self, mock_grep) -> None:
+    @patch("dev_tools.check_stale_references.get_deleted_paths")
+    def test_no_reference_no_finding(self, mock_deleted, mock_grep) -> None:
+        mock_deleted.return_value = {"src/utils/helper.hpp"}
         mock_grep.return_value = []
-        result = find_stale_references(["src/utils/helper.hpp"])
+        result = find_stale_references()
         assert result == []
 
     @patch("dev_tools.check_stale_references.git_grep")
-    def test_skips_deleted_file_itself(self, mock_grep) -> None:
+    @patch("dev_tools.check_stale_references.get_deleted_paths")
+    def test_skips_deleted_file_itself(self, mock_deleted, mock_grep) -> None:
+        mock_deleted.return_value = {"src/utils/helper.hpp"}
         mock_grep.return_value = [("src/utils/helper.hpp", 1)]
-        result = find_stale_references(["src/utils/helper.hpp"])
+        result = find_stale_references()
         assert result == []
 
-    def test_empty_deleted_paths_returns_empty(self) -> None:
-        assert find_stale_references([]) == []
+    @patch("dev_tools.check_stale_references.get_deleted_paths")
+    def test_empty_deleted_paths_returns_empty(self, mock_deleted) -> None:
+        mock_deleted.return_value = set()
+        assert find_stale_references() == []
 
     @patch("dev_tools.check_stale_references.git_grep")
-    def test_multiple_files_with_references(self, mock_grep) -> None:
+    @patch("dev_tools.check_stale_references.get_deleted_paths")
+    def test_multiple_files_with_references(self, mock_deleted, mock_grep) -> None:
+        mock_deleted.return_value = {"src/helper.hpp"}
         mock_grep.return_value = [
             ("a.cpp", 1),
             ("c.md", 3),
         ]
-        result = find_stale_references(["src/helper.hpp"])
+        result = find_stale_references()
         assert len(result) == 2
         assert {r.file for r in result} == {"a.cpp", "c.md"}

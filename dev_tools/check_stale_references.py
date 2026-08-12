@@ -35,11 +35,11 @@ def _run_git(*args: str, check: bool = True) -> str:
     ).stdout
 
 
-def get_deleted_paths() -> list[str]:
+def get_deleted_paths() -> set[str]:
     """Return repo-relative paths of files being deleted or renamed away in the staged commit."""
     output = _run_git("diff", "--cached", "--diff-filter=DR", "--name-status")
     # Both D(eleted) and R(enamed) have the vanishing path in column 1
-    return [line.split("\t")[1] for line in output.splitlines()]
+    return {line.split("\t")[1] for line in output.splitlines()}
 
 
 def build_path_pattern(deleted_path: str) -> str:
@@ -72,27 +72,20 @@ def git_grep(pattern: str) -> list[tuple[str, int]]:
     return matches
 
 
-def find_stale_references(deleted_paths: list[str]) -> list[StaleReference]:
+def find_stale_references() -> list[StaleReference]:
     """Search tracked files for references to deleted paths."""
-    deleted_set = set(deleted_paths)
-    stale: list[StaleReference] = []
-
-    for deleted_path in deleted_paths:
-        pattern = build_path_pattern(deleted_path)
-
-        for file, line_no in git_grep(pattern):
-            if file in deleted_set:
-                continue
-            stale.append(StaleReference(file, line_no, deleted_path))
-
-    return stale
+    deleted_paths = get_deleted_paths()
+    return [
+        StaleReference(file, line_no, deleted_path)
+        for deleted_path in deleted_paths
+        for file, line_no in git_grep(build_path_pattern(deleted_path))
+        if file not in deleted_paths
+    ]
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     del argv
-    deleted_paths = get_deleted_paths()
-
-    if stale_refs := find_stale_references(deleted_paths):
+    if stale_refs := find_stale_references():
         print("Stale references to deleted/renamed files:")
         for ref in stale_refs:
             print(f"  {ref}")
