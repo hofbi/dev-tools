@@ -38,12 +38,8 @@ def _run_git(*args: str) -> str:
 def get_deleted_paths() -> list[str]:
     """Return repo-relative paths of files being deleted or renamed away in the staged commit."""
     output = _run_git("diff", "--cached", "--diff-filter=DR", "--name-status")
-    deleted: list[str] = []
-    for line in output.splitlines():
-        parts = line.split("\t")
-        # Both D(eleted) and R(enamed) have the vanishing path in column 1
-        deleted.append(parts[1])
-    return deleted
+    # Both D(eleted) and R(enamed) have the vanishing path in column 1
+    return [line.split("\t")[1] for line in output.splitlines()]
 
 
 def build_path_pattern(deleted_path: str) -> re.Pattern[str]:
