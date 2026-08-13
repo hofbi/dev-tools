@@ -1,10 +1,8 @@
 # Pre-Commit-Excludes
 
-<!-- rumdl-disable MD013 -->
 [![PyPI](https://img.shields.io/pypi/v/pre-commit-excludes)](https://pypi.org/project/pre-commit-excludes/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pre-commit-excludes)](https://pypi.org/project/pre-commit-excludes/)
 [![PyPI - License](https://img.shields.io/pypi/l/pre-commit-excludes)](https://pypi.org/project/pre-commit-excludes/)
-<!-- rumdl-enable MD013 -->
 
 `remove-unnecessary-excludes` should help you to find lines in your exclude list that are no longer required.
 Running this tool will try to remove excludes from your config by removing a line, running the hook, and restore the old config if it is still required.
