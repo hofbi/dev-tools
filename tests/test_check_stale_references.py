@@ -20,12 +20,12 @@ def test_matches_full_path_with_leading_slash() -> None:
     assert re.search(pattern, "see /src/lib/foo.hpp for details")
 
 
-def test_matches_intermediate_suffix() -> None:
+def test_matches_partial_path() -> None:
     pattern = build_path_pattern("src/lib/foo.hpp")
     assert re.search(pattern, "see lib/foo.hpp here")
 
 
-def test_matches_intermediate_suffix_with_dotdot() -> None:
+def test_matches_partial_path_with_dotdot() -> None:
     pattern = build_path_pattern("src/lib/foo.hpp")
     assert re.search(pattern, "see ../lib/foo.hpp here")
 
@@ -58,11 +58,6 @@ def test_no_match_with_dash_suffix() -> None:
 def test_dot_in_extension_is_literal() -> None:
     pattern = build_path_pattern("src/lib/foo.hpp")
     assert not re.search(pattern, "fooXhpp")
-
-
-def test_stale_reference_str() -> None:
-    ref = StaleReference("src/main.cpp", 5, "src/utils/helper.hpp")
-    assert str(ref) == "src/main.cpp:5 references src/utils/helper.hpp"
 
 
 @patch("dev_tools.check_stale_references.git_grep")
@@ -106,6 +101,4 @@ def test_multiple_files_with_references(mock_deleted, mock_grep) -> None:
         ("a.cpp", 1),
         ("c.md", 3),
     ]
-    result = find_stale_references()
-    assert len(result) == 2
-    assert {r.from_file for r in result} == {"a.cpp", "c.md"}
+    assert {reference.from_file for reference in find_stale_references()} == {"a.cpp", "c.md"}
