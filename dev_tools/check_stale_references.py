@@ -17,13 +17,13 @@ if TYPE_CHECKING:
 class StaleReference:
     """A reference in a tracked file that points to a deleted/renamed path."""
 
-    file: str
-    line: int
-    deleted_path: str
+    from_file: str
+    from_line: int
+    to_path: str
 
     def __str__(self) -> str:
         """Format as file:line references deleted_path."""
-        return f"{self.file}:{self.line} references {self.deleted_path}"
+        return f"{self.from_file}:{self.from_line} references {self.to_path}"
 
 
 def _run_git(*args: str, check: bool = True) -> str:
@@ -76,7 +76,7 @@ def find_stale_references() -> list[StaleReference]:
     """Search tracked files for references to deleted paths."""
     deleted_paths = get_deleted_paths()
     return [
-        StaleReference(file, line_no, deleted_path)
+        StaleReference(from_file=file, from_line=line_no, to_path=deleted_path)
         for deleted_path in deleted_paths
         for file, line_no in git_grep(build_path_pattern(deleted_path))
         if file not in deleted_paths

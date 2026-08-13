@@ -101,4 +101,4 @@ class TestFindStaleReferences:
         ]
         result = find_stale_references()
         assert len(result) == 2
-        assert {r.file for r in result} == {"a.cpp", "c.md"}
+        assert {r.from_file for r in result} == {"a.cpp", "c.md"}
