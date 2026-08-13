@@ -291,8 +291,6 @@
   language: python
   pass_filenames: false
   always_run: true
-  stages:
-    - pre-commit
 - id: check-max-one-sentence-per-line
   name: Check max one sentence per line
   description: |-

@@ -83,7 +83,6 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = [
   "ANN201", # don't require -> None for every test. Accept non-enforcement for test helper functions
-  "D101", # test classes don't need docstrings
   "PLR2004", # Magic values in tests are ok since they are often the expected values
   "S101" # allow assertions in tests
 ]
