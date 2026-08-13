@@ -64,7 +64,7 @@ def git_grep(pattern: str) -> list[tuple[str, int]]:
     output = _run_git("grep", "-nP", pattern, check=False)
     matches: list[tuple[str, int]] = []
     for line in output.splitlines():
-        file, line_no, _text = line.split(":", 2)
+        file, line_no = line.split(":", 1)
         matches.append((file, int(line_no)))
     return matches
 
