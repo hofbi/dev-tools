@@ -1,6 +1,3 @@
-# Copyright (c) Luminar Technologies, Inc. All rights reserved.
-# Licensed under the MIT License.
-
 from __future__ import annotations
 
 import re
