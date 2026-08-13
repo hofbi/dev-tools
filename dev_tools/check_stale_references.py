@@ -4,10 +4,6 @@ import re
 import subprocess
 import sys
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from collections.abc import Sequence
 
 
 @dataclass(frozen=True)
@@ -80,8 +76,7 @@ def find_stale_references() -> list[StaleReference]:
     ]
 
 
-def main(argv: Sequence[str] | None = None) -> int:
-    del argv
+def main() -> int:
     if stale_refs := find_stale_references():
         print("Stale references to deleted/renamed files:")
         for ref in stale_refs:
