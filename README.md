@@ -228,7 +228,7 @@ sync_versions:
 
 When files are deleted or renamed, check that no remaining tracked file still references the old path.
 Searches for both the full repo-relative path and the basename of deleted files.
-This catches broken cross-references in comments, documentation, configs, and build files.
+This catches broken cross-references in dead code such as comments, documentation, and configs.
 
 ### `check-max-one-sentence-per-line`
 
