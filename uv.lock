@@ -306,7 +306,7 @@ wheels = [
 
 [[package]]
 name = "pre-commit-excludes"
-version = "0.5.0"
+version = "0.5.1"
 source = { editable = "packages/pre_commit_excludes" }
 dependencies = [
     { name = "ruamel-yaml" },
