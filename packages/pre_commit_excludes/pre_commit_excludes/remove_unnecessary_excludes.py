@@ -144,6 +144,7 @@ def _remove_excludes_from_block(block: str, excludes: set[str]) -> str:
 def _load_round_trip_config(content: str) -> tuple[CommentedMap, YAML]:
     yaml = YAML()
     yaml.preserve_quotes = True
+    yaml.width = sys.maxsize
     config, indent, block_sequence_indent = load_yaml_guess_indent(content, yaml=yaml)
     if indent is not None:
         yaml.indent(sequence=indent, offset=block_sequence_indent)

@@ -347,6 +347,7 @@ def test_remove_excludes_from_config_should_preserve_detected_yaml_formatting(fs
         contents="""# Project hooks
 repos:
 - repo: 'local' # Keep this comment.
+  description: This deliberately long line must remain on one line when the configuration is written back after removing an exclude.
   hooks:
   - id: ruff
     exclude: |
@@ -364,6 +365,7 @@ repos:
         == """# Project hooks
 repos:
 - repo: 'local' # Keep this comment.
+  description: This deliberately long line must remain on one line when the configuration is written back after removing an exclude.
   hooks:
   - id: ruff
     exclude: |
