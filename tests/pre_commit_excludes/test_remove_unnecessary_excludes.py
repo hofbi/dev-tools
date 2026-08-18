@@ -16,6 +16,7 @@ from pre_commit_excludes.remove_unnecessary_excludes import (
     get_hooks_to_cleanup,
     is_exclude_unnecessary,
     parse_skipped_exclude,
+    remove_excludes_from_config,
     run_pre_commit,
     write_tmp_pre_commit_config_without_excludes,
 )
@@ -219,6 +220,200 @@ def test_find_unnecessary_excludes_when_all_excludes_are_skipped_should_return_e
 
     assert dict(result) == {}
     is_exclude_unnecessary_mock.assert_not_called()
+
+
+def test_remove_excludes_from_config_should_remove_matching_lines_from_each_hook(fs: FakeFilesystem) -> None:
+    config_file = Path("Repo/.pre-commit-config.yaml")
+    fs.create_file(
+        config_file,
+        contents="""repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        exclude: |
+          (?x)^(
+            generated/foo\\.py|
+            generated/keep.py|
+            generated/bar.py
+          )
+      - id: black
+        exclude: |
+          (?x)^(
+            generated/foo.py|
+            generated/keep.py
+          )
+""",
+    )
+
+    remove_excludes_from_config(
+        config_file,
+        {
+            "ruff": [Path("Repo/generated/foo.py"), Path("Repo/generated/bar.py")],
+            "black": [Path("Repo/generated/foo.py")],
+        },
+    )
+
+    assert (
+        config_file.read_text(encoding="utf-8")
+        == """repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        exclude: |
+          (?x)^(
+            generated/keep.py
+          )
+      - id: black
+        exclude: |
+          (?x)^(
+            generated/keep.py
+          )
+"""
+    )
+
+
+def test_remove_excludes_from_config_should_repair_separator_when_removing_final_alternative(
+    fs: FakeFilesystem,
+) -> None:
+    config_file = Path("Repo/.pre-commit-config.yaml")
+    fs.create_file(
+        config_file,
+        contents="""repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        exclude: |
+          (?x)^(
+            generated/keep.py|  # Still required.
+            generated/remove.py
+          )
+""",
+    )
+
+    remove_excludes_from_config(config_file, {"ruff": [Path("Repo/generated/remove.py")]})
+
+    assert "            generated/keep.py  # Still required.\n" in config_file.read_text(encoding="utf-8")
+
+
+def test_remove_excludes_from_config_should_match_directory_without_trailing_slash(fs: FakeFilesystem) -> None:
+    config_file = Path("Repo/.pre-commit-config.yaml")
+    fs.create_file(
+        config_file,
+        contents="""repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        exclude: |
+          (?x)^(
+            generated/remove/|
+            generated/keep/
+          )
+""",
+    )
+
+    remove_excludes_from_config(config_file, {"ruff": [Path("Repo/generated/remove")]})
+
+    assert "generated/remove/" not in config_file.read_text(encoding="utf-8")
+
+
+def test_remove_excludes_from_config_should_only_change_exclude_block_for_matching_hook(
+    fs: FakeFilesystem,
+) -> None:
+    config_file = Path("Repo/.pre-commit-config.yaml")
+    original_config = """repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        args:
+          - generated/remove.py
+        exclude: generated/remove.py
+      - id: black
+        exclude: |
+          (?x)^(
+            generated/remove.py
+          )
+"""
+    fs.create_file(config_file, contents=original_config)
+
+    remove_excludes_from_config(config_file, {"ruff": [Path("Repo/generated/remove.py")]})
+
+    assert config_file.read_text(encoding="utf-8") == original_config
+
+
+def test_remove_excludes_from_config_should_preserve_detected_yaml_formatting(fs: FakeFilesystem) -> None:
+    config_file = Path("Repo/.pre-commit-config.yaml")
+    fs.create_file(
+        config_file,
+        contents="""# Project hooks
+repos:
+- repo: 'local' # Keep this comment.
+  hooks:
+  - id: ruff
+    exclude: |
+      (?x)^(
+        generated/remove.py|
+        generated/keep.py
+      )
+""",
+    )
+
+    remove_excludes_from_config(config_file, {"ruff": [Path("Repo/generated/remove.py")]})
+
+    assert (
+        config_file.read_text(encoding="utf-8")
+        == """# Project hooks
+repos:
+- repo: 'local' # Keep this comment.
+  hooks:
+  - id: ruff
+    exclude: |
+      (?x)^(
+        generated/keep.py
+      )
+"""
+    )
+
+
+def test_remove_excludes_from_config_when_every_entry_is_removed_should_leave_empty_wrapper(
+    fs: FakeFilesystem,
+) -> None:
+    config_file = Path("Repo/.pre-commit-config.yaml")
+    fs.create_file(
+        config_file,
+        contents="""repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        exclude: |
+          (?x)^(
+            generated/remove.py
+          )
+""",
+    )
+
+    remove_excludes_from_config(config_file, {"ruff": [Path("Repo/generated/remove.py")]})
+
+    assert (
+        config_file.read_text(encoding="utf-8")
+        == """repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        exclude: |
+          (?x)^(
+          )
+"""
+    )
+
+
+def test_remove_excludes_from_config_for_empty_removals_should_leave_config_unchanged(fs: FakeFilesystem) -> None:
+    config_file = Path("Repo/.pre-commit-config.yaml")
+    original_config = "repos: []\n"
+    fs.create_file(config_file, contents=original_config)
+
+    remove_excludes_from_config(config_file, {})
+
+    assert config_file.read_text(encoding="utf-8") == original_config
 
 
 def test_write_tmp_pre_commit_config_without_excludes_should_remove_all_excludes(fs: FakeFilesystem) -> None:

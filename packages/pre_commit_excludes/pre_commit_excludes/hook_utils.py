@@ -3,9 +3,12 @@ from __future__ import annotations
 import itertools
 from collections import Counter
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from ruamel.yaml import YAML
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator, Mapping
 
 
 class Hook:
@@ -95,8 +98,12 @@ def write_config(config_file: Path, config: dict[str, Any]) -> None:
         yaml.dump(config, output)
 
 
+def get_hook_configs_from_all_repos(config: Mapping[str, Any]) -> Iterator[dict[str, Any]]:
+    return itertools.chain.from_iterable(repo["hooks"] for repo in config["repos"])
+
+
 def load_hooks(root_directory: Path, config_file: Path) -> list[Hook]:
     config = load_config(config_file)
-    hook_configs = itertools.chain(*[repo["hooks"] for repo in config["repos"]])
+    hook_configs = get_hook_configs_from_all_repos(config)
 
     return [Hook.from_hook_config(root_directory, hook) for hook in hook_configs if has_excludes(hook)]
