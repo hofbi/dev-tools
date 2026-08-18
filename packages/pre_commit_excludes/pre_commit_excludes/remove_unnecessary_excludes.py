@@ -1,13 +1,19 @@
 """Remove unnecessary excludes from a .pre-commit-config.yaml."""
 
 import argparse
+import re
 import subprocess
 import sys
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
-from pre_commit_excludes.hook_utils import Hook, load_config, load_hooks, write_config
+from ruamel.yaml import YAML
+from ruamel.yaml.comments import CommentedMap
+from ruamel.yaml.scalarstring import LiteralScalarString
+from ruamel.yaml.util import load_yaml_guess_indent
+
+from pre_commit_excludes.hook_utils import Hook, get_hook_configs_from_all_repos, load_config, load_hooks, write_config
 
 
 @dataclass(frozen=True)
@@ -104,6 +110,75 @@ def find_unnecessary_excludes(
     return excludes_to_remove
 
 
+def _exclude_line_value(line: str) -> str | None:
+    value = line.split("#", maxsplit=1)[0].strip()
+    if value.endswith("|"):
+        value = value[:-1].rstrip()
+    if not value or value in {"(?x)^(", ")"}:
+        return None
+    return Path(value.replace(r"\.", ".")).as_posix()
+
+
+def _remove_trailing_separator(line: str) -> str:
+    match = re.search(r"\|(?P<space>\s*)(?P<comment>#.*)?$", line)
+    if match is None:
+        return line
+    comment = match.group("comment") or ""
+    return f"{line[: match.start()]}{match.group('space')}{comment}"
+
+
+def _remove_excludes_from_block(block: str, excludes: set[str]) -> str:
+    lines = block.splitlines()
+    retained_lines = [line for line in lines if _exclude_line_value(line) not in excludes]
+    if len(retained_lines) == len(lines):
+        return block
+
+    alternative_indexes = [index for index, line in enumerate(retained_lines) if _exclude_line_value(line) is not None]
+    if alternative_indexes:
+        final_alternative = alternative_indexes[-1]
+        retained_lines[final_alternative] = _remove_trailing_separator(retained_lines[final_alternative])
+    trailing_newline = "\n" if block.endswith("\n") else ""
+    return "\n".join(retained_lines) + trailing_newline
+
+
+def _load_round_trip_config(content: str) -> tuple[CommentedMap, YAML]:
+    yaml = YAML()
+    yaml.preserve_quotes = True
+    config, indent, block_sequence_indent = load_yaml_guess_indent(content, yaml=yaml)
+    if indent is not None:
+        yaml.indent(sequence=indent, offset=block_sequence_indent)
+    return (config if isinstance(config, CommentedMap) else CommentedMap()), yaml
+
+
+def _remove_excludes_from_hooks(config: CommentedMap, excludes_by_hook: dict[str, set[str]]) -> bool:
+    changed = False
+    hooks_to_update = [
+        hook
+        for hook in get_hook_configs_from_all_repos(config)
+        if hook.get("id") in excludes_by_hook and isinstance(hook.get("exclude"), LiteralScalarString)
+    ]
+    for hook in hooks_to_update:
+        hook_id = hook["id"]
+        exclude = hook["exclude"]
+        updated_exclude = _remove_excludes_from_block(exclude, excludes_by_hook[hook_id])
+        if updated_exclude != exclude:
+            hook["exclude"] = LiteralScalarString(updated_exclude)
+            changed = True
+    return changed
+
+
+def remove_excludes_from_config(config_file: Path, excludes_to_remove: dict[str, list[Path]]) -> None:
+    """Remove matching exclude lines from hooks in a pre-commit config."""
+    relative_excludes = {
+        hook_id: {exclude.relative_to(config_file.parent).as_posix() for exclude in excludes}
+        for hook_id, excludes in excludes_to_remove.items()
+    }
+    original_content = config_file.read_text(encoding="utf-8")
+    config, yaml = _load_round_trip_config(original_content)
+    if _remove_excludes_from_hooks(config, relative_excludes):
+        yaml.dump(config, config_file)
+
+
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -174,6 +249,7 @@ def main() -> int:
     print()
     print("Excludes to remove:")
     print(excludes_to_remove)
+    remove_excludes_from_config(args.config, excludes_to_remove)
 
     return 0
 

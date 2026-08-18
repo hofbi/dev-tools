@@ -4,15 +4,12 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pre-commit-excludes)](https://pypi.org/project/pre-commit-excludes/)
 [![PyPI - License](https://img.shields.io/pypi/l/pre-commit-excludes)](https://pypi.org/project/pre-commit-excludes/)
 
-`remove-unnecessary-excludes` should help you to find lines in your exclude list that are no longer required.
-Running this tool will try to remove excludes from your config by removing a line, running the hook, and restore the old config if it is still required.
-
-Right now this is in early development, so we don't automatically update the `.pre-commit-config.yaml` with all unnecessary excludes removed.
-Instead, we only print which excludes can be removed for which hook.
-More automation will come in future releases.
+`remove-unnecessary-excludes` finds lines in your exclude list that are no longer required and removes them from the supplied `.pre-commit-config.yaml`.
+The tool checks each exclude by running the affected hook without excludes and restores changes made by a failing hook when the exclude is still required.
 
 > [!NOTE]
 > This hook deliberately only supports simple `|`-separated lists of file paths in `exclude` fields — complex regular expressions are not supported.
+> Each path must be on its own line in a multiline YAML block scalar; compact inline exclude patterns are not rewritten.
 > Keeping exclusions as plain `|`-separated paths also makes it easier for humans to maintain an overview of what is excluded.
 
 ## Usage
