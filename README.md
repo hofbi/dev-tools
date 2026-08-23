@@ -14,6 +14,7 @@ These tools are used to help developers in their day-to-day tasks.
 
 - [Tools](#tools)
   - [Configure VS Code for Bazel](#configure-vs-code-for-bazel)
+  - [Pre-Commit Excludes](#pre-commit-excludes)
   - [Whoowns](#whoowns)
 - [Hooks](#hooks)
   - [`check-build-file-without-extensions`](#check-build-file-without-extensions)
@@ -50,6 +51,10 @@ Standalone tools available on <https://pypi.org/>.
 ### Configure VS Code for Bazel
 
 See the [README.md](packages/configure_vscode_for_bazel/README.md) in the `configure_vscode_for_bazel` package for documentation on the `configure-vscode-for-bazel` tool.
+
+### Pre-Commit Excludes
+
+See the [README.md](packages/pre_commit_excludes/README.md) in the `pre_commit_excludes` package for documentation on the `remove-unnecessary-excludes` tool.
 
 ### Whoowns
 
