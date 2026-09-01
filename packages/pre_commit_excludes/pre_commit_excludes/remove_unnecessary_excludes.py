@@ -13,15 +13,8 @@ from ruamel.yaml.comments import CommentedMap
 from ruamel.yaml.scalarstring import LiteralScalarString
 from ruamel.yaml.util import load_yaml_guess_indent
 
+from pre_commit_excludes.args import SkippedExclude, create_default_parser
 from pre_commit_excludes.hook_utils import Hook, get_hook_configs_from_all_repos, load_config, load_hooks, write_config
-
-
-@dataclass(frozen=True)
-class SkippedExclude:
-    """A pair of hook ID and exclude path that should be skipped from removal."""
-
-    hook_id: str
-    path: Path
 
 
 @dataclass(frozen=True)
@@ -30,20 +23,6 @@ class CLITools:
 
     pre_commit: Path
     git: Path
-
-
-def parse_skipped_exclude(value: str) -> SkippedExclude:
-    try:
-        hook_id, exclude_path = value.split(":", maxsplit=1)
-    except ValueError as error:
-        msg = "expected HOOK_ID:EXCLUDE_PATH"
-        raise argparse.ArgumentTypeError(msg) from error
-
-    if not hook_id or not exclude_path:
-        msg = "hook ID and exclude path must not be empty"
-        raise argparse.ArgumentTypeError(msg)
-
-    return SkippedExclude(hook_id, Path(exclude_path))
 
 
 def get_hooks_to_cleanup(hooks: list[Hook], selected_hooks: list[str] | None) -> list[Hook]:
@@ -181,12 +160,7 @@ def remove_excludes_from_config(config_file: Path, excludes_to_remove: dict[str,
 
 
 def parse_arguments() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "config",
-        type=Path,
-        help="Path to the .pre-commit-config.yaml that should be cleaned up.",
-    )
+    parser = create_default_parser(__doc__)
     parser.add_argument(
         "--pre-commit-binary",
         type=Path,
@@ -198,34 +172,6 @@ def parse_arguments() -> argparse.Namespace:
         type=Path,
         required=True,
         help="Path to the git binary used to undo local changes made by running the hooks.",
-    )
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        action="store_true",
-        help="Verbose output for debugging.",
-    )
-    parser.add_argument(
-        "-s",
-        "--skip-exclude",
-        type=parse_skipped_exclude,
-        nargs="+",
-        default=[],
-        metavar="HOOK_ID:EXCLUDE_PATH",
-        help="Skip specific excludes from being removed using HOOK_ID:EXCLUDE_PATH.",
-    )
-    hook_group = parser.add_mutually_exclusive_group()
-    hook_group.add_argument(
-        "-a",
-        "--all",
-        action="store_true",
-        help="Remove unnecessary excludes from all hooks in the config.",
-    )
-    hook_group.add_argument(
-        "--hook",
-        type=str,
-        nargs="+",
-        help="Remove unnecessary excludes from this specific hook.",
     )
     return parser.parse_args()
 
