@@ -1,14 +1,26 @@
 from __future__ import annotations
 
 import itertools
+import sys
 from collections import Counter
+from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from ruamel.yaml import YAML
+from ruamel.yaml.comments import CommentedMap
+from ruamel.yaml.util import load_yaml_guess_indent
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
+
+
+@dataclass(frozen=True)
+class SkippedExclude:
+    """A pair of hook ID and exclude path that should be skipped from removal."""
+
+    hook_id: str
+    path: Path
 
 
 class Hook:
@@ -107,3 +119,30 @@ def load_hooks(root_directory: Path, config_file: Path) -> list[Hook]:
     hook_configs = get_hook_configs_from_all_repos(config)
 
     return [Hook.from_hook_config(root_directory, hook) for hook in hook_configs if has_excludes(hook)]
+
+
+def get_hooks_to_cleanup(hooks: list[Hook], selected_hooks: list[str] | None) -> list[Hook]:
+    if selected_hooks is None:
+        return []
+
+    return [hook for hook in hooks if hook.id in selected_hooks]
+
+
+def get_skipped_excludes_relative_to_config(
+    skipped_excludes: list[SkippedExclude], pre_commit_config_parent: Path
+) -> set[SkippedExclude]:
+    return {
+        SkippedExclude(skipped_exclude.hook_id, pre_commit_config_parent / skipped_exclude.path)
+        for skipped_exclude in skipped_excludes
+    }
+
+
+def load_round_trip_config(config_file: Path) -> tuple[CommentedMap, YAML]:
+    yaml = YAML()
+    yaml.preserve_quotes = True
+    yaml.width = sys.maxsize
+    original_content = config_file.read_text(encoding="utf-8")
+    config, indent, block_sequence_indent = load_yaml_guess_indent(original_content, yaml=yaml)
+    if indent is not None:
+        yaml.indent(sequence=indent, offset=block_sequence_indent)
+    return (config if isinstance(config, CommentedMap) else CommentedMap()), yaml

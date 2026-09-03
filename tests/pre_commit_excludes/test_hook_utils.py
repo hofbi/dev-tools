@@ -6,11 +6,14 @@ from typing import TYPE_CHECKING
 import pytest
 from pre_commit_excludes.hook_utils import (
     Hook,
+    SkippedExclude,
     extract_literal_exclude_paths,
+    get_skipped_excludes_relative_to_config,
     has_excludes,
     is_regex_pattern,
     load_config,
     load_hooks,
+    load_round_trip_config,
     write_config,
 )
 from ruamel.yaml import YAML
@@ -302,6 +305,48 @@ def test_write_config_should_write_loadable_yaml_file(fs: FakeFilesystem) -> Non
     assert load_config(config_file) == config
 
 
+def test_load_round_trip_config_should_preserve_yaml_formatting(fs: FakeFilesystem) -> None:
+    config_file = Path("Test_directory/.pre-commit-config.yaml")
+    fs.create_dir(config_file.parent)
+    fs.create_file(
+        config_file,
+        contents="""# Keep this comment.
+repos:
+  - repo: local
+    hooks:
+      - id: check-snake-case
+        name: "check snake case"
+        exclude: 'packages/thirdparty/'
+""",
+    )
+
+    config, yaml = load_round_trip_config(config_file)
+    config["repos"][0]["hooks"][0]["id"] = "check-yaml"
+    yaml.dump(config, config_file)
+
+    assert (
+        config_file.read_text(encoding="utf-8")
+        == """# Keep this comment.
+repos:
+  - repo: local
+    hooks:
+      - id: check-yaml
+        name: "check snake case"
+        exclude: 'packages/thirdparty/'
+"""
+    )
+
+
+def test_load_round_trip_config_for_non_mapping_should_return_empty_config(fs: FakeFilesystem) -> None:
+    config_file = Path("Test_directory/.pre-commit-config.yaml")
+    fs.create_dir(config_file.parent)
+    fs.create_file(config_file, contents="[]")
+
+    config, _ = load_round_trip_config(config_file)
+
+    assert config == {}
+
+
 def test_count_excluded_files_for_single_file(fs: FakeFilesystem) -> None:
     fs.create_file(Path("Repo/test_file.txt"))
     hook_instance = Hook("test_id", [Path("Repo/test_file.txt")])
@@ -360,3 +405,27 @@ def test_count_excluded_files_for_empty_exclude_paths() -> None:
     hook_instance = Hook("test_id", [])
 
     assert hook_instance.count_excluded_files() == 0
+
+
+def test_get_skipped_excludes_relative_to_config_should_prefix_config_parent() -> None:
+    skipped_excludes = [SkippedExclude("ruff", Path("generated/foo.py"))]
+
+    assert get_skipped_excludes_relative_to_config(skipped_excludes, Path("Repo")) == {
+        SkippedExclude("ruff", Path("Repo/generated/foo.py")),
+    }
+
+
+def test_get_skipped_excludes_relative_to_config_should_preserve_hook_ids_and_paths() -> None:
+    skipped_excludes = [
+        SkippedExclude("ruff", Path("generated/foo.py")),
+        SkippedExclude("black", Path("generated/bar.py")),
+    ]
+
+    assert get_skipped_excludes_relative_to_config(skipped_excludes, Path("Repo")) == {
+        SkippedExclude("ruff", Path("Repo/generated/foo.py")),
+        SkippedExclude("black", Path("Repo/generated/bar.py")),
+    }
+
+
+def test_get_skipped_excludes_relative_to_config_for_no_skipped_excludes_should_return_empty_set() -> None:
+    assert get_skipped_excludes_relative_to_config([], Path("Repo")) == set()

@@ -5,10 +5,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, call
 
-from pre_commit_excludes.hook_utils import Hook, load_config, write_config
+from pre_commit_excludes.hook_utils import Hook, SkippedExclude, load_config, write_config
 from pre_commit_excludes.remove_unnecessary_excludes import (
     CLITools,
-    SkippedExclude,
     find_unnecessary_excludes,
     get_files_from_exclude_path,
     get_hooks_to_cleanup,

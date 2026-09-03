@@ -8,13 +8,20 @@ from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
-from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap
 from ruamel.yaml.scalarstring import LiteralScalarString
-from ruamel.yaml.util import load_yaml_guess_indent
 
 from pre_commit_excludes.args import SkippedExclude, create_default_parser
-from pre_commit_excludes.hook_utils import Hook, get_hook_configs_from_all_repos, load_config, load_hooks, write_config
+from pre_commit_excludes.hook_utils import (
+    Hook,
+    get_hook_configs_from_all_repos,
+    get_hooks_to_cleanup,
+    get_skipped_excludes_relative_to_config,
+    load_config,
+    load_hooks,
+    load_round_trip_config,
+    write_config,
+)
 
 
 @dataclass(frozen=True)
@@ -23,13 +30,6 @@ class CLITools:
 
     pre_commit: Path
     git: Path
-
-
-def get_hooks_to_cleanup(hooks: list[Hook], selected_hooks: list[str] | None) -> list[Hook]:
-    if selected_hooks is None:
-        return []
-
-    return [hook for hook in hooks if hook.id in selected_hooks]
 
 
 def write_tmp_pre_commit_config_without_excludes(config_file: Path) -> Path:
@@ -120,16 +120,6 @@ def _remove_excludes_from_block(block: str, excludes: set[str]) -> str:
     return "\n".join(retained_lines) + trailing_newline
 
 
-def _load_round_trip_config(content: str) -> tuple[CommentedMap, YAML]:
-    yaml = YAML()
-    yaml.preserve_quotes = True
-    yaml.width = sys.maxsize
-    config, indent, block_sequence_indent = load_yaml_guess_indent(content, yaml=yaml)
-    if indent is not None:
-        yaml.indent(sequence=indent, offset=block_sequence_indent)
-    return (config if isinstance(config, CommentedMap) else CommentedMap()), yaml
-
-
 def _remove_excludes_from_hooks(config: CommentedMap, excludes_by_hook: dict[str, set[str]]) -> bool:
     changed = False
     hooks_to_update = [
@@ -153,8 +143,7 @@ def remove_excludes_from_config(config_file: Path, excludes_to_remove: dict[str,
         hook_id: {exclude.relative_to(config_file.parent).as_posix() for exclude in excludes}
         for hook_id, excludes in excludes_to_remove.items()
     }
-    original_content = config_file.read_text(encoding="utf-8")
-    config, yaml = _load_round_trip_config(original_content)
+    config, yaml = load_round_trip_config(config_file)
     if _remove_excludes_from_hooks(config, relative_excludes):
         yaml.dump(config, config_file)
 
@@ -173,6 +162,12 @@ def parse_arguments() -> argparse.Namespace:
         required=True,
         help="Path to the git binary used to undo local changes made by running the hooks.",
     )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Verbose output for debugging.",
+    )
     return parser.parse_args()
 
 
@@ -183,10 +178,7 @@ def main() -> int:
     cli_tools = CLITools(args.pre_commit_binary, args.git_binary)
     hooks_with_excludes = load_hooks(args.config.parent, args.config)
     hooks_to_cleanup = hooks_with_excludes if args.all else get_hooks_to_cleanup(hooks_with_excludes, args.hook)
-    skipped_excludes = {
-        SkippedExclude(skipped_exclude.hook_id, args.config.parent / skipped_exclude.path)
-        for skipped_exclude in args.skip_exclude
-    }
+    skipped_excludes = get_skipped_excludes_relative_to_config(args.skip_exclude, args.config.parent)
 
     excludes_to_remove = find_unnecessary_excludes(
         hooks_to_cleanup, pre_commit_config_without_excludes, skipped_excludes, cli_tools, verbose=args.verbose

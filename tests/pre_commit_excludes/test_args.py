@@ -2,7 +2,8 @@ import argparse
 from pathlib import Path
 
 import pytest
-from pre_commit_excludes.args import SkippedExclude, parse_skipped_exclude
+from pre_commit_excludes.args import parse_skipped_exclude
+from pre_commit_excludes.hook_utils import SkippedExclude
 
 
 def test_parse_skipped_exclude_should_return_skipped_exclude() -> None:
