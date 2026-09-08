@@ -128,6 +128,16 @@ def get_hooks_to_cleanup(hooks: list[Hook], selected_hooks: list[str] | None) ->
     return [hook for hook in hooks if hook.id in selected_hooks]
 
 
+def get_relative_excludes_by_hook(hooks: list[Hook], root_directory: Path) -> dict[str, set[str]]:
+    """Return hook excludes as config-relative POSIX paths grouped by hook ID."""
+    relative_excludes: dict[str, set[str]] = {}
+    for hook in hooks:
+        relative_excludes.setdefault(hook.id, set()).update(
+            exclude.relative_to(root_directory).as_posix() for exclude in hook.exclude_paths
+        )
+    return relative_excludes
+
+
 def get_skipped_excludes_relative_to_config(
     skipped_excludes: list[SkippedExclude], pre_commit_config_parent: Path
 ) -> set[SkippedExclude]:

@@ -4,7 +4,6 @@ import argparse
 import re
 import subprocess
 import sys
-from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -16,6 +15,7 @@ from pre_commit_excludes.hook_utils import (
     Hook,
     get_hook_configs_from_all_repos,
     get_hooks_to_cleanup,
+    get_relative_excludes_by_hook,
     get_skipped_excludes_relative_to_config,
     load_config,
     load_hooks,
@@ -77,16 +77,18 @@ def find_unnecessary_excludes(
     tools: CLITools,
     *,
     verbose: bool = False,
-) -> defaultdict[str, list[Path]]:
-    excludes_to_remove = defaultdict(list)
+) -> list[Hook]:
+    hooks_with_unnecessary_excludes = []
     for hook in hooks_to_cleanup:
-        for exclude in hook.exclude_paths:
-            if SkippedExclude(hook.id, exclude) in skipped_excludes:
-                continue
-
-            if is_exclude_unnecessary(hook.id, exclude, pre_commit_config_without_excludes, tools, verbose=verbose):
-                excludes_to_remove[hook.id].append(exclude)
-    return excludes_to_remove
+        unnecessary_excludes = [
+            exclude
+            for exclude in hook.exclude_paths
+            if SkippedExclude(hook.id, exclude) not in skipped_excludes
+            and is_exclude_unnecessary(hook.id, exclude, pre_commit_config_without_excludes, tools, verbose=verbose)
+        ]
+        if unnecessary_excludes:
+            hooks_with_unnecessary_excludes.append(Hook(hook.id, unnecessary_excludes))
+    return hooks_with_unnecessary_excludes
 
 
 def _exclude_line_value(line: str) -> str | None:
@@ -137,13 +139,10 @@ def _remove_excludes_from_hooks(config: CommentedMap, excludes_by_hook: dict[str
     return changed
 
 
-def remove_excludes_from_config(config_file: Path, excludes_to_remove: dict[str, list[Path]]) -> None:
+def remove_excludes_from_config(config_file: Path, hooks_to_update: list[Hook]) -> None:
     """Remove matching exclude lines from hooks in a pre-commit config."""
-    relative_excludes = {
-        hook_id: {exclude.relative_to(config_file.parent).as_posix() for exclude in excludes}
-        for hook_id, excludes in excludes_to_remove.items()
-    }
     config, yaml = load_round_trip_config(config_file)
+    relative_excludes = get_relative_excludes_by_hook(hooks_to_update, config_file.parent)
     if _remove_excludes_from_hooks(config, relative_excludes):
         yaml.dump(config, config_file)
 
@@ -180,15 +179,15 @@ def main() -> int:
     hooks_to_cleanup = hooks_with_excludes if args.all else get_hooks_to_cleanup(hooks_with_excludes, args.hook)
     skipped_excludes = get_skipped_excludes_relative_to_config(args.skip_exclude, args.config.parent)
 
-    excludes_to_remove = find_unnecessary_excludes(
+    hooks_with_unnecessary_excludes = find_unnecessary_excludes(
         hooks_to_cleanup, pre_commit_config_without_excludes, skipped_excludes, cli_tools, verbose=args.verbose
     )
     pre_commit_config_without_excludes.unlink()
 
     print()
     print("Excludes to remove:")
-    print(excludes_to_remove)
-    remove_excludes_from_config(args.config, excludes_to_remove)
+    print({hook.id: hook.exclude_paths for hook in hooks_with_unnecessary_excludes})
+    remove_excludes_from_config(args.config, hooks_with_unnecessary_excludes)
 
     return 0
 

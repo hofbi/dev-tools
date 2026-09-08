@@ -142,7 +142,7 @@ def test_find_unnecessary_excludes_should_return_only_unnecessary_excludes(
         verbose=True,
     )
 
-    assert dict(result) == {"ruff": [unnecessary_exclude]}
+    assert [(hook.id, hook.exclude_paths) for hook in result] == [("ruff", [unnecessary_exclude])]
     assert is_exclude_unnecessary_mock.call_args_list == [
         call("ruff", unnecessary_exclude, temporary_config, tools, verbose=True),
         call("ruff", necessary_exclude, temporary_config, tools, verbose=True),
@@ -168,7 +168,7 @@ def test_find_unnecessary_excludes_should_skip_only_matching_hook_and_path(
         tools,
     )
 
-    assert dict(result) == {"black": [shared_exclude]}
+    assert [(hook.id, hook.exclude_paths) for hook in result] == [("black", [shared_exclude])]
     is_exclude_unnecessary_mock.assert_called_once_with("black", shared_exclude, temporary_config, tools, verbose=False)
 
 
@@ -190,7 +190,7 @@ def test_find_unnecessary_excludes_when_all_excludes_are_skipped_should_return_e
         tools,
     )
 
-    assert dict(result) == {}
+    assert result == []
     is_exclude_unnecessary_mock.assert_not_called()
 
 
@@ -219,10 +219,10 @@ def test_remove_excludes_from_config_should_remove_matching_lines_from_each_hook
 
     remove_excludes_from_config(
         config_file,
-        {
-            "ruff": [Path("Repo/generated/foo.py"), Path("Repo/generated/bar.py")],
-            "black": [Path("Repo/generated/foo.py")],
-        },
+        [
+            Hook("ruff", [Path("Repo/generated/foo.py"), Path("Repo/generated/bar.py")]),
+            Hook("black", [Path("Repo/generated/foo.py")]),
+        ],
     )
 
     assert (
@@ -262,7 +262,7 @@ def test_remove_excludes_from_config_should_repair_separator_when_removing_final
 """,
     )
 
-    remove_excludes_from_config(config_file, {"ruff": [Path("Repo/generated/remove.py")]})
+    remove_excludes_from_config(config_file, [Hook("ruff", [Path("Repo/generated/remove.py")])])
 
     assert "            generated/keep.py  # Still required.\n" in config_file.read_text(encoding="utf-8")
 
@@ -283,7 +283,7 @@ def test_remove_excludes_from_config_should_match_directory_without_trailing_sla
 """,
     )
 
-    remove_excludes_from_config(config_file, {"ruff": [Path("Repo/generated/remove")]})
+    remove_excludes_from_config(config_file, [Hook("ruff", [Path("Repo/generated/remove")])])
 
     assert "generated/remove/" not in config_file.read_text(encoding="utf-8")
 
@@ -307,7 +307,7 @@ def test_remove_excludes_from_config_should_only_change_exclude_block_for_matchi
 """
     fs.create_file(config_file, contents=original_config)
 
-    remove_excludes_from_config(config_file, {"ruff": [Path("Repo/generated/remove.py")]})
+    remove_excludes_from_config(config_file, [Hook("ruff", [Path("Repo/generated/remove.py")])])
 
     assert config_file.read_text(encoding="utf-8") == original_config
 
@@ -330,7 +330,7 @@ repos:
 """,
     )
 
-    remove_excludes_from_config(config_file, {"ruff": [Path("Repo/generated/remove.py")]})
+    remove_excludes_from_config(config_file, [Hook("ruff", [Path("Repo/generated/remove.py")])])
 
     assert (
         config_file.read_text(encoding="utf-8")
@@ -365,7 +365,7 @@ def test_remove_excludes_from_config_when_every_entry_is_removed_should_leave_em
 """,
     )
 
-    remove_excludes_from_config(config_file, {"ruff": [Path("Repo/generated/remove.py")]})
+    remove_excludes_from_config(config_file, [Hook("ruff", [Path("Repo/generated/remove.py")])])
 
     assert (
         config_file.read_text(encoding="utf-8")
@@ -385,7 +385,7 @@ def test_remove_excludes_from_config_for_empty_removals_should_leave_config_unch
     original_config = "repos: []\n"
     fs.create_file(config_file, contents=original_config)
 
-    remove_excludes_from_config(config_file, {})
+    remove_excludes_from_config(config_file, [])
 
     assert config_file.read_text(encoding="utf-8") == original_config
 
