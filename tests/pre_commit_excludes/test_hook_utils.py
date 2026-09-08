@@ -156,7 +156,7 @@ def test_find_non_existing_paths_for_existing_files_should_return_empty_list(fs:
     assert hook_instance.find_non_existing_paths() == []
 
 
-def test_get_relative_excludes_by_hook_should_group_posix_paths_by_hook_id() -> None:
+def test_get_relative_excludes_by_hook_should_group_ordered_posix_paths_by_hook_id() -> None:
     hooks = [
         Hook("ruff", [Path("Repo/generated/foo.py")]),
         Hook("ruff", [Path("Repo/generated/bar.py")]),
@@ -164,8 +164,8 @@ def test_get_relative_excludes_by_hook_should_group_posix_paths_by_hook_id() -> 
     ]
 
     assert get_relative_excludes_by_hook(hooks, Path("Repo")) == {
-        "ruff": {"generated/foo.py", "generated/bar.py"},
-        "black": {"generated/foo.py"},
+        "ruff": ["generated/foo.py", "generated/bar.py"],
+        "black": ["generated/foo.py"],
     }
 
 

@@ -34,6 +34,7 @@ classifiers = [
 
 [project.scripts]
 remove-unnecessary-excludes = "pre_commit_excludes.remove_unnecessary_excludes:main"
+restrict-folder-excludes = "pre_commit_excludes.restrict_folder_excludes:main"
 
 [project.urls]
 Homepage = "https://github.com/hofbi/dev-tools"

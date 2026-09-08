@@ -4,22 +4,22 @@ import argparse
 import re
 import subprocess
 import sys
+from collections.abc import MutableMapping
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
-from ruamel.yaml.comments import CommentedMap
 from ruamel.yaml.scalarstring import LiteralScalarString
 
 from pre_commit_excludes.args import SkippedExclude, create_default_parser
 from pre_commit_excludes.hook_utils import (
     Hook,
-    get_hook_configs_from_all_repos,
     get_hooks_to_cleanup,
     get_relative_excludes_by_hook,
     get_skipped_excludes_relative_to_config,
     load_config,
     load_hooks,
-    load_round_trip_config,
+    update_config_hook_excludes,
     write_config,
 )
 
@@ -56,7 +56,7 @@ def run_pre_commit(
     ).returncode
 
 
-def undo_changes(exclude_path: Path, git_binary) -> None:
+def undo_changes(exclude_path: Path, git_binary: Path) -> None:
     subprocess.run([git_binary, "restore", exclude_path], check=True)
 
 
@@ -122,29 +122,20 @@ def _remove_excludes_from_block(block: str, excludes: set[str]) -> str:
     return "\n".join(retained_lines) + trailing_newline
 
 
-def _remove_excludes_from_hooks(config: CommentedMap, excludes_by_hook: dict[str, set[str]]) -> bool:
-    changed = False
-    hooks_to_update = [
-        hook
-        for hook in get_hook_configs_from_all_repos(config)
-        if hook.get("id") in excludes_by_hook and isinstance(hook.get("exclude"), LiteralScalarString)
-    ]
-    for hook in hooks_to_update:
-        hook_id = hook["id"]
-        exclude = hook["exclude"]
-        updated_exclude = _remove_excludes_from_block(exclude, excludes_by_hook[hook_id])
-        if updated_exclude != exclude:
-            hook["exclude"] = LiteralScalarString(updated_exclude)
-            changed = True
-    return changed
-
-
 def remove_excludes_from_config(config_file: Path, hooks_to_update: list[Hook]) -> None:
     """Remove matching exclude lines from hooks in a pre-commit config."""
-    config, yaml = load_round_trip_config(config_file)
-    relative_excludes = get_relative_excludes_by_hook(hooks_to_update, config_file.parent)
-    if _remove_excludes_from_hooks(config, relative_excludes):
-        yaml.dump(config, config_file)
+    relative_excludes = {
+        hook_id: set(excludes)
+        for hook_id, excludes in get_relative_excludes_by_hook(hooks_to_update, config_file.parent).items()
+    }
+
+    def remove_excludes_from_hook(hook_config: MutableMapping[str, Any]) -> str | None:
+        hook_id = hook_config.get("id")
+        if hook_id not in relative_excludes or not isinstance(hook_config.get("exclude"), LiteralScalarString):
+            return None
+        return _remove_excludes_from_block(hook_config["exclude"], relative_excludes[hook_id])
+
+    update_config_hook_excludes(config_file, remove_excludes_from_hook)
 
 
 def parse_arguments() -> argparse.Namespace:

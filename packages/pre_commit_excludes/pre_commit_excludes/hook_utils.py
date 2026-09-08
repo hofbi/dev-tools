@@ -9,10 +9,11 @@ from typing import TYPE_CHECKING, Any
 
 from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap
+from ruamel.yaml.scalarstring import LiteralScalarString
 from ruamel.yaml.util import load_yaml_guess_indent
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Mapping
+    from collections.abc import Callable, Iterator, Mapping, MutableMapping
 
 
 @dataclass(frozen=True)
@@ -128,11 +129,11 @@ def get_hooks_to_cleanup(hooks: list[Hook], selected_hooks: list[str] | None) ->
     return [hook for hook in hooks if hook.id in selected_hooks]
 
 
-def get_relative_excludes_by_hook(hooks: list[Hook], root_directory: Path) -> dict[str, set[str]]:
+def get_relative_excludes_by_hook(hooks: list[Hook], root_directory: Path) -> dict[str, list[str]]:
     """Return hook excludes as config-relative POSIX paths grouped by hook ID."""
-    relative_excludes: dict[str, set[str]] = {}
+    relative_excludes: dict[str, list[str]] = {}
     for hook in hooks:
-        relative_excludes.setdefault(hook.id, set()).update(
+        relative_excludes.setdefault(hook.id, []).extend(
             exclude.relative_to(root_directory).as_posix() for exclude in hook.exclude_paths
         )
     return relative_excludes
@@ -156,3 +157,20 @@ def load_round_trip_config(config_file: Path) -> tuple[CommentedMap, YAML]:
     if indent is not None:
         yaml.indent(sequence=indent, offset=block_sequence_indent)
     return (config if isinstance(config, CommentedMap) else CommentedMap()), yaml
+
+
+def update_config_hook_excludes(
+    config_file: Path,
+    update_exclude: Callable[[MutableMapping[str, Any]], str | None],
+) -> None:
+    """Apply exclude replacements to hooks and write the config if it changed."""
+    config, yaml = load_round_trip_config(config_file)
+    changed = False
+    for hook_config in get_hook_configs_from_all_repos(config):
+        updated_exclude = update_exclude(hook_config)
+        if updated_exclude is not None and updated_exclude != hook_config.get("exclude"):
+            hook_config["exclude"] = LiteralScalarString(updated_exclude)
+            changed = True
+
+    if changed:
+        yaml.dump(config, config_file)
