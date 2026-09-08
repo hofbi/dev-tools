@@ -8,6 +8,7 @@ from pre_commit_excludes.hook_utils import (
     Hook,
     SkippedExclude,
     extract_literal_exclude_paths,
+    get_relative_excludes_by_hook,
     get_skipped_excludes_relative_to_config,
     has_excludes,
     is_regex_pattern,
@@ -153,6 +154,19 @@ def test_find_non_existing_paths_for_existing_files_should_return_empty_list(fs:
 
     assert not hook_instance.has_non_existing_paths()
     assert hook_instance.find_non_existing_paths() == []
+
+
+def test_get_relative_excludes_by_hook_should_group_posix_paths_by_hook_id() -> None:
+    hooks = [
+        Hook("ruff", [Path("Repo/generated/foo.py")]),
+        Hook("ruff", [Path("Repo/generated/bar.py")]),
+        Hook("black", [Path("Repo/generated/foo.py")]),
+    ]
+
+    assert get_relative_excludes_by_hook(hooks, Path("Repo")) == {
+        "ruff": {"generated/foo.py", "generated/bar.py"},
+        "black": {"generated/foo.py"},
+    }
 
 
 def test_has_excludes_for_existing_excludes_should_return_true() -> None:
