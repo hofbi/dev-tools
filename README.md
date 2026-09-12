@@ -11,7 +11,6 @@ These tools are used to help developers in their day-to-day tasks.
 > I try to contribute back if possible but since I am no longer working at Luminar, it is not guaranteed that my contributions are accepted.
 
 <!-- toc -->
-
 - [Tools](#tools)
   - [Configure VS Code for Bazel](#configure-vs-code-for-bazel)
   - [Pre-Commit Excludes](#pre-commit-excludes)
@@ -38,10 +37,10 @@ These tools are used to help developers in their day-to-day tasks.
   - [`print-pre-commit-metrics`](#print-pre-commit-metrics)
   - [`sync-vscode-config`](#sync-vscode-config)
   - [`sync-tool-versions`](#sync-tool-versions)
+  - [`check-stale-references`](#check-stale-references)
   - [`check-max-one-sentence-per-line`](#check-max-one-sentence-per-line)
   - [`check-ownership`](#check-ownership)
 - [Contributing](#contributing)
-
 <!-- tocstop -->
 
 ## Tools
@@ -227,6 +226,25 @@ sync_versions:
         pattern: target-version\s*=\s*"py([0-9]+)"
         version_override: '314'
 ```
+
+### `check-stale-references`
+
+When files are deleted or renamed, check that no remaining tracked file still references the old path.
+
+A path is only reported when the match is specific enough to be trustworthy:
+
+- the full repo-relative path, when it has at least two segments
+- the bare file name, when it contains a dot and no surviving file shares it
+
+Partial paths such as `modules/main/main.tf` are deliberately ignored, because repeated directory layouts make them match a parallel subtree more often than the intended file.
+
+References that another tool already validates are skipped, since the compiler, interpreter, or build system reports those with a better error message: `#include` and `import` lines, Bazel `load()` calls, and source lists in build files.
+Changelogs and release notes are skipped too, because they describe the past on purpose.
+
+At most one finding is reported per referencing file, so a single deletion cannot flood the output.
+
+Some references cannot be told apart from a real one by matching alone, most often documentation that describes a file the reader is meant to create.
+Add `nolint(stale_references)` anywhere on the line to skip it, in whatever comment syntax the file uses, or use the hook's `exclude` to skip whole files.
 
 ### `check-max-one-sentence-per-line`
 
