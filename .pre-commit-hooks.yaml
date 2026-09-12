@@ -285,8 +285,21 @@
   name: Check for stale references to deleted/renamed files
   description: |-
     When files are deleted or renamed, check that no remaining tracked file still references the old path.
-    Searches for both the full repo-relative path and the basename of deleted files.
-    This catches broken cross-references in dead code such as comments, documentation, and configs.
+
+    A path is only reported when the match is specific enough to be trustworthy:
+
+    - the full repo-relative path, when it has at least two segments
+    - the bare file name, when it contains a dot and no surviving file shares it
+
+    Partial paths such as `modules/main/main.tf` are deliberately ignored, because repeated directory layouts make them match a parallel subtree more often than the intended file.
+
+    References that another tool already validates are skipped, since the compiler, interpreter, or build system reports those with a better error message: `#include` and `import` lines, Bazel `load()` calls, and source lists in build files.
+    Changelogs and release notes are skipped too, because they describe the past on purpose.
+
+    At most one finding is reported per referencing file, so a single deletion cannot flood the output.
+
+    Some references cannot be told apart from a real one by matching alone, most often documentation that describes a file the reader is meant to create.
+    Add `nolint(stale_references)` anywhere on the line to skip it, in whatever comment syntax the file uses, or use the hook's `exclude` to skip whole files.
   entry: check-stale-references
   language: python
   pass_filenames: false
