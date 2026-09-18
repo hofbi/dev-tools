@@ -119,10 +119,10 @@ def _parse_version_spec(entry: dict, base_dir: Path, config_path: Path) -> Versi
     )
     entries = _require_list(
         entry.get("entries"),
-        f"Each sync_versions entry must have a non-empty 'entries' list in {config_path}",
+        f"Each sync_versions entry must have an 'entries' list with at least two items in {config_path}",
     )
-    if not entries:
-        msg = f"Each sync_versions entry must have a non-empty 'entries' list in {config_path}"
+    if len(entries) < 2:
+        msg = f"Each sync_versions entry must have an 'entries' list with at least two items in {config_path}"
         raise ValueError(msg)
 
     sync_entries = [

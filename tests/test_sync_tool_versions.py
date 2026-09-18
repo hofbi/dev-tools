@@ -58,10 +58,12 @@ def test_sync_tool_versions_supports_glob_paths(fs: FakeFilesystem) -> None:
     first_file = repo_root / "packages" / "one" / "pyproject.toml"
     second_file = repo_root / "packages" / "two" / "pyproject.toml"
     ignored_file = repo_root / "packages" / "two" / "README.md"
+    python_version_file = repo_root / ".python-version"
 
     first_file.write_text('target-version = "py313"\n')
     second_file.write_text('target-version = "py313"\n')
     ignored_file.write_text('target-version = "py313"\n')
+    python_version_file.write_text("3.13\n")
 
     config_path = repo_root / ".versions.yaml"
     _write_versions_config(
@@ -77,7 +79,11 @@ def test_sync_tool_versions_supports_glob_paths(fs: FakeFilesystem) -> None:
                             "path": "packages/**/pyproject.toml",
                             "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
                             "version_override": "314",
-                        }
+                        },
+                        {
+                            "path": ".python-version",
+                            "pattern": "([0-9]+\\.[0-9]+)",
+                        },
                     ],
                 },
             ],
@@ -90,6 +96,7 @@ def test_sync_tool_versions_supports_glob_paths(fs: FakeFilesystem) -> None:
     assert first_file.read_text() == 'target-version = "py314"\n'
     assert second_file.read_text() == 'target-version = "py314"\n'
     assert ignored_file.read_text() == 'target-version = "py313"\n'
+    assert python_version_file.read_text() == "3.14\n"
 
 
 def test_sync_tool_versions_supports_star_glob_paths(fs: FakeFilesystem) -> None:
@@ -98,10 +105,12 @@ def test_sync_tool_versions_supports_star_glob_paths(fs: FakeFilesystem) -> None
     first_file = repo_root / "bin" / "setup.sh"
     second_file = repo_root / "bin" / "release.sh"
     ignored_file = repo_root / "bin" / "README.md"
+    toolchain_file = repo_root / "rust-toolchain"
 
     first_file.write_text("rustup default 1.87.0\n")
     second_file.write_text("rustup default 1.87.0\n")
     ignored_file.write_text("rustup default 1.87.0\n")
+    toolchain_file.write_text("1.87.0\n")
 
     config_path = repo_root / ".versions.yaml"
     _write_versions_config(
@@ -112,7 +121,10 @@ def test_sync_tool_versions_supports_star_glob_paths(fs: FakeFilesystem) -> None
                 {
                     "name": "rust",
                     "version": "1.91.0",
-                    "entries": [{"path": "bin/*.sh", "pattern": "rustup default THE_VERSION"}],
+                    "entries": [
+                        {"path": "rust-toolchain", "pattern": "THE_VERSION"},
+                        {"path": "bin/*.sh", "pattern": "rustup default THE_VERSION"},
+                    ],
                 },
             ],
         },
@@ -124,6 +136,7 @@ def test_sync_tool_versions_supports_star_glob_paths(fs: FakeFilesystem) -> None
     assert first_file.read_text() == "rustup default 1.91.0\n"
     assert second_file.read_text() == "rustup default 1.91.0\n"
     assert ignored_file.read_text() == "rustup default 1.87.0\n"
+    assert toolchain_file.read_text() == "1.91.0\n"
 
 
 def test_sync_tool_versions_for_glob_match_without_pattern_should_skip_file(
@@ -135,9 +148,11 @@ def test_sync_tool_versions_for_glob_match_without_pattern_should_skip_file(
     fs.create_dir(repo_root / "packages" / "two")
     matching_file = repo_root / "packages" / "one" / "pyproject.toml"
     non_matching_file = repo_root / "packages" / "two" / "pyproject.toml"
+    python_version_file = repo_root / ".python-version"
 
     matching_file.write_text('target-version = "py313"\n')
     non_matching_file.write_text('requires-python = ">=3.13"\n')
+    python_version_file.write_text("3.13\n")
 
     config_path = repo_root / ".versions.yaml"
     _write_versions_config(
@@ -150,10 +165,14 @@ def test_sync_tool_versions_for_glob_match_without_pattern_should_skip_file(
                     "version": "3.14",
                     "entries": [
                         {
+                            "path": ".python-version",
+                            "pattern": "([0-9]+\\.[0-9]+)",
+                        },
+                        {
                             "path": "packages/**/pyproject.toml",
                             "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
                             "version_override": "314",
-                        }
+                        },
                     ],
                 },
             ],
@@ -167,6 +186,7 @@ def test_sync_tool_versions_for_glob_match_without_pattern_should_skip_file(
     assert output == ""
     assert matching_file.read_text() == 'target-version = "py314"\n'
     assert non_matching_file.read_text() == 'requires-python = ">=3.13"\n'
+    assert python_version_file.read_text() == "3.14\n"
 
 
 def test_sync_tool_versions_for_glob_without_any_pattern_match_should_report_error(
@@ -178,9 +198,11 @@ def test_sync_tool_versions_for_glob_without_any_pattern_match_should_report_err
     fs.create_dir(repo_root / "packages" / "two")
     first_file = repo_root / "packages" / "one" / "pyproject.toml"
     second_file = repo_root / "packages" / "two" / "pyproject.toml"
+    python_version_file = repo_root / ".python-version"
 
     first_file.write_text('requires-python = ">=3.13"\n')
     second_file.write_text('requires-python = ">=3.13"\n')
+    python_version_file.write_text('requires-python = ">=3.13"\n')
 
     config_path = repo_root / ".versions.yaml"
     _write_versions_config(
@@ -193,10 +215,14 @@ def test_sync_tool_versions_for_glob_without_any_pattern_match_should_report_err
                     "version": "3.14",
                     "entries": [
                         {
+                            "path": ".python-version",
+                            "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                        },
+                        {
                             "path": "packages/**/pyproject.toml",
                             "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
                             "version_override": "314",
-                        }
+                        },
                     ],
                 },
             ],
@@ -211,6 +237,7 @@ def test_sync_tool_versions_for_glob_without_any_pattern_match_should_report_err
     assert "packages/**/pyproject.toml" in output
     assert first_file.read_text() == 'requires-python = ">=3.13"\n'
     assert second_file.read_text() == 'requires-python = ">=3.13"\n'
+    assert python_version_file.read_text() == 'requires-python = ">=3.13"\n'
 
 
 def test_sync_tool_versions_for_unmatched_glob_should_report_error(
@@ -231,9 +258,13 @@ def test_sync_tool_versions_for_unmatched_glob_should_report_error(
                     "version": "3.14",
                     "entries": [
                         {
+                            "path": ".python-version",
+                            "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                        },
+                        {
                             "path": "packages/**/pyproject.toml",
                             "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
-                        }
+                        },
                     ],
                 },
             ],
@@ -252,7 +283,9 @@ def test_sync_tool_versions_supports_the_version_placeholder(fs: FakeFilesystem)
     repo_root = Path("Repo")
     fs.create_dir(repo_root)
     module_file = repo_root / "MODULE.bazel"
+    toolchain_file = repo_root / "rust-toolchain"
     module_file.write_text('RUST_VERSION = "1.87.0"\n')
+    toolchain_file.write_text("1.87.0\n")
 
     config_path = repo_root / ".versions.yaml"
     _write_versions_config(
@@ -263,7 +296,10 @@ def test_sync_tool_versions_supports_the_version_placeholder(fs: FakeFilesystem)
                 {
                     "name": "rust",
                     "version": "1.91.0",
-                    "entries": [{"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"THE_VERSION"'}],
+                    "entries": [
+                        {"path": "rust-toolchain", "pattern": "THE_VERSION"},
+                        {"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"THE_VERSION"'},
+                    ],
                 },
             ],
         },
@@ -273,13 +309,16 @@ def test_sync_tool_versions_supports_the_version_placeholder(fs: FakeFilesystem)
 
     assert result == 1
     assert module_file.read_text() == 'RUST_VERSION = "1.91.0"\n'
+    assert toolchain_file.read_text() == "1.91.0\n"
 
 
 def test_sync_tool_versions_placeholder_matches_semver_variants(fs: FakeFilesystem) -> None:
     repo_root = Path("Repo")
     fs.create_dir(repo_root)
     versions_file = repo_root / "versions.txt"
+    release_file = repo_root / "RELEASE_VERSION"
     versions_file.write_text("v1.2.3\n1.2.3-rc.1\n1.2.3+build.5\n")
+    release_file.write_text("1.2.3\n")
 
     config_path = repo_root / ".versions.yaml"
     _write_versions_config(
@@ -290,7 +329,10 @@ def test_sync_tool_versions_placeholder_matches_semver_variants(fs: FakeFilesyst
                 {
                     "name": "rust",
                     "version": "2.0.0",
-                    "entries": [{"path": "versions.txt", "pattern": "THE_VERSION"}],
+                    "entries": [
+                        {"path": "RELEASE_VERSION", "pattern": "THE_VERSION"},
+                        {"path": "versions.txt", "pattern": "THE_VERSION"},
+                    ],
                 },
             ],
         },
@@ -300,13 +342,16 @@ def test_sync_tool_versions_placeholder_matches_semver_variants(fs: FakeFilesyst
 
     assert result == 1
     assert versions_file.read_text() == "2.0.0\n2.0.0\n2.0.0\n"
+    assert release_file.read_text() == "2.0.0\n"
 
 
 def test_sync_tool_versions_placeholder_allows_version_override(fs: FakeFilesystem) -> None:
     repo_root = Path("Repo")
     fs.create_dir(repo_root)
     versions_file = repo_root / "versions.txt"
+    python_version_file = repo_root / ".python-version"
     versions_file.write_text("py3.14\n")
+    python_version_file.write_text("3.13\n")
 
     config_path = repo_root / ".versions.yaml"
     _write_versions_config(
@@ -319,10 +364,14 @@ def test_sync_tool_versions_placeholder_allows_version_override(fs: FakeFilesyst
                     "version": "3.14",
                     "entries": [
                         {
+                            "path": ".python-version",
+                            "pattern": "([0-9]+\\.[0-9]+)",
+                        },
+                        {
                             "path": "versions.txt",
                             "pattern": "py([0-9.]+)",
                             "version_override": "314",
-                        }
+                        },
                     ],
                 },
             ],
@@ -333,13 +382,16 @@ def test_sync_tool_versions_placeholder_allows_version_override(fs: FakeFilesyst
 
     assert result == 1
     assert versions_file.read_text() == "py314\n"
+    assert python_version_file.read_text() == "3.14\n"
 
 
 def test_sync_tool_versions_placeholder_rejects_non_semver(fs: FakeFilesystem) -> None:
     repo_root = Path("Repo")
     fs.create_dir(repo_root)
     versions_file = repo_root / "versions.txt"
+    release_file = repo_root / "RELEASE_VERSION"
     versions_file.write_text("1.2\n1.2.3.4\n")
+    release_file.write_text("1.2\n")
 
     config_path = repo_root / ".versions.yaml"
     _write_versions_config(
@@ -350,7 +402,10 @@ def test_sync_tool_versions_placeholder_rejects_non_semver(fs: FakeFilesystem) -
                 {
                     "name": "rust",
                     "version": "2.0.0",
-                    "entries": [{"path": "versions.txt", "pattern": "THE_VERSION"}],
+                    "entries": [
+                        {"path": "RELEASE_VERSION", "pattern": "THE_VERSION"},
+                        {"path": "versions.txt", "pattern": "THE_VERSION"},
+                    ],
                 },
             ],
         },
@@ -360,6 +415,7 @@ def test_sync_tool_versions_placeholder_rejects_non_semver(fs: FakeFilesystem) -
 
     assert result == 1
     assert versions_file.read_text() == "1.2\n1.2.3.4\n"
+    assert release_file.read_text() == "1.2\n"
 
 
 def test_sync_tool_versions_placeholder_must_be_unique(fs: FakeFilesystem) -> None:
@@ -396,7 +452,10 @@ def test_sync_tool_versions_for_missing_file_should_report_error(
                 {
                     "name": "rust",
                     "version": "1.91.0",
-                    "entries": [{"path": "missing.txt", "pattern": "rust:\\s*([0-9.]+)"}],
+                    "entries": [
+                        {"path": "missing-version.txt", "pattern": "rust:\\s*([0-9.]+)"},
+                        {"path": "missing.txt", "pattern": "rust:\\s*([0-9.]+)"},
+                    ],
                 },
             ],
         },
@@ -417,7 +476,9 @@ def test_sync_tool_versions_for_pattern_no_match_should_report_error(
     repo_root = Path("Repo")
     fs.create_dir(repo_root)
     module_file = repo_root / "MODULE.bazel"
+    toolchain_file = repo_root / "rust-toolchain"
     module_file.write_text('RUST_VERSION = "1.87.0"\n')
+    toolchain_file.write_text("1.87.0\n")
 
     config_path = repo_root / ".versions.yaml"
     _write_versions_config(
@@ -428,7 +489,10 @@ def test_sync_tool_versions_for_pattern_no_match_should_report_error(
                 {
                     "name": "rust",
                     "version": "1.91.0",
-                    "entries": [{"path": "MODULE.bazel", "pattern": "NO_MATCH([0-9.]+)"}],
+                    "entries": [
+                        {"path": "rust-toolchain", "pattern": "NO_MATCH([0-9.]+)"},
+                        {"path": "MODULE.bazel", "pattern": "NO_MATCH([0-9.]+)"},
+                    ],
                 },
             ],
         },
@@ -449,7 +513,9 @@ def test_sync_tool_versions_for_pattern_without_capture_group_should_report_erro
     repo_root = Path("Repo")
     fs.create_dir(repo_root)
     module_file = repo_root / "MODULE.bazel"
+    toolchain_file = repo_root / "rust-toolchain"
     module_file.write_text('RUST_VERSION = "1.87.0"\n')
+    toolchain_file.write_text("1.87.0\n")
 
     config_path = repo_root / ".versions.yaml"
     _write_versions_config(
@@ -460,7 +526,10 @@ def test_sync_tool_versions_for_pattern_without_capture_group_should_report_erro
                 {
                     "name": "rust",
                     "version": "1.91.0",
-                    "entries": [{"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"[0-9.]+"'}],
+                    "entries": [
+                        {"path": "rust-toolchain", "pattern": "[0-9.]+"},
+                        {"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"[0-9.]+"'},
+                    ],
                 },
             ],
         },
@@ -487,7 +556,10 @@ def test_sync_tool_versions_for_missing_top_level_name_should_report_error(
                 {
                     "name": "rust",
                     "version": "1.91.0",
-                    "entries": [{"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"([0-9.]+)"'}],
+                    "entries": [
+                        {"path": "rust-toolchain", "pattern": "([0-9.]+)"},
+                        {"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"([0-9.]+)"'},
+                    ],
                 },
             ],
         },
@@ -498,6 +570,35 @@ def test_sync_tool_versions_for_missing_top_level_name_should_report_error(
 
     assert result == 1
     assert "top-level 'name'" in output
+
+
+def test_sync_tool_versions_for_single_entry_should_report_error(
+    capsys: pytest.CaptureFixture[str],
+    fs: FakeFilesystem,
+) -> None:
+    repo_root = Path("Repo")
+    fs.create_dir(repo_root)
+    config_path = repo_root / ".versions.yaml"
+    yaml = YAML()
+    yaml.dump(
+        {
+            "name": "tool-versions",
+            "sync_versions": [
+                {
+                    "name": "rust",
+                    "version": "1.91.0",
+                    "entries": [{"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"([0-9.]+)"'}],
+                },
+            ],
+        },
+        config_path,
+    )
+
+    result = main(["--config", str(config_path)])
+    output = capsys.readouterr().out
+
+    assert result == 1
+    assert "at least two items" in output
 
 
 def test_sync_tool_versions_for_missing_config_should_report_error(
