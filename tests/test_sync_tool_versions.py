@@ -160,19 +160,19 @@ def test_sync_tool_versions_for_glob_match_without_pattern_should_skip_file(
         {
             "name": "tool-versions",
             "sync_versions": [
-                    {
-                        "name": "python",
-                        "version": "3.14",
+                {
+                    "name": "python",
+                    "version": "3.14",
                     "entries": [
-                            {
-                                "path": ".python-version",
-                                "pattern": "([0-9]+\\.[0-9]+)",
-                            },
-                            {
-                                "path": "packages/**/pyproject.toml",
-                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
-                                "version_override": "314",
-                            },
+                        {
+                            "path": ".python-version",
+                            "pattern": "([0-9]+\\.[0-9]+)",
+                        },
+                        {
+                            "path": "packages/**/pyproject.toml",
+                            "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                            "version_override": "314",
+                        },
                     ],
                 },
             ],
@@ -210,19 +210,19 @@ def test_sync_tool_versions_for_glob_without_any_pattern_match_should_report_err
         {
             "name": "tool-versions",
             "sync_versions": [
-                    {
-                        "name": "python",
-                        "version": "3.14",
+                {
+                    "name": "python",
+                    "version": "3.14",
                     "entries": [
-                            {
-                                "path": ".python-version",
-                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
-                            },
-                            {
-                                "path": "packages/**/pyproject.toml",
-                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
-                                "version_override": "314",
-                            },
+                        {
+                            "path": ".python-version",
+                            "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                        },
+                        {
+                            "path": "packages/**/pyproject.toml",
+                            "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                            "version_override": "314",
+                        },
                     ],
                 },
             ],
@@ -253,18 +253,18 @@ def test_sync_tool_versions_for_unmatched_glob_should_report_error(
         {
             "name": "tool-versions",
             "sync_versions": [
-                    {
-                        "name": "python",
-                        "version": "3.14",
+                {
+                    "name": "python",
+                    "version": "3.14",
                     "entries": [
-                            {
-                                "path": ".python-version",
-                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
-                            },
-                            {
-                                "path": "packages/**/pyproject.toml",
-                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
-                            },
+                        {
+                            "path": ".python-version",
+                            "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                        },
+                        {
+                            "path": "packages/**/pyproject.toml",
+                            "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                        },
                     ],
                 },
             ],
@@ -359,19 +359,19 @@ def test_sync_tool_versions_placeholder_allows_version_override(fs: FakeFilesyst
         {
             "name": "tool-versions",
             "sync_versions": [
-                    {
-                        "name": "python",
-                        "version": "3.14",
+                {
+                    "name": "python",
+                    "version": "3.14",
                     "entries": [
-                            {
-                                "path": ".python-version",
-                                "pattern": "([0-9]+\\.[0-9]+)",
-                            },
-                            {
-                                "path": "versions.txt",
-                                "pattern": "py([0-9.]+)",
-                                "version_override": "314",
-                            },
+                        {
+                            "path": ".python-version",
+                            "pattern": "([0-9]+\\.[0-9]+)",
+                        },
+                        {
+                            "path": "versions.txt",
+                            "pattern": "py([0-9.]+)",
+                            "version_override": "314",
+                        },
                     ],
                 },
             ],
