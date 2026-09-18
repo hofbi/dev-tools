@@ -58,10 +58,12 @@ def test_sync_tool_versions_supports_glob_paths(fs: FakeFilesystem) -> None:
     first_file = repo_root / "packages" / "one" / "pyproject.toml"
     second_file = repo_root / "packages" / "two" / "pyproject.toml"
     ignored_file = repo_root / "packages" / "two" / "README.md"
+    python_version_file = repo_root / ".python-version"
 
     first_file.write_text('target-version = "py313"\n')
     second_file.write_text('target-version = "py313"\n')
     ignored_file.write_text('target-version = "py313"\n')
+    python_version_file.write_text("3.13\n")
 
     config_path = repo_root / ".versions.yaml"
     _write_versions_config(
@@ -69,20 +71,19 @@ def test_sync_tool_versions_supports_glob_paths(fs: FakeFilesystem) -> None:
         {
             "name": "tool-versions",
             "sync_versions": [
-                    {
-                        "name": "python",
-                        "version": "3.14",
+                {
+                    "name": "python",
+                    "version": "3.14",
                     "entries": [
-                            {
-                                "path": "packages/**/pyproject.toml",
-                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
-                                "version_override": "314",
-                            },
-                            {
-                                "path": "packages/**/pyproject.toml",
-                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
-                                "version_override": "314",
-                            },
+                        {
+                            "path": "packages/**/pyproject.toml",
+                            "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                            "version_override": "314",
+                        },
+                        {
+                            "path": ".python-version",
+                            "pattern": "([0-9]+\\.[0-9]+)",
+                        },
                     ],
                 },
             ],
@@ -95,6 +96,7 @@ def test_sync_tool_versions_supports_glob_paths(fs: FakeFilesystem) -> None:
     assert first_file.read_text() == 'target-version = "py314"\n'
     assert second_file.read_text() == 'target-version = "py314"\n'
     assert ignored_file.read_text() == 'target-version = "py313"\n'
+    assert python_version_file.read_text() == "3.14\n"
 
 
 def test_sync_tool_versions_supports_star_glob_paths(fs: FakeFilesystem) -> None:
