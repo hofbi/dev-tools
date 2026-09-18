@@ -13,6 +13,10 @@ if TYPE_CHECKING:
 
 
 def _write_versions_config(config_path: Path, data: dict) -> None:
+    for spec in data.get("sync_versions", []):
+        if len(spec["entries"]) == 1:
+            spec["entries"].append(spec["entries"][0].copy())
+
     yaml = YAML()
     yaml.dump(data, config_path)
 
@@ -498,6 +502,35 @@ def test_sync_tool_versions_for_missing_top_level_name_should_report_error(
 
     assert result == 1
     assert "top-level 'name'" in output
+
+
+def test_sync_tool_versions_for_single_entry_should_report_error(
+    capsys: pytest.CaptureFixture[str],
+    fs: FakeFilesystem,
+) -> None:
+    repo_root = Path("Repo")
+    fs.create_dir(repo_root)
+    config_path = repo_root / ".versions.yaml"
+    yaml = YAML()
+    yaml.dump(
+        {
+            "name": "tool-versions",
+            "sync_versions": [
+                {
+                    "name": "rust",
+                    "version": "1.91.0",
+                    "entries": [{"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"([0-9.]+)"'}],
+                },
+            ],
+        },
+        config_path,
+    )
+
+    result = main(["--config", str(config_path)])
+    output = capsys.readouterr().out
+
+    assert result == 1
+    assert "at least two items" in output
 
 
 def test_sync_tool_versions_for_missing_config_should_report_error(
