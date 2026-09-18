@@ -13,10 +13,6 @@ if TYPE_CHECKING:
 
 
 def _write_versions_config(config_path: Path, data: dict) -> None:
-    for spec in data.get("sync_versions", []):
-        if len(spec["entries"]) == 1:
-            spec["entries"].append(spec["entries"][0].copy())
-
     yaml = YAML()
     yaml.dump(data, config_path)
 
@@ -73,15 +69,20 @@ def test_sync_tool_versions_supports_glob_paths(fs: FakeFilesystem) -> None:
         {
             "name": "tool-versions",
             "sync_versions": [
-                {
-                    "name": "python",
-                    "version": "3.14",
+                    {
+                        "name": "python",
+                        "version": "3.14",
                     "entries": [
-                        {
-                            "path": "packages/**/pyproject.toml",
-                            "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
-                            "version_override": "314",
-                        }
+                            {
+                                "path": "packages/**/pyproject.toml",
+                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                                "version_override": "314",
+                            },
+                            {
+                                "path": "packages/**/pyproject.toml",
+                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                                "version_override": "314",
+                            },
                     ],
                 },
             ],
@@ -116,7 +117,10 @@ def test_sync_tool_versions_supports_star_glob_paths(fs: FakeFilesystem) -> None
                 {
                     "name": "rust",
                     "version": "1.91.0",
-                    "entries": [{"path": "bin/*.sh", "pattern": "rustup default THE_VERSION"}],
+                    "entries": [
+                        {"path": "bin/*.sh", "pattern": "rustup default THE_VERSION"},
+                        {"path": "bin/*.sh", "pattern": "rustup default THE_VERSION"},
+                    ],
                 },
             ],
         },
@@ -149,15 +153,20 @@ def test_sync_tool_versions_for_glob_match_without_pattern_should_skip_file(
         {
             "name": "tool-versions",
             "sync_versions": [
-                {
-                    "name": "python",
-                    "version": "3.14",
+                    {
+                        "name": "python",
+                        "version": "3.14",
                     "entries": [
-                        {
-                            "path": "packages/**/pyproject.toml",
-                            "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
-                            "version_override": "314",
-                        }
+                            {
+                                "path": "packages/**/pyproject.toml",
+                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                                "version_override": "314",
+                            },
+                            {
+                                "path": "packages/**/pyproject.toml",
+                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                                "version_override": "314",
+                            },
                     ],
                 },
             ],
@@ -192,15 +201,20 @@ def test_sync_tool_versions_for_glob_without_any_pattern_match_should_report_err
         {
             "name": "tool-versions",
             "sync_versions": [
-                {
-                    "name": "python",
-                    "version": "3.14",
+                    {
+                        "name": "python",
+                        "version": "3.14",
                     "entries": [
-                        {
-                            "path": "packages/**/pyproject.toml",
-                            "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
-                            "version_override": "314",
-                        }
+                            {
+                                "path": "packages/**/pyproject.toml",
+                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                                "version_override": "314",
+                            },
+                            {
+                                "path": "packages/**/pyproject.toml",
+                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                                "version_override": "314",
+                            },
                     ],
                 },
             ],
@@ -230,14 +244,18 @@ def test_sync_tool_versions_for_unmatched_glob_should_report_error(
         {
             "name": "tool-versions",
             "sync_versions": [
-                {
-                    "name": "python",
-                    "version": "3.14",
+                    {
+                        "name": "python",
+                        "version": "3.14",
                     "entries": [
-                        {
-                            "path": "packages/**/pyproject.toml",
-                            "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
-                        }
+                            {
+                                "path": "packages/**/pyproject.toml",
+                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                            },
+                            {
+                                "path": "packages/**/pyproject.toml",
+                                "pattern": 'target-version\\s*=\\s*"py([0-9]+)"',
+                            },
                     ],
                 },
             ],
@@ -267,7 +285,10 @@ def test_sync_tool_versions_supports_the_version_placeholder(fs: FakeFilesystem)
                 {
                     "name": "rust",
                     "version": "1.91.0",
-                    "entries": [{"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"THE_VERSION"'}],
+                    "entries": [
+                        {"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"THE_VERSION"'},
+                        {"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"THE_VERSION"'},
+                    ],
                 },
             ],
         },
@@ -294,7 +315,10 @@ def test_sync_tool_versions_placeholder_matches_semver_variants(fs: FakeFilesyst
                 {
                     "name": "rust",
                     "version": "2.0.0",
-                    "entries": [{"path": "versions.txt", "pattern": "THE_VERSION"}],
+                    "entries": [
+                        {"path": "versions.txt", "pattern": "THE_VERSION"},
+                        {"path": "versions.txt", "pattern": "THE_VERSION"},
+                    ],
                 },
             ],
         },
@@ -318,15 +342,20 @@ def test_sync_tool_versions_placeholder_allows_version_override(fs: FakeFilesyst
         {
             "name": "tool-versions",
             "sync_versions": [
-                {
-                    "name": "python",
-                    "version": "3.14",
+                    {
+                        "name": "python",
+                        "version": "3.14",
                     "entries": [
-                        {
-                            "path": "versions.txt",
-                            "pattern": "py([0-9.]+)",
-                            "version_override": "314",
-                        }
+                            {
+                                "path": "versions.txt",
+                                "pattern": "py([0-9.]+)",
+                                "version_override": "314",
+                            },
+                            {
+                                "path": "versions.txt",
+                                "pattern": "py([0-9.]+)",
+                                "version_override": "314",
+                            },
                     ],
                 },
             ],
@@ -354,7 +383,10 @@ def test_sync_tool_versions_placeholder_rejects_non_semver(fs: FakeFilesystem) -
                 {
                     "name": "rust",
                     "version": "2.0.0",
-                    "entries": [{"path": "versions.txt", "pattern": "THE_VERSION"}],
+                    "entries": [
+                        {"path": "versions.txt", "pattern": "THE_VERSION"},
+                        {"path": "versions.txt", "pattern": "THE_VERSION"},
+                    ],
                 },
             ],
         },
@@ -400,7 +432,10 @@ def test_sync_tool_versions_for_missing_file_should_report_error(
                 {
                     "name": "rust",
                     "version": "1.91.0",
-                    "entries": [{"path": "missing.txt", "pattern": "rust:\\s*([0-9.]+)"}],
+                    "entries": [
+                        {"path": "missing.txt", "pattern": "rust:\\s*([0-9.]+)"},
+                        {"path": "missing.txt", "pattern": "rust:\\s*([0-9.]+)"},
+                    ],
                 },
             ],
         },
@@ -432,7 +467,10 @@ def test_sync_tool_versions_for_pattern_no_match_should_report_error(
                 {
                     "name": "rust",
                     "version": "1.91.0",
-                    "entries": [{"path": "MODULE.bazel", "pattern": "NO_MATCH([0-9.]+)"}],
+                    "entries": [
+                        {"path": "MODULE.bazel", "pattern": "NO_MATCH([0-9.]+)"},
+                        {"path": "MODULE.bazel", "pattern": "NO_MATCH([0-9.]+)"},
+                    ],
                 },
             ],
         },
@@ -464,7 +502,10 @@ def test_sync_tool_versions_for_pattern_without_capture_group_should_report_erro
                 {
                     "name": "rust",
                     "version": "1.91.0",
-                    "entries": [{"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"[0-9.]+"'}],
+                    "entries": [
+                        {"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"[0-9.]+"'},
+                        {"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"[0-9.]+"'},
+                    ],
                 },
             ],
         },
@@ -491,7 +532,10 @@ def test_sync_tool_versions_for_missing_top_level_name_should_report_error(
                 {
                     "name": "rust",
                     "version": "1.91.0",
-                    "entries": [{"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"([0-9.]+)"'}],
+                    "entries": [
+                        {"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"([0-9.]+)"'},
+                        {"path": "MODULE.bazel", "pattern": 'RUST_VERSION\\s*=\\s*"([0-9.]+)"'},
+                    ],
                 },
             ],
         },
