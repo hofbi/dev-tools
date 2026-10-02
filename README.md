@@ -10,7 +10,6 @@ These tools are used to help developers in their day-to-day tasks.
 > I try to contribute back if possible but since I am no longer working at Luminar, it is not guaranteed that my contributions are accepted.
 
 <!-- toc -->
-
 - [Tools](#tools)
   - [Configure VS Code for Bazel](#configure-vs-code-for-bazel)
   - [Pre-Commit Excludes](#pre-commit-excludes)
@@ -37,10 +36,8 @@ These tools are used to help developers in their day-to-day tasks.
   - [`print-pre-commit-metrics`](#print-pre-commit-metrics)
   - [`sync-vscode-config`](#sync-vscode-config)
   - [`sync-tool-versions`](#sync-tool-versions)
-  - [`check-max-one-sentence-per-line`](#check-max-one-sentence-per-line)
   - [`check-ownership`](#check-ownership)
 - [Contributing](#contributing)
-
 <!-- tocstop -->
 
 ## Tools
@@ -227,17 +224,6 @@ sync_versions:
         pattern: target-version\s*=\s*"py([0-9]+)"
         version_override: '314'
 ```
-
-### `check-max-one-sentence-per-line`
-
-This hook is a simplified version of [rumdl MD013 sentence-per-line-mode](https://github.com/rvben/rumdl/blob/main/docs/md013.md#sentence-per-line-mode).
-In contrast to rumdl, this hook doesn't reflow all your text; it only enforces one sentence per line.
-
-Check that each line in markdown files contains at most one sentence.
-This makes diffs easier to read and avoids merge conflicts.
-Sentences are split on `.`, `!`, or `?` followed by a space and a capital letter.
-
-This hook doesn't respect surrounding indentation, so be sure to combine it with <https://github.com/hukkin/mdformat> or a similar formatter that fixes indentation.
 
 ### `check-ownership`
 

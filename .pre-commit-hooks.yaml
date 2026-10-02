@@ -283,26 +283,6 @@
   always_run: true
   additional_dependencies:
     - pre-commit==4.6.0
-- id: check-max-one-sentence-per-line
-  name: Check max one sentence per line
-  description: |-
-    This hook is a simplified version of [rumdl MD013 sentence-per-line-mode](https://github.com/rvben/rumdl/blob/main/docs/md013.md#sentence-per-line-mode).
-    In contrast to rumdl, this hook doesn't reflow all your text; it only enforces one sentence per line.
-
-    Check that each line in markdown files contains at most one sentence.
-    This makes diffs easier to read and avoids merge conflicts.
-    Sentences are split on `.`, `!`, or `?` followed by a space and a capital letter.
-
-    This hook doesn't respect surrounding indentation, so be sure to combine it with <https://github.com/hukkin/mdformat> or a similar formatter that fixes indentation.
-  entry: check-max-one-sentence-per-line
-  additional_dependencies:
-    - regex==2026.2.28
-  language: python
-  types_or:
-    - asciidoc
-    - markdown
-    - rst
-    - tex
 - id: check-ownership
   name: Check CODEOWNERS consistency (can take a while)
   description: |
