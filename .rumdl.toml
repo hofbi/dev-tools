@@ -5,10 +5,15 @@ line-length = 0 # Disable all line length checks
 reflow = true
 reflow-mode = "sentence-per-line"
 
+[MD093]
+code = false # keep `identifier` in headings, report only emphasis
+strong = true
+emphasis = true
+
 [code-block-tools]
 enabled = true
 # on-missing-language-definition = "fail" # missing yaml for now
 on-missing-tool-binary = "fail"
 
 [code-block-tools.languages]
-shell = {format = ["shuck:format"]}
+shell = { format = ["shuck:format"] }

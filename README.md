@@ -1,7 +1,6 @@
 # Dev Tools
 
-[![Check](https://github.com/hofbi/dev-tools/actions/workflows/check.yaml/badge.svg)](https://github.com/hofbi/dev-tools/actions/workflows/check.yaml)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/hofbi/dev-tools/master.svg)](https://results.pre-commit.ci/latest/github/hofbi/dev-tools/master)
+[![Check](https://github.com/hofbi/dev-tools/actions/workflows/check.yaml/badge.svg)](https://github.com/hofbi/dev-tools/actions/workflows/check.yaml) [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/hofbi/dev-tools/master.svg)](https://results.pre-commit.ci/latest/github/hofbi/dev-tools/master)
 
 This is a collection of Luminar's development tools.
 These tools are used to help developers in their day-to-day tasks.
@@ -68,7 +67,8 @@ Collection of pre-commit hooks.
 
 ### `check-build-file-without-extensions`
 
-Check that `BUILD` files have a `.bazel` ending. `BUILD.bazel` file is the recommended way to name these files.
+Check that `BUILD` files have a `.bazel` ending.
+`BUILD.bazel` file is the recommended way to name these files.
 
 ### `check-readme-md-consistency`
 

@@ -8,7 +8,7 @@ version = "1.12.1" # Will be read by the release pipeline
 description = ""
 readme = "README.md"
 authors = [
-  {name = "Markus Hofbauer"}
+  { name = "Markus Hofbauer" }
 ]
 license = "MIT"
 license-files = ["LICENSE"]
@@ -93,9 +93,9 @@ error-on-warning = true
 module-root = "" # required to avoid the "src" layout, which is the default for uv_build
 
 [tool.uv.sources]
-configure-vscode-for-bazel = {workspace = true}
-pre-commit-excludes = {workspace = true}
-whoowns = {workspace = true}
+configure-vscode-for-bazel = { workspace = true }
+pre-commit-excludes = { workspace = true }
+whoowns = { workspace = true }
 
 [tool.uv.workspace]
 members = [

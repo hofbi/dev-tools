@@ -9,18 +9,18 @@ You need a Python interpreter and [`uv`](https://docs.astral.sh/uv/getting-start
 Then simply run
 
 ```shell
-uv venv  # to setup your virtual environment
-uv sync --extra dev  # to install all dependencies
-uv run pytest  # to run all unit tests
+uv venv             # to setup your virtual environment
+uv sync --extra dev # to install all dependencies
+uv run pytest       # to run all unit tests
 ```
 
 To run a development version of a script for testing eg. a hook on another repo, run:
 
 ```shell
-uv sync # to install current scripts in a virtualenv
+uv sync                   # to install current scripts in a virtualenv
 source .venv/bin/activate # to activate the virtualenv
 # And then eg.
-cd <another_repo>
+cd /path/to/another/repo
 check-ownership file1 file2
 ```
 

@@ -1,8 +1,6 @@
 # Configure-Vscode-for-Bazel
 
-[![PyPI](https://img.shields.io/pypi/v/configure-vscode-for-bazel)](https://pypi.org/project/configure-vscode-for-bazel/)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/configure-vscode-for-bazel)](https://pypi.org/project/configure-vscode-for-bazel/)
-[![PyPI - License](https://img.shields.io/pypi/l/configure-vscode-for-bazel)](https://pypi.org/project/configure-vscode-for-bazel/)
+[![PyPI](https://img.shields.io/pypi/v/configure-vscode-for-bazel)](https://pypi.org/project/configure-vscode-for-bazel/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/configure-vscode-for-bazel)](https://pypi.org/project/configure-vscode-for-bazel/) [![PyPI - License](https://img.shields.io/pypi/l/configure-vscode-for-bazel)](https://pypi.org/project/configure-vscode-for-bazel/)
 
 If you want to work with C++ Bazel targets in VS Code, you can use `configure-vscode-for-bazel` to generate a VS Code configuration.
 This tool supports generating:
