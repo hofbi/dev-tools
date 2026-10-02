@@ -168,7 +168,7 @@ toml = [
 
 [[package]]
 name = "dev-tools"
-version = "1.12.1"
+version = "2.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "configure-vscode-for-bazel" },
