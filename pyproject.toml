@@ -14,8 +14,8 @@ license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.10"
 dependencies = [
-  "pre-commit>=4.2.0",
-  "pyjson5>=1.6.8",
+  "pre-commit>=4.6.2",
+  "pyjson5>=2.0.0",
   "ruamel-yaml>=0.19.1",
   "pre-commit-excludes",
   "configure-vscode-for-bazel",
@@ -26,8 +26,7 @@ dependencies = [
 dev = [
   "pytest>=9.0.3",
   "pytest-cov",
-  "pyfakefs",
-  "types-regex"
+  "pyfakefs"
 ]
 
 [project.scripts]
