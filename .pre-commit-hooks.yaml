@@ -207,7 +207,7 @@
   always_run: true
   language: python
   additional_dependencies:
-    - pre-commit-excludes>=0.2.0
+    - pre-commit-excludes==0.6.0
 - id: print-pre-commit-metrics
   name: Print pre-commit metrics such as number of excluded files
   description: |-
@@ -220,7 +220,7 @@
   pass_filenames: false
   language: python
   additional_dependencies:
-    - pre-commit-excludes>=0.2.0
+    - pre-commit-excludes==0.6.0
 - id: sync-vscode-config
   name: Sync VSCode Config
   description: |-
@@ -242,7 +242,7 @@
     )
   pass_filenames: false
   additional_dependencies:
-    - pyjson5==2.0.0
+    - pyjson5==2.0.1
 - id: sync-tool-versions
   name: Sync tool versions
   description: |-
@@ -282,7 +282,7 @@
   pass_filenames: false
   always_run: true
   additional_dependencies:
-    - pre-commit==4.6.0
+    - pre-commit==4.6.2
 - id: check-ownership
   name: Check CODEOWNERS consistency (can take a while)
   description: |
@@ -309,4 +309,4 @@
   language: python
   always_run: true
   additional_dependencies:
-    - whoowns>=0.8.0
+    - whoowns==0.8.1
