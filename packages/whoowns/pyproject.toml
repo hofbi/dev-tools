@@ -8,8 +8,8 @@ version = "0.8.1"
 description = "Print the GitHub owner of a file or folder based on CODEOWNERS"
 readme = "README.md"
 authors = [
-  {name = "Markus Hofbauer"},
-  {name = "Chris Bachhuber"}
+  { name = "Markus Hofbauer" },
+  { name = "Chris Bachhuber" }
 ]
 license = "MIT"
 license-files = ["LICENSE"]
