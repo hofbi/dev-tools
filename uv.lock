@@ -189,7 +189,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "configure-vscode-for-bazel", editable = "packages/configure_vscode_for_bazel" },
-    { name = "pre-commit", specifier = ">=4.6.2" },
+    { name = "pre-commit", specifier = ">=4.6.0" },
     { name = "pre-commit-excludes", editable = "packages/pre_commit_excludes" },
     { name = "pyfakefs", marker = "extra == 'dev'" },
     { name = "pyjson5", specifier = ">=2.0.0" },
