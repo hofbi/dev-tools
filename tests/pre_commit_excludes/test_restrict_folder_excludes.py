@@ -98,3 +98,43 @@ repos:
         exclude: 'unchanged.py'
 """
     )
+
+
+def test_update_config_with_stricter_excludes_should_preserve_anchored_exclude(fs: FakeFilesystem) -> None:
+    config_file = Path("Repo/.pre-commit-config.yaml")
+    fs.create_file(
+        config_file,
+        contents="""repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        exclude: &hook_specific_excludes |
+          (?x)^(
+            generated|
+            keep
+          )
+      - id: isort
+        files: *hook_specific_excludes
+""",
+    )
+
+    update_config_with_stricter_excludes(
+        config_file,
+        [Hook("ruff-check", [Path("Repo/generated/foo.py"), Path("Repo/generated/bar.py")])],
+    )
+
+    assert (
+        config_file.read_text(encoding="utf-8")
+        == """repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        exclude: &hook_specific_excludes |
+          (?x)^(
+            generated/foo.py|
+            generated/bar.py
+          )
+      - id: isort
+        files: *hook_specific_excludes
+"""
+    )
