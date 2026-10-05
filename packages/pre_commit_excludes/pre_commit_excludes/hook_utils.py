@@ -3,6 +3,7 @@ from __future__ import annotations
 import itertools
 import sys
 from collections import Counter
+from collections.abc import MutableMapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -13,7 +14,7 @@ from ruamel.yaml.scalarstring import LiteralScalarString
 from ruamel.yaml.util import load_yaml_guess_indent
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterator, Mapping, MutableMapping
+    from collections.abc import Callable, Iterator, Mapping
 
 
 @dataclass(frozen=True)
@@ -169,8 +170,31 @@ def update_config_hook_excludes(
     for hook_config in get_hook_configs_from_all_repos(config):
         updated_exclude = update_exclude(hook_config)
         if updated_exclude is not None and updated_exclude != hook_config.get("exclude"):
-            hook_config["exclude"] = LiteralScalarString(updated_exclude)
+            current_exclude = hook_config["exclude"]
+            replacement = LiteralScalarString(updated_exclude)
+            anchor = current_exclude.yaml_anchor() if hasattr(current_exclude, "yaml_anchor") else None
+            if anchor is not None and anchor.value is not None:
+                replacement.yaml_set_anchor(anchor.value, always_dump=anchor.always_dump)
+                _replace_yaml_aliases(config, current_exclude, replacement)
+            else:
+                hook_config["exclude"] = replacement
             changed = True
 
     if changed:
         yaml.dump(config, config_file)
+
+
+def _replace_yaml_aliases(config: object, original: object, replacement: object) -> None:
+    """Replace every reference to an anchored scalar while preserving its aliases."""
+    if isinstance(config, MutableMapping):
+        for key, value in config.items():
+            if value is original:
+                config[key] = replacement
+            else:
+                _replace_yaml_aliases(value, original, replacement)
+    elif isinstance(config, list):
+        for index, value in enumerate(config):
+            if value is original:
+                config[index] = replacement
+            else:
+                _replace_yaml_aliases(value, original, replacement)
