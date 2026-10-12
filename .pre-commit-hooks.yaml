@@ -110,7 +110,7 @@
   pass_filenames: false
   files: (README.md|.pre-commit-hooks.yaml)
   additional_dependencies:
-    - pre-commit==4.6.0
+    - pre-commit==4.6.2
 - id: check-number-of-lines-count
   name: Check Number of Lines
   description: |-
@@ -207,7 +207,7 @@
   always_run: true
   language: python
   additional_dependencies:
-    - pre-commit-excludes==0.6.0
+    - pre-commit-excludes>=0.6.1
 - id: print-pre-commit-metrics
   name: Print pre-commit metrics such as number of excluded files
   description: |-
@@ -220,7 +220,7 @@
   pass_filenames: false
   language: python
   additional_dependencies:
-    - pre-commit-excludes==0.6.0
+    - pre-commit-excludes>=0.6.1
 - id: sync-vscode-config
   name: Sync VSCode Config
   description: |-
@@ -309,4 +309,4 @@
   language: python
   always_run: true
   additional_dependencies:
-    - whoowns==0.8.1
+    - whoowns>=0.8.1
