@@ -110,7 +110,7 @@
   pass_filenames: false
   files: (README.md|.pre-commit-hooks.yaml)
   additional_dependencies:
-    - pre-commit==4.6.2
+    - pre-commit==4.7.0
 - id: check-number-of-lines-count
   name: Check Number of Lines
   description: |-
@@ -282,7 +282,7 @@
   pass_filenames: false
   always_run: true
   additional_dependencies:
-    - pre-commit==4.6.2
+    - pre-commit==4.7.0
 - id: check-ownership
   name: Check CODEOWNERS consistency (can take a while)
   description: |
